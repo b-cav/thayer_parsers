@@ -1,0 +1,12 @@
+0001 0111 1111 1111 1100 0000 0000 0001 0000 0000 0000 0000 0100 0001 0100 1001
+   1    7    F    F    C    0    0    1    0    0    0    0    4    1    4    2
+
+0-2:   Packet Version Number "000"
+3:     Packet Type "1" --> telecommand packet
+4:     Secondary Header Flag "0" --> no secondary header
+5-15:  APID "111 1111 1111" --> idle packet APID
+16-17: Sequence Flags "11" --> unsegmented user data
+18-31: Packet Sequence Count/Packet Name "00 0000 0000 0001" --> packet #1
+32-47: Packet Data Length "0000 0000 0000 0001" --> length C=1 so #data octets = C+1 = 2
+48-55: Octet #1 "0100 1000" --> "H" ASCII code 0d72
+56-63: Octet #2 "0100 1001" --> "I" ASCII code 0d73

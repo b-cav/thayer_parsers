@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for Space Packet Protocol
+
+
+6-27-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" bitOrder="mostSignificantBitFirst"
+        byteOrder="bigEndian" representation="binary" lengthUnits="bits"
+        lengthKind="explicit" alignmentUnits="bits" alignment="1" binaryNumberRep="binary" />
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:element name="SpacePacket" dfdl:lengthKind="implicit">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- Header Bit Slots -->
+        <xs:element name="Version"
+          type="xs:hexBinary" dfdl:length="3"/>
+
+        <xs:element name="Type" 
+          type="xs:hexBinary" dfdl:length="1"/>
+
+        <xs:element name="SecondaryHeaderFlag"
+          type="xs:hexBinary" dfdl:length="1"/>
+
+        <xs:element name="APID"
+          type="xs:hexBinary" dfdl:length="11"/>
+
+        <xs:element name="SequenceFlags"
+          type="xs:hexBinary" dfdl:length="2"/>
+
+        <xs:element name="SequenceCount"
+          type="xs:unsignedInt" dfdl:length="14"/>
+
+        <xs:element name="PacketDataLength"
+          type="xs:unsignedInt" dfdl:length="16"/>
+
+        <!-- Packet Data Field -->
+        <xs:element name="DataField" dfdl:lengthKind="implicit">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Octet" type="xs:int"
+                minOccurs="1" maxOccurs="unbounded"
+                dfdl:occursCountKind="expression" dfdl:occursCount="{../../PacketDataLength + 1}"
+                dfdl:length="8"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
