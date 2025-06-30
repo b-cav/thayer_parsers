@@ -243,7 +243,7 @@ void generateTests(int passSeed, int failSeed) {
 	// Set the various fields.
 	mess.pph.versionNumber = 0;
 	mess.pph.pktType = 1;
-	mess.pph.secHdrFlag = 0;
+	mess.pph.secHdrFlag = 1;
 	mess.pph.apid = (rand() % (1 << 11));
 	mess.pph.seqFlags = 0;
 	mess.pph.pktSeqOrPn = (rand() % (1 << 14));
