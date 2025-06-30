@@ -35,6 +35,7 @@ echo -n "129.525" > ./pass.jnum.30
 echo -n "592.076E-555" > ./pass.jnum.31
 echo -n "592.176e+555" > ./pass.jnum.32
 echo -n "592.176e555" > ./pass.jnum.33
+echo -n "592.176E555" > ./pass.jnum.34
 
 # [FAILING TESTS]
 echo -n "a" > ./fail.jnum.1
@@ -47,6 +48,7 @@ echo -n "592
 echo -n "592\176" > ./fail.jnum.7
 echo -n "592'176" > ./fail.jnum.8
 echo -n "02" > ./fail.jnum.9
+echo -n "+123" > ./fail.jnum.10
 
 # generate a file with the number of pass and fail tests
 NUMPASS=(pass.*)

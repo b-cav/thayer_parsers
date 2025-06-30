@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <spp.h>
+#include "spp.h"
 
 int main(int argc, char **argv) {
 	// Variable declarations.

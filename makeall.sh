@@ -79,5 +79,15 @@ do
 				make ${MODE}
 				popd
 		fi
+
+		if [ -d ./${DIR}/dfdl ] ; then
+				pushd ./${DIR}/dfdl
+				echo [$DIR/dfdl]
+				rm -f Makefile
+				ln -s ../../Makefile.dfdl ./Makefile
+				make ${MODE} clean
+				make ${MODE}
+				popd
+		fi
 done
 

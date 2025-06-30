@@ -1,4 +1,4 @@
-CFLAGS=-Wall -pedantic -std=c11 -I.
+CFLAGS=-Wall -pedantic -std=c11 -I. -g
 OFILES=bit2byte.o spp.o vector.o 
 
 all:  $(OFILES) bit2byte.d tv

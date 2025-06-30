@@ -1,0 +1,12 @@
+#
+# THE STANDARD DFDL MAKEFILE -- DO NOT CHANGE OR MOVE THIS FILE
+# This file is used to clean, make, or run all Daffodil parsers
+#
+
+all:
+
+run:
+			dfdltest.sh
+
+clean:
+			rm -f *~ 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for Space Packet Protocol
+
+
+6-27-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd" />
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"/> 
+    </xs:appinfo>
+  </xs:annotation>
+
+
+  <xs:element name="SpacePacket">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- Header Bit Slots -->
+        <xs:element name="Version" type="xs:hexBinary" 
+          dfdl:lengthKind="explicit" dfdl:length="3" dfdl:lengthUnits="bits"/>
+
+        <xs:element name="Type" type="xs:hexBinary" 
+          dfdl:lengthKind="explicit" dfdl:length="1" dfdl:lengthUnits="bits"/>
+
+        <xs:element name="SecondaryHeaderFlag" type="xs:hexBinary" 
+          dfdl:lengthKind="explicit" dfdl:length="1" dfdl:lengthUnits="bits"/>
+
+        <xs:element name="APID" type="xs:hexBinary" 
+          dfdl:lengthKind="explicit" dfdl:length="11" dfdl:lengthUnits="bits"/>
+
+        <xs:element name="SequenceFlags" type="xs:hexBinary" 
+          dfdl:lengthKind="explicit" dfdl:length="2" dfdl:lengthUnits="bits"/>
+
+        <xs:element name="SequenceCount" type="xs:hexBinary" 
+          dfdl:lengthKind="explicit" dfdl:length="14" dfdl:lengthUnits="bits"/>
+
+        <xs:element name="PacketDataLength" type="xs:hexBinary" 
+          dfdl:lengthKind="explicit" dfdl:length="16" dfdl:lengthUnits="bits"/>
+
+        <!-- Packet Data Field -->
+        <xs:element name="DataField">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Octet" type="xs:hexBinary"
+                minOccurs="1" maxOccurs="unbounded"
+               
+                dfdl:lengthKind="explicit" dfdl:length="8" dfdl:lengthUnits="bits"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
