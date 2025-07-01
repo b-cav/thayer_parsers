@@ -3,10 +3,13 @@
 # This file is used to clean, make, or run all Daffodil parsers
 #
 
-all:
+all:		schema
+
+schema:
+			bash -c "daffodil save-parser -s schema.dfdl.xsd parser.xml";
 
 run:
 			dfdltest.sh
 
 clean:
-			rm -f *~ 
+			rm -f *~ parser.xml

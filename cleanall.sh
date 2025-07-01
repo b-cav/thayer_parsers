@@ -81,7 +81,6 @@ do
 				rm -f Makefile
 				ln -s ../../Makefile.dfdl ./Makefile
 				make ${MODE} clean
-				make ${MODE}
 				popd
 		fi
 done
