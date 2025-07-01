@@ -1,4 +1,4 @@
-CFLAGS=-Wall -pedantic -std=c11 -I. -g
+CFLAGS=-Wall -pedantic -std=c11 -I.
 OFILES=bit2byte.o spp.o vector.o 
 
 all:  $(OFILES) bit2byte.d tv
@@ -13,7 +13,7 @@ bit2byte.d:
 			gcc $(CFLAGS) -DDEBUG bit2byte.c -o bit2byte.d
 
 clean:
-				rm -f *~ *.o pass.* fail.* bit2byte.d tv
+	rm -rf *~ *.o pass.* fail.* bit2byte.d tv *.dSYM
 
 
 

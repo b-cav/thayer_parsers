@@ -32,6 +32,7 @@ typedef struct packetPrimaryHeader {
 typedef struct sppMessage {
 	packetPrimaryHeader_t pph;
 	uint8_t *data;
+    int payloadBytes;
 } sppMessage_t;
 
 /*
@@ -128,19 +129,22 @@ static void writeSppMessageToFile(sppMessage_t *mess, FILE *fp) {
 	byteArray[5] = mess->pph.pktDataLen & 0xFF;
 	
 	for (i = 0; i < 6; i++) {
-		buf = byteArray[i];
-		
-		if (fwrite(&buf, sizeof(uint8_t), 1, fp) != 1)
-			fprintf(stderr, "Error writing byte %02x to file.", buf);
-	}
-    
-	for (i = 0; i < mess->pph.pktDataLen + 1; i++) {
-		buf = 0;
-		
-		if (fwrite(&buf, sizeof(uint8_t), 1, fp) != 1)
-			fprintf(stderr, "Error writing byte %02x to file.", buf);
-	}
-	
+        buf = byteArray[i];
+
+        if (fwrite(&buf, sizeof(uint8_t), 1, fp) != 1)
+            fprintf(stderr, "Error writing byte %02x to file.", buf);
+    }
+
+    // Seed random number generator.
+    srand(time(NULL));
+
+    for (i = 0; i < mess->payloadBytes + 1; i++) {
+        buf = rand() % (1 << 8);
+
+        if (fwrite(&buf, sizeof(uint8_t), 1, fp) != 1)
+            fprintf(stderr, "Error writing byte %02x to file.", buf);
+    }
+
 }
 
 /*
@@ -149,13 +153,13 @@ static void writeSppMessageToFile(sppMessage_t *mess, FILE *fp) {
  * Outputs: none
  */
 static void writeFuncSpp(void *data) {
-	// Variable declarations.
-	sppMessage_t *mess;
+    // Variable declarations.
+    sppMessage_t *mess;
 
-	// Coerce.
-	mess =(sppMessage_t *)data;
+    // Coerce.
+    mess =(sppMessage_t *)data;
 
-	// Write message to file.
+    // Write message to file.
 	writeSppMessageToFile(mess, ofile);
 
 }
@@ -242,13 +246,14 @@ void generateTests(int passSeed, int failSeed) {
 
 	// Set the various fields.
 	mess.pph.versionNumber = 0;
-	mess.pph.pktType = 1;
-	mess.pph.secHdrFlag = 1;
+	mess.pph.pktType = 0;
+	mess.pph.secHdrFlag = 0;
 	mess.pph.apid = (rand() % (1 << 11));
 	mess.pph.seqFlags = 0;
 	mess.pph.pktSeqOrPn = (rand() % (1 << 14));
-	mess.pph.pktDataLen = 0x04;
-	
+	mess.pph.pktDataLen = (rand() % (1 << 16));
+	mess.payloadBytes = mess.pph.pktDataLen;
+
 	// First passing test.
 	sprintf(fname, "./pass.%d", passSeed++);
 	
@@ -382,12 +387,13 @@ void generateTests(int passSeed, int failSeed) {
 
 	mess.pph.pktSeqOrPn = old;
 
-	// Generate further passing test on packet data length.
-	old = mess.pph.pktDataLen;
+ 	// Generate further passing test on packet data length.
+	 old = mess.pph.pktDataLen;
 
 	mess.pph.pktDataLen = (rand() % (1 << 16));
-	
-	// Generate passing test.
+	mess.payloadBytes = mess.pph.pktDataLen;
+    
+    // Generate passing test.
 	sprintf(fname, "./pass.%d", passSeed++);
 	
 	// Open file.
@@ -402,6 +408,52 @@ void generateTests(int passSeed, int failSeed) {
 	// Close file.
 	fclose(fp);
 
-	mess.pph.pktDataLen = old;
+    // Revert to old packet data length.
+    mess.pph.pktDataLen = old;
+    mess.payloadBytes = old;
+
+   // Generate further passing test with secondary header flag set.
+	old = mess.pph.secHdrFlag;
+    mess.pph.secHdrFlag = 1;
+
+    // Generate passing test.
+	sprintf(fname, "./pass.%d", passSeed++);
+	
+	// Open file.
+	if ((fp = fopen(fname, "wb")) == NULL) {
+		fprintf(stderr, "Failed to open file.\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	// Write test to file.
+	writeSppMessageToFile(&mess, fp);
+	
+	// Close file.
+	fclose(fp);
+
+    // Reset secondary header flag to 0.
+    mess.pph.secHdrFlag = 0;
+
+    // Generate a passing test where there is no paylaod with  secondary header flag not set.
+
+    // Failing test where the number of bytes of packet data written does not correspond to the number of bytes in the header.
+    mess.payloadBytes = mess.pph.pktDataLen - 1;
+
+    // Generate passing test.
+	sprintf(fname, "./fail.%d", failSeed++);
+	
+	// Open file.
+	if ((fp = fopen(fname, "wb")) == NULL) {
+		fprintf(stderr, "Failed to open file.\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	// Write test to file.
+	writeSppMessageToFile(&mess, fp);
+	
+	// Close file.
+	fclose(fp);
+
+    mess.payloadBytes = mess.pph.pktDataLen;
 
 }
