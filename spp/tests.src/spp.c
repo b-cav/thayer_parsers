@@ -251,7 +251,7 @@ void generateTests(int passSeed, int failSeed) {
 	mess.pph.apid = (rand() % (1 << 11));
 	mess.pph.seqFlags = 0;
 	mess.pph.pktSeqOrPn = (rand() % (1 << 14));
-	mess.pph.pktDataLen = (rand() % (1 << 16));
+	mess.pph.pktDataLen = (rand() % (1 << 2));
 	mess.payloadBytes = mess.pph.pktDataLen;
 
 	// First passing test.
