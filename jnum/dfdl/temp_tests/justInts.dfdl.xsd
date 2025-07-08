@@ -18,28 +18,30 @@ Version 1
 
   <xs:annotation>
     <xs:appinfo source="http://www.ogf.org/dfdl/">
-      <dfdl:format ref="GeneralFormat" lengthKind="implicit" lengthUnits="bytes" representation="text"/>
+      <dfdl:format ref="GeneralFormat"/>
     </xs:appinfo>
   </xs:annotation>
 
   <!-- xBNF-style element-by-element build up: -->
-  <xs:simpleType name="minus_t" dfdl:lengthKind="explicit" dfdl:length="1">
-    <xs:restriction base="xs:unsignedByte">
-      <xs:enumeration value="45"/>
+
+ <xs:simpleType name="minus_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[-]"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="zero_t" dfdl:lengthKind="explicit" dfdl:length="1">
-    <xs:restriction base="xs:unsignedByte">
-      <xs:minInclusive value="48"/>
-      <xs:maxInclusive value="48"/>
+  <xs:simpleType name="zero_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[0]"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="onenine_t" dfdl:lengthKind="explicit" dfdl:length="1">
-   <xs:restriction base="xs:unsignedByte">
-      <xs:minInclusive value="49"/>
-      <xs:maxInclusive value="57"/>
+  <xs:simpleType name="onenine_t">
+   <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[1-9]"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -52,12 +54,24 @@ Version 1
 
   <xs:complexType name="integer_t">
     <xs:sequence>
-      <xs:element name="minus" type="minus_t" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="minus" type="minus_t" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator testKind="pattern" testPattern="-"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
       <xs:choice>
-        <xs:element name="zero" type="zero_t"/> 
+        <xs:element name="zero" type="zero_t">
+          <xs:annotation>
+            <xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator testKind="pattern" testPattern="0"/>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
         <xs:sequence>
           <xs:element name="onenine" type="onenine_t"/>
-          <xs:element name="digit" type="digit_t" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="digit" type="digit_t" minOccurs="0"/>
         </xs:sequence> 
       </xs:choice>
     </xs:sequence>

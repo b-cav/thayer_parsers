@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+schema.dfdl.xsd - XML Schema for JSON Strings
+
+Ben Cavanagh
+7-8-2025
+Version 1
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <!--
+  ***************************************
+  xBNF-style element-by-element build up:
+  ***************************************
+  -->
+  <xs:simpleType name="control_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="2"/>
+      <xs:pattern value='\\["/bfnrt]'/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="char_t">
+    <xs:choice>
+      <xs:element name="control" type="control_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern='[\\]["\/bfnrt]'/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:element name="noncontrol" type="xs:string" dfdl:lengthKind="explicit" dfdl:length="1">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator test="{ . ne '\\' and . ne '&quot;' }"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="string_t">
+    <xs:sequence>
+      <xs:element name="char" type="char_t" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="JSON_string" type="string_t">
+    <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:element lengthKind="delimited">
+        <dfdl:property name="initiator">%#r22;</dfdl:property>
+        <dfdl:property name="terminator">%#r22;</dfdl:property>
+      </dfdl:element>
+    </xs:appinfo></xs:annotation>
+  </xs:element>
+
+</xs:schema>

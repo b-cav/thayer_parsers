@@ -19,8 +19,7 @@ Version 2
   <xs:annotation>
     <xs:appinfo source="http://www.ogf.org/dfdl/">
       <dfdl:format ref="GeneralFormat"/>
-    </xs:appinfo>
-  </xs:annotation>
+    </xs:appinfo>  </xs:annotation>
 
   <!--
   ***************************************
@@ -28,40 +27,45 @@ Version 2
   ***************************************
   -->
 
-  <xs:simpleType name="minus_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:simpleType name="minus_t">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="-"/>
+      <xs:length value="1"/>
+      <xs:pattern value="-"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="plus_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:simpleType name="plus_t">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="\+"/>
+      <xs:length value="1"/>
+      <xs:pattern value="\+"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="dot_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:simpleType name="dot_t">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="\."/>
+      <xs:length value="1"/>
+      <xs:pattern value="\."/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="zero_t" dfdl:lengthKind="explicit" dfdl:length="1">
-    <xs:restriction base="xs:unsignedByte">
-      <xs:enumeration value="&#x30;"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="onenine_t" dfdl:lengthKind="explicit" dfdl:length="1">
-    <xs:restriction base="xs:unsignedByte">
-      <xs:minInclusive value="&#x31;"/>
-      <xs:maxInclusive value="&#x39;"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="exp_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:simpleType name="zero_t">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="[eE]"/>
+      <xs:length value="1"/>
+      <xs:pattern value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="onenine_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[1-9]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="exp_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[eE]"/>
     </xs:restriction>
   </xs:simpleType>
 

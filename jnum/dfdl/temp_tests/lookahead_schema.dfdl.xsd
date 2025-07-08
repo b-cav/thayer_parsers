@@ -45,8 +45,14 @@ Version 2
 
   <!-- xBNF-style element-by-element build up: -->
   
+  <xs:simpleType name="empty_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="minus_t">
-    <xs:restriction base="xs:unsignedByte">
+    <xs:restriction base="xs:string">
       <xs:enumeration value="45"/>
     </xs:restriction>
   </xs:simpleType>
@@ -66,15 +72,15 @@ Version 2
   </xs:simpleType>
 -->
   <xs:simpleType name="zero_t">
-   <xs:restriction base="xs:unsignedByte">
-      <xs:enumeration value="&#x30;"/>
+   <xs:restriction base="xs:string">
+      <xs:enumeration value="0"/>
     </xs:restriction>
   </xs:simpleType>
 
   <xs:simpleType name="onenine_t">
-   <xs:restriction base="xs:unsignedByte">
-      <xs:minInclusive value="&#x31;"/>
-      <xs:maxInclusive value="&#x39;"/>
+   <xs:restriction base="xs:string">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="9"/>
     </xs:restriction>
   </xs:simpleType>
   <!--
@@ -101,7 +107,10 @@ Version 2
 
   <xs:complexType name="integer_t">
     <xs:sequence>
-      <xs:element name="minus" type="minus_t" minOccurs="0" maxOccurs="1"/>
+      <xs:choice dfdl:choiceDispatchKey="{xs:string(dfdlx:lookAhead(0, 8))}">
+        <xs:element name="minus" type="minus_t" dfdl:choiceBranchKey="45"/>
+        <xs:element name="empty" type="empty_t" dfdl:choiceBranchKey="48 49 50 51 52 53 54 55 56 57"/>
+      </xs:choice>
       <xs:choice dfdl:choiceDispatchKey="{xs:string(dfdlx:lookAhead(0, 8))}">
         <xs:element name="zero" type="zero_t" dfdl:choiceBranchKey="48"/> 
         <xs:sequence dfdl:choiceBranchKey="49 50 51 52 53 54 55 56 57">
