@@ -27,25 +27,67 @@ Version 1
   xBNF-style element-by-element build up:
   ***************************************
   -->
-  <xs:simpleType name="control_t">
+  <xs:simpleType name="escape_t" dfdl:lengthKind="explicit" dfdl:length="1">
     <xs:restriction base="xs:string">
-      <xs:length value="2"/>
-      <xs:pattern value='\\["/bfnrt]'/>
+      <xs:enumeration value="\"/> <!-- Not regex so doesn't need \\ -->
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="special_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:string">
+      <xs:pattern value='[&quot;\\/bfnrt]'/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="unicode_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="u"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hexdig_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:string">
+      <xs:pattern value='[0-9a-fA-F]'/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="escseq_t">
+    <xs:sequence>
+      <xs:element name="escape" type="escape_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern='\\'/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element name="unicode" type="unicode_t">
+            <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator testKind="pattern" testPattern="u"/>
+            </xs:appinfo></xs:annotation>
+          </xs:element>
+          <xs:element name="hexdig" type="hexdig_t" minOccurs="4" maxOccurs="4">
+            <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator testKind="pattern" testPattern="[0-9a-fA-F]"/>
+            </xs:appinfo></xs:annotation>
+          </xs:element>
+        </xs:sequence>
+        <xs:element name="special" type="special_t">
+          <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{ . eq '&quot;' or . eq '\' or . eq '/' or . eq 'b' or . eq 'f' or . eq 'n' or . eq 'r' or . eq 't' }"/>
+          </xs:appinfo></xs:annotation>
+        </xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="char_t">
     <xs:choice>
-      <xs:element name="control" type="control_t">
+      <xs:element name="normal" type="xs:string" dfdl:lengthKind="explicit" dfdl:length="1">
         <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
-          <dfdl:discriminator testKind="pattern" testPattern='[\\]["\/bfnrt]'/>
+          <dfdl:discriminator test="{ . ne '\' and . ne '&quot;' }"/>
         </xs:appinfo></xs:annotation>
       </xs:element>
-      <xs:element name="noncontrol" type="xs:string" dfdl:lengthKind="explicit" dfdl:length="1">
-        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
-          <dfdl:discriminator test="{ . ne '\\' and . ne '&quot;' }"/>
-        </xs:appinfo></xs:annotation>
-      </xs:element>
+      <xs:element name="escseq" type="escseq_t"/>
     </xs:choice>
   </xs:complexType>
 
