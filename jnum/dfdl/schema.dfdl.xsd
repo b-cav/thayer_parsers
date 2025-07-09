@@ -36,13 +36,13 @@ Version 2
 
   <xs:simpleType name="plus_t" dfdl:lengthKind="explicit" dfdl:length="1">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="\+"/>
+      <xs:enumeration value="+"/>
     </xs:restriction>
   </xs:simpleType>
 
   <xs:simpleType name="dot_t" dfdl:lengthKind="explicit" dfdl:length="1">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="\."/>
+      <xs:enumeration value="."/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -61,7 +61,7 @@ Version 2
 
   <xs:simpleType name="exp_t" dfdl:lengthKind="explicit" dfdl:length="1">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="[eE]"/>
+      <xs:pattern value="[eE]"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -124,7 +124,7 @@ Version 2
     <xs:sequence>
       <xs:element name="dot" type="dot_t">
         <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
-          <dfdl:discriminator testKind="pattern" testPattern="\."/>
+          <dfdl:discriminator testKind="pattern" testPattern="[.]"/>
         </xs:appinfo></xs:annotation>
       </xs:element>
       <xs:element name="digit" type="digit_t" minOccurs="1" maxOccurs="unbounded">
