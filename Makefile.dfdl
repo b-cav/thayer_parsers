@@ -8,8 +8,11 @@ all:		schema
 schema:
 			bash -c "daffodil save-parser -s schema.dfdl.xsd parser.xml";
 
+c:
+			bash -c "daffodil generate c -s schema.dfdl.xsd .";
+
 run:
 			dfdltest.sh
 
 clean:
-			rm -f *~ parser.xml
+			rm -r -f *~ parser.xml ./c

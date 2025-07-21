@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+schema.dfdl.xsd - XML Schema for JSON Numbers
+
+Ben Cavanagh
+7-1-2025
+Version 2
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <!--
+  ***************************************
+  xBNF-style element-by-element build up:
+  ***************************************
+  -->
+
+  <xs:simpleType name="minus_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="-"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="plus_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dot_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="."/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="zero_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:enumeration value="&#x30;"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="onenine_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:minInclusive value="&#x31;"/>
+      <xs:maxInclusive value="&#x39;"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="exp_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[eE]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="sign_t">
+    <xs:choice>
+      <xs:element name="minus" type="minus_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="-"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:element name="plus" type="plus_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="\+"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="digit_t">
+    <xs:choice>
+      <xs:element name="zero" type="zero_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="0"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:element name="onenine" type="onenine_t"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="integer_t">
+    <xs:sequence>
+      <xs:element name="minus" type="minus_t" minOccurs="0">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="-"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:choice>
+        <xs:element name="zero" type="zero_t">
+          <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator testKind="pattern" testPattern="0"/>
+          </xs:appinfo></xs:annotation>
+        </xs:element>
+        <xs:sequence>
+          <xs:element name="onenine" type="onenine_t">
+            <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator testKind="pattern" testPattern="[1-9]"/>
+            </xs:appinfo></xs:annotation>
+          </xs:element>
+          <xs:element name="digit" type="digit_t" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator testKind="pattern" testPattern="[0-9]"/>
+            </xs:appinfo></xs:annotation>
+          </xs:element>
+        </xs:sequence> 
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType> 
+
+  <xs:complexType name="fraction_t">
+    <xs:sequence>
+      <xs:element name="dot" type="dot_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="[.]"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:element name="digit" type="digit_t" minOccurs="1" maxOccurs="unbounded">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="[0-9]"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType> 
+
+  <xs:complexType name="exponent_t">
+    <xs:sequence>
+      <xs:element name="exp" type="exp_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="[eE]"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:element name="sign" type="sign_t" minOccurs="0">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="[-+]"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:element name="digit" type="digit_t" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="[0-9]"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType> 
+
+  <xs:complexType name="number_t">
+    <xs:sequence>
+      <xs:element name="integer" type="integer_t"/> 
+      <xs:element name="fraction" type="fraction_t" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="exponent" type="exponent_t" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence> 
+  </xs:complexType> 
+
+  <xs:element name="JSON_number" type="number_t"/>
+
+</xs:schema>

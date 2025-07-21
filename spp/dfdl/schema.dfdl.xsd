@@ -41,7 +41,7 @@ gmr.dfdl.xsd - XML Schema for Space Packet Protocol
               -->
               <xs:element name="Version" dfdl:length="3">
                 <xs:simpleType>
-                  <xs:restriction base="xs:unsignedInt">
+                  <xs:restriction base="xs:unsignedByte ">
                     <xs:maxInclusive value="0"/>
                   </xs:restriction>
                 </xs:simpleType>
@@ -56,21 +56,21 @@ gmr.dfdl.xsd - XML Schema for Space Packet Protocol
               "1" -> Telecommand or requesting packet
               --> 
               <xs:element name="Type" 
-                type="xs:unsignedInt" dfdl:length="1"/>
+                type="xs:unsignedByte" dfdl:length="1"/>
 
               <!-- Bit 4: Secondary Header Flag
               "0" -> Secondary header not present
               "1" -> Secondary header present
               --> 
               <xs:element name="SecondaryHeaderFlag"
-                type="xs:unsignedInt" dfdl:length="1"/>
+                type="xs:unsignedByte" dfdl:length="1"/>
 
               <!-- Bits 5-15: Application Process Identifier
               Vehicle-specific
               "111 1111 1111" -> Idle packet
               --> 
               <xs:element name="APID"
-                type="xs:unsignedInt" dfdl:length="11"/>
+                type="xs:unsignedByte" dfdl:length="11"/>
 
               <!--=============================-->
               <!-- 1.3 Packet Sequence Control -->
@@ -83,14 +83,14 @@ gmr.dfdl.xsd - XML Schema for Space Packet Protocol
               "11" -> Unsegmented User Data (incl. Octet String Service)
               --> 
               <xs:element name="SequenceFlags"
-                type="xs:unsignedInt" dfdl:length="2"/>
+                type="xs:unsignedByte" dfdl:length="2"/>
 
               <!-- Bits 18-31: Packet Sequence Count or Packet Name
               Must be packet sequence count if type 0
               May be either count/name if type 1
               --> 
               <xs:element name="SequenceCount"
-                type="xs:unsignedInt" dfdl:length="14"/>
+                type="xs:unsignedByte" dfdl:length="14"/>
 
               <!--========================-->
               <!-- 1.4 Packet Data Length -->
@@ -101,7 +101,7 @@ gmr.dfdl.xsd - XML Schema for Space Packet Protocol
               where C = # of data octets - 1
               --> 
               <xs:element name="PacketDataLength"
-                type="xs:unsignedInt" dfdl:length="16"/>
+                type="xs:unsignedByte" dfdl:length="16"/>
 
             </xs:sequence>
           </xs:complexType>
