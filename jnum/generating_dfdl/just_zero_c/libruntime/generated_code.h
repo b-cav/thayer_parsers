@@ -15,10 +15,10 @@ extern const char *schema_version;
 
 // Define infoset structures
 
-typedef struct zero_t_
+typedef struct JSON_number_
 {
     InfosetBase _base;
-    uint8_t     zero_t;
-} zero_t_;
+    uint8_t     JSON_number;
+} JSON_number_;
 
 #endif // GENERATED_CODE_H

@@ -17,7 +17,9 @@ Ben Cavanagh
 
   <xs:annotation>
     <xs:appinfo source="http://www.ogf.org/dfdl/">
-      <dfdl:format ref="GeneralFormat" lengthKind="delimited"/>
+      <dfdl:format ref="GeneralFormat"
+        lengthKind="pattern" lengthPattern="-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?"
+        representation="binary" encoding="utf-8"/>
     </xs:appinfo>
   </xs:annotation>
 

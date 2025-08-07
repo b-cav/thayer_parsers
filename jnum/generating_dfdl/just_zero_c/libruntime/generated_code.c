@@ -12,8 +12,8 @@
 
 // Declare prototypes for easier compilation
 
-static void zero_t__parseSelf(zero_t_ *instance, PState *pstate);
-static void zero_t__unparseSelf(const zero_t_ *instance, UState *ustate);
+static void JSON_number__parseSelf(JSON_number_ *instance, PState *pstate);
+static void JSON_number__unparseSelf(const JSON_number_ *instance, UState *ustate);
 
 // Define schema version (will be empty if schema did not define any version string)
 
@@ -21,53 +21,53 @@ const char *schema_version = "";
 
 // Define metadata for the infoset
 
-static const zero_t_ zero_t__compute_offsets;
+static const JSON_number_ JSON_number__compute_offsets;
 
-static const size_t zero_t__childrenOffsets[1] = {
-    (const char *)&zero_t__compute_offsets.zero_t - (const char *)&zero_t__compute_offsets
+static const size_t JSON_number__childrenOffsets[1] = {
+    (const char *)&JSON_number__compute_offsets.JSON_number - (const char *)&JSON_number__compute_offsets
 };
 
-static const ERD zero_t_ERD = {
+static const ERD JSON_number_ERD = {
     {
         NULL, // namedQName.prefix
-        "zero_t", // namedQName.local
+        "JSON_number", // namedQName.local
         NULL, // namedQName.ns
     },
     PRIMITIVE_UINT8, // typeCode
     0, // numChildren
-    zero_t__childrenOffsets,
+    JSON_number__childrenOffsets,
     NULL, // childrenERDs
-    (ERDParseSelf)&zero_t__parseSelf,
-    (ERDUnparseSelf)&zero_t__unparseSelf,
+    (ERDParseSelf)&JSON_number__parseSelf,
+    (ERDUnparseSelf)&JSON_number__unparseSelf,
     {.initChoice = NULL}
 };
 
 // Initialize, parse, and unparse nodes of the infoset
 
 static void
-zero_t__initERD(zero_t_ *instance, InfosetBase *parent)
+JSON_number__initERD(JSON_number_ *instance, InfosetBase *parent)
 {
-    instance->_base.erd = &zero_t_ERD;
+    instance->_base.erd = &JSON_number_ERD;
     instance->_base.parent = parent;
 }
 
 static void
-zero_t__parseSelf(zero_t_ *instance, PState *pstate)
+JSON_number__parseSelf(JSON_number_ *instance, PState *pstate)
 {
-    parse_be_uint8(&instance->zero_t, 8, pstate);
+    parse_be_uint8(&instance->JSON_number, 8, pstate);
     if (pstate->pu.error) return;
-    int64_t enums_zero_t[] = {48};
-    validate_integer_enumeration(instance->zero_t, 1, enums_zero_t, "zero_t", &pstate->pu);
+    int64_t enums_JSON_number[] = {48};
+    validate_integer_enumeration(instance->JSON_number, 1, enums_JSON_number, "JSON_number", &pstate->pu);
     if (pstate->pu.error) return;
 }
 
 static void
-zero_t__unparseSelf(const zero_t_ *instance, UState *ustate)
+JSON_number__unparseSelf(const JSON_number_ *instance, UState *ustate)
 {
-    unparse_be_uint8(instance->zero_t, 8, ustate);
+    unparse_be_uint8(instance->JSON_number, 8, ustate);
     if (ustate->pu.error) return;
-    int64_t enums_zero_t[] = {48};
-    validate_integer_enumeration(instance->zero_t, 1, enums_zero_t, "zero_t", &ustate->pu);
+    int64_t enums_JSON_number[] = {48};
+    validate_integer_enumeration(instance->JSON_number, 1, enums_JSON_number, "JSON_number", &ustate->pu);
     if (ustate->pu.error) return;
 }
 
@@ -76,7 +76,7 @@ zero_t__unparseSelf(const zero_t_ *instance, UState *ustate)
 InfosetBase *
 get_infoset(bool clear_infoset)
 {
-    static zero_t_ infoset;
+    static JSON_number_ infoset;
 
     if (clear_infoset)
     {
@@ -84,7 +84,7 @@ get_infoset(bool clear_infoset)
         // you may want to walk infoset first to free their malloc'ed
         // storage - we are not handling that case for now...
         memset(&infoset, 0, sizeof(infoset));
-        zero_t__initERD(&infoset, (InfosetBase *)&infoset);
+        JSON_number__initERD(&infoset, (InfosetBase *)&infoset);
     }
 
     return &infoset._base;
