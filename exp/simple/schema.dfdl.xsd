@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+schema.dfdl.xsd - XML Schema for JSON Numbers
+
+Ben Cavanagh
+7-1-2025
+Version 2
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" representation="binary"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:simpleType name="minus_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:enumeration value="45"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="zero_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:enumeration value="48"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="onenine_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:minInclusive value="49"/>
+      <xs:maxInclusive value="58"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="digit_t">
+    <xs:choice>
+      <xs:element name="zero" type="zero_t">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="0"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:element name="onenine" type="onenine_t"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="integer_t">
+    <xs:sequence>
+      <xs:element name="minus" type="minus_t" minOccurs="0">
+        <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator testKind="pattern" testPattern="-"/>
+        </xs:appinfo></xs:annotation>
+      </xs:element>
+      <xs:choice>
+        <xs:element name="zero" type="zero_t">
+          <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator testKind="pattern" testPattern="0"/>
+          </xs:appinfo></xs:annotation>
+        </xs:element>
+        <xs:sequence>
+          <xs:element name="onenine" type="onenine_t">
+            <xs:annotation><xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator testKind="pattern" testPattern="[1-9]"/>
+            </xs:appinfo></xs:annotation>
+    	  </xs:element>
+        </xs:sequence> 
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType> 
+
+  <xs:element name="JSON_number" type="integer_t"/>
+
+</xs:schema>

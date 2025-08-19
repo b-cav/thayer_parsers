@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
+
+
+8-17-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"
+      representation="binary"
+      />
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:element name="message" type="sp_M1_t"/>
+
+  <!-- Message definition -->
+  <xs:complexType name="sp_M1_t">
+    <xs:sequence>
+      <xs:element name="stx" type="M1_stx_t"/>
+      <xs:element name="len" type="len_14_t"/>
+      <xs:element name="seq" type="seq_t"/>
+      <xs:element name="sysid" type="sysid_t"/>
+      <xs:element name="compid" type="compid_t"/>
+      <xs:element name="msgid" type="sp_M1_msgid_t"/>
+      <xs:element name="payload" type="pl_14_t"/>
+      <xs:element name="checksum" type="checksum_t"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="M1_stx_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="FE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Fields held constant across message types and versions -->
+  <xs:simpleType name="seq_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="sysid_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="compid_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="checksum_t" dfdl:lengthKind="explicit" dfdl:length="2">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <!-- Generic payload definitions -->
+  <xs:simpleType name="pl_14_t" dfdl:lengthKind="explicit" dfdl:length="14">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <!-- Message IDs -->
+  <xs:simpleType name="sp_M1_msgid_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="1D"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Length byte values -->
+  <xs:simpleType name="len_14_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:enumeration value="14"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

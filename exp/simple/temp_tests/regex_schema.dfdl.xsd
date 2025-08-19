@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for JSON numbers
+
+Ben Cavanagh
+6-20-2025
+
+--> 
+
+<!-- Import xml library and extensions -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+           xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd" />
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" lengthKind="delimited"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+<!-- Define valid JSON number pattern:
+     INTEGER PART (required):
+       '-' (optional)
+       '0' or <onenine digit><0 or more digits>
+     FRACTION PART (optional):
+       '.'
+       <1 or more digits>
+     EXPONENT PART (optional):
+       'e' or 'E'
+       '+' or '-' (optional)
+       <1 or more digits>
+-->
+  <xs:element name="jnum">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:pattern value="-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+</xs:schema>

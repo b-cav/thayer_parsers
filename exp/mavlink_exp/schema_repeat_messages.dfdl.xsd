@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
+
+
+8-17-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+<xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+<xs:annotation>
+  <xs:appinfo source="http://www.ogf.org/dfdl/">
+    <dfdl:format ref="GeneralFormat" representation="binary"/>
+  </xs:appinfo>
+</xs:annotation>
+
+<xs:element name="messages">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="message" type="message_t" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- Combined message definition -->
+<xs:complexType name="message_t">
+  <xs:choice>
+    <xs:element name="sp_M1" type="sp_M1_t">
+      <xs:annotation>
+        <xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator test="{stx eq xs:hexBinary('FE')}" />
+        </xs:appinfo>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="sp_M2" type="sp_M2_t">
+      <xs:annotation>
+        <xs:appinfo source="http://www.ogf.org/dfdl/">
+          <dfdl:discriminator test="{stx eq xs:hexBinary('FD')}" />
+        </xs:appinfo>
+      </xs:annotation>
+    </xs:element>
+  </xs:choice>
+</xs:complexType>
+
+<!-- MAVLINK 1 Message definition -->
+<xs:complexType name="sp_M1_t">
+  <xs:sequence>
+    <xs:element name="stx" type="M1_stx_t"/>
+    <xs:element name="len" type="len_14_t"/>
+    <xs:element name="seq" type="seq_t"/>
+    <xs:element name="sysid" type="sysid_t"/>
+    <xs:element name="compid" type="compid_t"/>
+    <xs:element name="msgid" type="sp_M1_msgid_t"/>
+    <xs:element name="payload" type="pl_14_t"/>
+    <xs:element name="checksum" type="checksum_t"/>
+  </xs:sequence>
+</xs:complexType>
+
+<!-- MAVLINK 2 Message Definition -->
+<xs:complexType name="sp_M2_t">
+  <xs:sequence>
+    <xs:element name="stx" type="M2_stx_t"/>
+    <xs:choice>
+      <xs:element name="len_1" type="len_1_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('01')}" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_2" type="len_2_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('02')}" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_3" type="len_3_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('03')}" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_4" type="len_4_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('04')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_5" type="len_5_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('05')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_6" type="len_6_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('06')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_7" type="len_7_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('07')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_8" type="len_8_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('08')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_9" type="len_9_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('09')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_10" type="len_10_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('0A')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_11" type="len_11_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('0B')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_12" type="len_12_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('0C')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_13" type="len_13_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('0D')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_14" type="len_14_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('0E')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_15" type="len_15_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('0F')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="len_16" type="len_16_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{. eq xs:hexBinary('10')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="incompat_flags_us" type="incompat_flags_us_t">
+          <xs:annotation>
+            <xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator test="{. eq xs:hexBinary('00')}"/>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="incompat_flags_s" type="incompat_flags_s_t">
+          <xs:annotation>
+            <xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator test="{. eq xs:hexBinary('01')}"/>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element name="compat_flags" type="compat_flags_t"/>
+      <xs:element name="seq" type="seq_t"/>
+      <xs:element name="sysid" type="sysid_t"/>
+      <xs:element name="compid" type="compid_t"/>
+      <xs:element name="msgid" type="sp_M2_msgid_t"/>
+    </xs:sequence>
+    <xs:choice>
+      <xs:element name="payload_1" type="pl_1_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_1 eq xs:hexBinary('01')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_2" type="pl_2_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_2 eq xs:hexBinary('02')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_3" type="pl_3_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_3 eq xs:hexBinary('03')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_4" type="pl_4_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_4 eq xs:hexBinary('04')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_5" type="pl_5_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_5 eq xs:hexBinary('05')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_6" type="pl_6_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_6 eq xs:hexBinary('06')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_7" type="pl_7_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_7 eq xs:hexBinary('07')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_8" type="pl_8_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_8 eq xs:hexBinary('08')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_9" type="pl_9_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_9 eq xs:hexBinary('09')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_10" type="pl_10_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_10 eq xs:hexBinary('0A')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_11" type="pl_11_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_11 eq xs:hexBinary('0B')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_12" type="pl_12_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_12 eq xs:hexBinary('0C')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_13" type="pl_13_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_13 eq xs:hexBinary('0D')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_14" type="pl_14_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_14 eq xs:hexBinary('0E')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_15" type="pl_15_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_15 eq xs:hexBinary('0F')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="payload_16" type="pl_16_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../len_16 eq xs:hexBinary('10')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+    <xs:choice>
+      <xs:element name="checksum" type="checksum_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../incompat_flags_us eq xs:hexBinary('00')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="checksum_and_signature" type="checksum_and_signature_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{../incompat_flags_s eq xs:hexBinary('01')}"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:sequence>
+</xs:complexType>
+
+<!-- Fields that differ for message versions -->
+<xs:simpleType name="M1_stx_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="FE"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="M2_stx_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="FD"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<!-- Fields held constant across message types and versions -->
+<xs:simpleType name="seq_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="sysid_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="compid_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="compat_flags_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="00"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="checksum_t" dfdl:lengthKind="explicit" dfdl:length="2">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="signature_t" dfdl:lengthKind="explicit" dfdl:length="13">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<!-- Combine checksum and signature fields for a signed message -->
+<xs:complexType name="checksum_and_signature_t">
+  <xs:sequence>
+    <xs:element name="checksum" type="checksum_t"/>
+    <xs:element name="signature" type="signature_t"/>
+  </xs:sequence>
+</xs:complexType>
+
+<!-- Fields that differ for signed and unsigned messages -->
+<xs:simpleType name="incompat_flags_us_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="00"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="incompat_flags_s_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="01"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<!-- Generic payload definitions -->
+<xs:simpleType name="pl_1_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_2_t" dfdl:lengthKind="explicit" dfdl:length="2">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_3_t" dfdl:lengthKind="explicit" dfdl:length="3">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_4_t" dfdl:lengthKind="explicit" dfdl:length="4">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_5_t" dfdl:lengthKind="explicit" dfdl:length="5">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_6_t" dfdl:lengthKind="explicit" dfdl:length="6">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_7_t" dfdl:lengthKind="explicit" dfdl:length="7">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_8_t" dfdl:lengthKind="explicit" dfdl:length="8">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_9_t" dfdl:lengthKind="explicit" dfdl:length="9">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_10_t" dfdl:lengthKind="explicit" dfdl:length="10">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_11_t" dfdl:lengthKind="explicit" dfdl:length="11">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_12_t" dfdl:lengthKind="explicit" dfdl:length="12">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_13_t" dfdl:lengthKind="explicit" dfdl:length="13">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_14_t" dfdl:lengthKind="explicit" dfdl:length="14">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_15_t" dfdl:lengthKind="explicit" dfdl:length="15">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<xs:simpleType name="pl_16_t" dfdl:lengthKind="explicit" dfdl:length="16">
+  <xs:restriction base="xs:hexBinary"/>
+</xs:simpleType>
+
+<!-- Message IDs -->
+<xs:simpleType name="sp_M1_msgid_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="1D"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="sp_M2_msgid_t" dfdl:lengthKind="explicit" dfdl:length="3">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="1D0000"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<!-- Length byte values -->
+<xs:simpleType name="len_1_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="01"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_2_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="02"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_3_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="03"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_4_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="04"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_5_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="05"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_6_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="06"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_7_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="07"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_8_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="08"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_9_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="09"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_10_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="0A"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_11_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="0B"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_12_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="0C"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_13_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="0D"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_14_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="0E"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_15_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="0F"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="len_16_t" dfdl:lengthKind="explicit" dfdl:length="1">
+  <xs:restriction base="xs:hexBinary">
+    <xs:enumeration value="10"/>
+  </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
+

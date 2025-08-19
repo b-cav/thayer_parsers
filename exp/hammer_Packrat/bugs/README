@@ -1,0 +1,73 @@
+
+Here are 8 self-contained bug files. However, I believe that they may
+all be the same bug in different guises.
+
+All 8 parsers work with PB_MIN, but fail with PB_LALR.
+
+How to use:
+	* Run 'make clean' to clear all programs
+	* Run 'make' to build all bug programs OR 'make bug1' to only build bug1
+	* Run 'make run' to execute all bug programs.
+		bugX.pr for PackRat and bugX for LALR
+		
+To add additional bug files:
+	* In 'Makefile' append the name 'bugX' at line 6 'OBJS= bug1 bug2 bug3 bug4 bug5 bug6 bug7 bug8'
+	* In 'run.sh' modify the for loops to ensure all bug files are executed for both PackRat and LALR.
+
+bug1.c uses:
+
+  H_RULE(int8range, h_int_range(h_int8(), -1, 1));
+
+
+bug2.c uses:
+
+  /* parse a single int16 between the values of -2 and 1 */
+	H_RULE(bigint16, h_with_endianness(BYTE_BIG_ENDIAN,h_int16()));
+	H_RULE(int16range, h_int_range(bigint16,-2,1));
+
+bug3.c uses:
+
+  /* parse a single int16 between the values of -2 and 1 */
+  	H_RULE(littleint16, h_with_endianness(BYTE_LITTLE_ENDIAN,h_int16()));
+	H_RULE(int16range, h_int_range(littleint16,-2,1));
+	
+bug4.c uses:
+
+  /* Check if string is hex value "0xA5", consume string if h_and passes */
+	H_RULE(AND, h_sequence(h_and(h_token((const uint8_t*)"0x", 2)),h_token((const uint8_t*)"0xA5", 4),NULL));
+	pp = h_sequence(AND,h_end_p(),NULL);
+
+bug5.c uses:
+
+  /* parse a single byte and XOR check if within string "012" or "134" */
+	H_RULE(XOR, h_xor(h_in((const uint8_t*)"012", 3), h_in((const uint8_t*)"134", 3)));
+	pp = h_sequence(XOR,h_end_p(),NULL);
+
+bug6.c uses:
+
+  /* parse a string to differentiate between two strings "a++b" and "a+b" */
+	H_RULE(NOT, h_choice(h_sequence(h_ch('+'), h_not(h_ch('+')), NULL), h_token((const uint8_t*)"++", 2), NULL));
+	pp = h_sequence(h_ch('a'), NOT, h_ch('b'),h_end_p(),NULL);
+
+bug7.c uses:
+
+  /*
+   * Parse a single byte, from left to right, consume 3 bits then 5 bits.
+   * Does NOT check for value, only consumes bits!
+   */
+	H_RULE(BITS3, h_bits(3,0));
+	H_RULE(BITS5, h_bits(5,0));
+	pp = h_sequence(BITS3,BITS5,h_end_p(),NULL);
+
+bug8.c uses:
+
+  /* 
+   * Parse a single byte, from left to right, consume 2 bits, then 3 bits, a single bit, and then 2 bits.
+   * The values are checked with each set of bits consumed!
+   */
+	H_RULE(BITS3, h_bits(3,0));
+	H_RULE(BITS1, h_bits(1,0));
+	H_RULE(BITS2, h_bits(2,0));
+	pp = h_sequence(h_int_range(BITS2,0,0),h_int_range(BITS3,6,6),h_int_range(BITS1,1,1),h_int_range(BITS2,1,1),h_end_p(),NULL);
+
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+schema.dfdl.xsd - XSD schema for list of 0s
+--> 
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" representation="binary"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:simpleType name="zero_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:enumeration value="48"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="zero_string_t">
+    <xs:sequence>
+      <xs:element name="zero" type="zero_t" minOccurs="0" maxOccurs="10"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="zero_string" type="zero_string_t"/>
+
+</xs:schema>

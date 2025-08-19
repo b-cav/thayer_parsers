@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+justInts.dfdl.xsd - XML Schema for JSON Integers
+
+Ben Cavanagh
+7-7-2025
+Version 1
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <!-- xBNF-style element-by-element build up: -->
+
+ <xs:simpleType name="minus_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[-]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="zero_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[0]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="onenine_t">
+   <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[1-9]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="digit_t">
+    <xs:choice>
+      <xs:element name="zero" type="zero_t"/>
+      <xs:element name="onenine" type="onenine_t"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="integer_t">
+    <xs:sequence>
+      <xs:element name="minus" type="minus_t" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator testKind="pattern" testPattern="-"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:choice>
+        <xs:element name="zero" type="zero_t">
+          <xs:annotation>
+            <xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator testKind="pattern" testPattern="0"/>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:sequence>
+          <xs:element name="onenine" type="onenine_t"/>
+          <xs:element name="digit" type="digit_t" minOccurs="0"/>
+        </xs:sequence> 
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType> 
+
+  <xs:element name="JSON_number" type="integer_t"/>
+
+</xs:schema>

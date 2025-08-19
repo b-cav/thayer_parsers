@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+schema.dfdl.xsd - XSD Schema for SCALED_PRESSURE MAVLink Messages
+
+Ben Cavanagh
+8-11-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" bitOrder="mostSignificantBitFirst"
+        byteOrder="bigEndian" representation="binary" lengthUnits="bytes"
+        lengthKind="explicit" alignmentUnits="bytes" alignment="1" binaryNumberRep="binary" />
+    </xs:appinfo>
+  </xs:annotation>
+
+  <!--==============================-->
+  <!-- MAVLink 1.0 Header (6 bytes) -->
+  <!--==============================-->
+  <xs:complexType name="MV1.0_Header_t">
+    <xs:sequence>
+      <xs:element name="Version" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="254"/>
+            <!-- MAVLink V1.0 -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Payload_Length" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="16"/>
+            <!-- Length of SCALED_PRESSURE -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Packet_Sequence" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="System_ID" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Component_ID" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Message_ID" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--==============================-->
+  <!-- MAVLink 2.0 Header (10 bytes) -->
+  <!--==============================-->
+  <xs:complexType name="MV2.0_Header_t">
+    <xs:sequence>
+      <xs:element name="Version" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="253"/>
+            <!-- MAVLink V2.0 -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Payload_Length" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="16"/>
+            <!-- Length of SCALED_PRESSURE -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Incomp_Flag" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element> 
+      <xs:element name="Comp_Flag" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Packet_Sequence" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="System_ID" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Component_ID" dfdl:length="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Message_ID" dfdl:length="3">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedInt">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--==============================-->
+  <!-- SCALED_PRESSURE (16 bytes) -->
+  <!--==============================-->
+  <xs:complexType name="SCALED_PRESSURE_t">
+
+    <!-- should use lengthKind expression -->
+
+    <xs:sequence>
+      <xs:element name="time_boot_ms" dfdl:length="4">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedInt">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="press_abs" dfdl:length="4">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedInt">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="press_diff" dfdl:length="4">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedInt">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="temperature" dfdl:length="2">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedInt">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="temperature_press_diff" dfdl:length="2">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedInt">
+            <xs:enumeration value="0"/>
+            <!-- Placeholder -->
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="SP_Message" dfdl:lengthKind="implicit">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element name="MV1.0_Header" type="MV1.0_Header_t" dfdl:length="6"/>
+          <xs:element name="MV2.0_Header" type="MV2.0_Header_t" dfdl:length="16"/>
+        </xs:choice>
+        <xs:element name="SCALED_PRESSURE" type="SCALED_PRESSURE_t" dfdl:length="10"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

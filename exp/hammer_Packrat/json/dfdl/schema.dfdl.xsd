@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for Space Packet Protocol
+
+
+6-27-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:complexType name="ws_t">
+    <xs:choice>
+      <xs:element name="empty" type="empty_t"/>
+      <xs:sequence>
+      </xs:sequence>
+
+      <xs:element name="value" type="value_t"/>
+      <xs:element name="ws" type="ws_t"/>
+    </xs:choice> 
+  </xs:complexType> 
+
+  <xs:complexType name="element_t">
+    <xs:sequence>
+      <xs:element name="ws" type="ws_t"/>
+      <xs:element name="value" type="value_t"/>
+      <xs:element name="ws" type="ws_t"/>
+    </xs:sequence> 
+  </xs:complexType> 
+
+
+</xs:schema>

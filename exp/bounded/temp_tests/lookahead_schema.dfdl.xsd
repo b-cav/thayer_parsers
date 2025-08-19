@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+schema.dfdl.xsd - XML Schema for JSON Numbers
+
+Ben Cavanagh
+7-1-2025
+Version 2
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <!--
+  
+
+
+*******************************
+*******************************
+*******************************
+*******************************
+
+
+  Used unsigned bytes probably (not strings!)
+  Read char by char
+
+*******************************
+*******************************
+*******************************
+*******************************
+
+  -->
+
+  <!-- Parse character by character -->
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" lengthKind="explicit" length="1"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <!-- xBNF-style element-by-element build up: -->
+  
+  <xs:simpleType name="empty_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="minus_t">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="45"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--
+  <xs:simpleType name="plus_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="\+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dot_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="\."/>
+    </xs:restriction>
+  </xs:simpleType>
+-->
+  <xs:simpleType name="zero_t">
+   <xs:restriction base="xs:string">
+      <xs:enumeration value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="onenine_t">
+   <xs:restriction base="xs:string">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="9"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--
+  <xs:simpleType name="exp_t">
+    <xs:restriction base="xs:string">
+      <xs:length value="1"/>
+      <xs:pattern value="[eE]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="sign_t">
+    <xs:choice>
+      <xs:element name="minus" type="minus_t"/>
+      <xs:element name="plus" type="plus_t"/>
+    </xs:choice>
+  </xs:complexType>
+-->
+  <xs:complexType name="digit_t">
+    <xs:choice dfdl:choiceDispatchKey="{xs:string(dfdlx:lookAhead(0, 8))}">
+      <xs:element name="zero" type="zero_t" dfdl:choiceBranchKey="48"/>
+      <xs:element name="onenine" type="onenine_t" dfdl:choiceBranchKey="49 50 51 52 53 54 55 56 57"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="integer_t">
+    <xs:sequence>
+      <xs:choice dfdl:choiceDispatchKey="{xs:string(dfdlx:lookAhead(0, 8))}">
+        <xs:element name="minus" type="minus_t" dfdl:choiceBranchKey="45"/>
+        <xs:element name="empty" type="empty_t" dfdl:choiceBranchKey="48 49 50 51 52 53 54 55 56 57"/>
+      </xs:choice>
+      <xs:choice dfdl:choiceDispatchKey="{xs:string(dfdlx:lookAhead(0, 8))}">
+        <xs:element name="zero" type="zero_t" dfdl:choiceBranchKey="48"/> 
+        <xs:sequence dfdl:choiceBranchKey="49 50 51 52 53 54 55 56 57">
+          <xs:element name="onenine" type="onenine_t"/>
+          <xs:element name="digit" type="digit_t" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence> 
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType> 
+  <!--
+  <xs:complexType name="fraction_t">
+    <xs:sequence>
+      <xs:element name="dot" type="dot_t"/>
+      <xs:element name="digit" type="digit_t" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType> 
+
+  <xs:complexType name="exponent_t">
+    <xs:sequence>
+      <xs:element name="exp" type="exp_t"/>
+      <xs:element name="sign" type="sign_t"/>
+      <xs:element name="digit" type="digit_t" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType> 
+
+  <xs:complexType name="number_t">
+    <xs:sequence>
+      <xs:element name="integer" type="integer_t"/>
+      <xs:element name="fraction" type="fraction_t" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="exponent" type="exponent_t" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence> 
+  </xs:complexType> 
+-->
+
+  <xs:element name="JSON_number" type="integer_t"/>
+
+</xs:schema>
