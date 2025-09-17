@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  schema.dfdl.xsd - Validator accepting MAVLink message types
+
+  Ben Cavanagh
+  09-16-2025
+  Description: Validator which accepts a single ATTITUDE (30),
+               GLOBAL_POSITION_INT (33), SCALED_PRESSURE (29) messages
+
+-->
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"
+      representation="binary"
+      />
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:element name="message" type="message_t"/>
+
+  <!-- Combined message definition -->
+  <xs:complexType name="message_t">
+    <xs:choice>
+      <xs:element name="sp_M1" type="sp_M1_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{stx eq xs:hexBinary('FE')}" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="sp_M2" type="sp_M2_t">
+        <xs:annotation>
+          <xs:appinfo source="http://www.ogf.org/dfdl/">
+            <dfdl:discriminator test="{stx eq xs:hexBinary('FD')}" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+
+</xs:schema>

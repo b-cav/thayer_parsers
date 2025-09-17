@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure Message
+
+
+8-17-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat"
+      representation="binary"
+      />
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:element name="P" type="spM1_t"/>
+
+  <xs:complexType name="spM1_t">
+    <xs:sequence>
+      <xs:element name="header" type="messageHeaderM1_t"/>
+      <xs:element name="payload" type="M1Payload_t"/>
+      <xs:element name="checksum" type="checksum_t"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--
+  <xs:complexType name="spM2US_t">
+    <xs:sequence>
+      <xs:element name="header" type="messageHeaderUS_t"/>
+      <xs:element name="payload" type="M2Payload_t"/>
+      <xs:element name="checksum" type="checksum_t"/>
+    </xs:sequence>
+  </xs:complexType>
+  -->
+  <xs:complexType name="messageHeaderM1_t">
+    <xs:sequence>
+      <xs:element name="MAV1CODE" type="MAV1CODE_t"/>
+      <xs:element name="lengthM1" type="lengthM1_t"/>
+      <xs:element name="packetSequence" type="packetSequence_t"/>
+      <xs:element name="sysID" type="sysID_t"/> 
+      <xs:element name="compID" type="compID_t"/>
+      <xs:element name="messageID" type="SPCODEM1_t"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="messageHeaderUS_t">
+    <xs:sequence>
+      <xs:element name="MAV2CODE" type="MAV2CODE_t"/>
+      <xs:element name="lengthM2" type="lengthM2_t"/>
+      <xs:element name="incompFlagUS" type="incompFlagUS_t"/>
+      <xs:element name="compFlag" type="compFlag_t"/>
+      <xs:element name="packetSequence" type="packetSequence_t"/>
+      <xs:element name="sysID" type="sysID_t"/> 
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="messageHeaderS_t">
+    <xs:sequence>
+      <xs:element name="MAV2CODE" type="MAV2CODE_t"/>
+      <xs:element name="lengthM2" type="lengthM2_t"/>
+      <xs:element name="incompFlagS" type="incompFlagS_t"/>
+      <xs:element name="compFlag" type="compFlag_t"/>
+      <xs:element name="packetSequence" type="packetSequence_t"/>
+      <xs:element name="sysID" type="sysID_t"/> 
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="M1Payload_t">
+    <xs:sequence>
+      <xs:element name="payload" type="payloadByte_t" dfdl:occursCountKind="expression" dfdl:occursCount="{../../header/lengthM1}"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="lengthM1_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:enumeration value="14"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="lengthM2_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="16"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MAV1CODE_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="FE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MAV2CODE_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="FD"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SPCODEM1_t" dfdl:lengthKind="explicit" dfdl:length="1"> 
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="1D"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SPCODEM2_t" dfdl:lengthKind="explicit" dfdl:length="1"> 
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="00001D"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="incompFlagUS_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="00"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="incompFlagS_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="01"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="compFlag_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="00"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="packetSequence_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/> 
+  </xs:simpleType>
+
+  <xs:simpleType name="sysID_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType> 
+
+  <xs:simpleType name="compID_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="checksum_t" dfdl:lengthKind="explicit" dfdl:length="2">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="signature_t" dfdl:lengthKind="explicit" dfdl:length="13">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="payloadByte_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+</xs:schema>
