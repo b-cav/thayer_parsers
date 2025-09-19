@@ -32,11 +32,11 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
         <xs:element name="sp_M1" type="sp_M1_t"
           minOccurs="0" maxOccurs="1"
           dfdl:occursCountKind="expression"
-          dfdl:occursCount="{ if (../stx eq xs:hexBinary('FE')) then 1 else 0 }" />
+          dfdl:occursCount="{ 1 }" />
         <xs:element name="sp_M2" type="sp_M2_t"
           minOccurs="0" maxOccurs="1"
           dfdl:occursCountKind="expression"
-          dfdl:occursCount="{ if (../stx eq xs:hexBinary('FD')) then 1 else 0 }" />
+          dfdl:occursCount="{ 0 }" />
       </xs:sequence>
     </xs:sequence>
   </xs:complexType>

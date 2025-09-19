@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
+gmr.dfdl.xsd - XML Schema for three MAVLink message types
 
 
 8-17-2025
@@ -41,24 +41,34 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
     </xs:sequence>
   </xs:complexType>
 
-  <!-- MAVLink 1.0 SCALED_PRESSURE message definition -->
-  <xs:complexType name="sp_M1_t">
+  <!-- MAVLink 1.0 general message definition -->
+  <xs:complexType name="M1_t">
     <xs:sequence>
       <xs:element name="len" type="len_t"/>
       <xs:element name="seq" type="seq_t"/>
       <xs:element name="sysid" type="sysid_t"/>
       <xs:element name="compid" type="compid_t"/>
       <xs:element name="M1_msgid" type="M1_msgid_t"/>
-      <xs:element name="payload" type="pyldbyte_t"
-        minOccurs="0" maxOccurs="255"
-        dfdl:occursCountKind="expression"
-        dfdl:occursCount="{ ../len }" />
+      <xs:sequence>
+        <xs:element name="sp_M1" type="sp_M1_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('29')) then 1 else 0 }" />
+        <xs:element name="att_M1" type="att_M1_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('30')) then 1 else 0 }" />
+        <xs:element name="gpi_M1" type="gpi_M1_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('33')) then 1 else 0 }" />
+      </xs:sequence>
       <xs:element name="checksum" type="checksum_t"/>
     </xs:sequence>
   </xs:complexType>
 
-  <!-- MAVLink 2.0 SCALED_PRESSURE message definition -->
-  <xs:complexType name="sp_M2_t">
+  <!-- MAVLink 2.0 general message definition -->
+  <xs:complexType name="M2_t">
     <xs:sequence>
       <xs:element name="len" type="len_t"/>
       <xs:element name="inc_flags" type="inc_flags_t"/>
@@ -67,13 +77,23 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
       <xs:element name="sysid" type="sysid_t"/>
       <xs:element name="compid" type="compid_t"/>
       <xs:element name="M2_msgid" type="M2_msgid_t"/>
-      <xs:element name="payload" type="pyldbyte_t"
-        minOccurs="0" maxOccurs="255"
-        dfdl:occursCountKind="expression"
-        dfdl:occursCount="{ ../len }" />
+      <xs:sequence>
+        <xs:element name="sp_M2" type="sp_M2_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M2_msgid eq xs:hexBinary('000029')) then 1 else 0 }" />
+        <xs:element name="att_M2" type="att_M2_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M2_msgid eq xs:hexBinary('000030')) then 1 else 0 }" />
+        <xs:element name="gpi_M2" type="gpi_M2_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M2_msgid eq xs:hexBinary('000033')) then 1 else 0 }" />
+      </xs:sequence>
       <xs:element name="checksum" type="checksum_t"/>
       <xs:sequence>
-      <xs:element name="signature" type="signature_t"
+        <xs:element name="signature" type="signature_t"
           minOccurs="0" maxOccurs="1"
           dfdl:occursCountKind="expression"
           dfdl:occursCount="{ if (../inc_flags eq xs:hexBinary('01')) then 1 else 0 }" />
@@ -119,11 +139,19 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
   </xs:simpleType>
 
   <xs:simpleType name="M1_msgid_t" dfdl:lengthKind="explicit" dfdl:length="1">
-    <xs:restriction base="xs:hexBinary"/>
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="29"/>
+      <xs:enumeration value="30"/>
+      <xs:enumeration value="33"/>
+    </xs:restriction>
   </xs:simpleType>
 
   <xs:simpleType name="M2_msgid_t" dfdl:lengthKind="explicit" dfdl:length="3">
-    <xs:restriction base="xs:hexBinary"/>
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="000029"/>
+      <xs:enumeration value="000030"/>
+      <xs:enumeration value="000033"/>
+    </xs:restriction>
   </xs:simpleType>
 
   <xs:simpleType name="pyldbyte_t" dfdl:lengthKind="explicit" dfdl:length="1">
@@ -137,6 +165,61 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
   <xs:simpleType name="signature_t" dfdl:lengthKind="explicit" dfdl:length="13">
     <xs:restriction base="xs:hexBinary"/>
   </xs:simpleType>
+
+  <!-- Message types -->
+  <xs:complexType name="sp_M1_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="att_M1_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="gpi_M1_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="sp_M2_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="att_M2_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="gpi_M2_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
 
 </xs:schema>
 

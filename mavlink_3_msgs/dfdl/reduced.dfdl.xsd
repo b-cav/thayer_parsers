@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for three MAVLink message types
+
+
+8-17-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" representation="binary"
+        lengthUnits="bytes"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:element name="message" type="M1_t"/>
+
+  <!-- MAVLink 1.0 general message definition -->
+  <xs:complexType name="M1_t">
+    <xs:sequence>
+      <xs:element name="len" type="len_t"/>
+      <xs:sequence>
+        <xs:element name="sp_M1" type="sp_M1_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('1D')) then 1 else 0 }" />
+        <xs:element name="att_M1" type="att_M1_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('1E')) then 1 else 0 }" />
+        <xs:element name="gpi_M1" type="gpi_M1_t"
+          minOccurs="0" maxOccurs="1"
+          dfdl:occursCountKind="expression"
+          dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('21')) then 1 else 0 }" />
+      </xs:sequence>
+      <xs:element name="checksum" type="checksum_t"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="len_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="pyldbyte_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="checksum_t" dfdl:lengthKind="explicit" dfdl:length="2">
+    <xs:restriction base="xs:hexBinary"/>
+  </xs:simpleType>
+
+   <!-- Message types -->
+  <xs:complexType name="sp_M1_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="att_M1_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="gpi_M1_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="sp_M2_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="att_M2_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="gpi_M2_t">
+    <xs:sequence>
+      <xs:element name="payload" type="pyldbyte_t"
+        minOccurs="0" maxOccurs="255"
+        dfdl:occursCountKind="expression"
+        dfdl:occursCount="{ ../../len }" />
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+
