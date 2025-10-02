@@ -990,7 +990,7 @@ static size_t
 array_payload_sp_M1_t_sp_M1_M1_t__getArraySize(const sp_M1_M1_t_ *instance)
 {
     UNUSED(instance);
-    return ((M1_message_t_ *)(instance->_base.parent))->len;
+    return ((M1_message_t_ *)instance->_base.parent)->len;
 }
 
 static void
@@ -1056,11 +1056,11 @@ array_sp_M1_M1_t_M1_message_t__unparseSelf(const M1_message_t_ *instance, UState
 static size_t
 array_sp_M1_M1_t_M1_message_t__getArraySize(const M1_message_t_ *instance)
 {
-    if (instance->M1_msgid.array[0] == 0x1D) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->M1_msgid.array[0] == 0x1D) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1107,7 +1107,7 @@ static size_t
 array_payload_att_M1_t_att_M1_M1_t__getArraySize(const att_M1_M1_t_ *instance)
 {
     UNUSED(instance);
-    return ((M1_message_t_ *)(instance->_base.parent))->len;
+    return ((M1_message_t_ *)instance->_base.parent)->len;
 }
 
 static void
@@ -1173,11 +1173,11 @@ array_att_M1_M1_t_M1_message_t__unparseSelf(const M1_message_t_ *instance, UStat
 static size_t
 array_att_M1_M1_t_M1_message_t__getArraySize(const M1_message_t_ *instance)
 {
-    if (instance->M1_msgid.array[0] == 0x1E) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->M1_msgid.array[0] == 0x1E) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1224,7 +1224,7 @@ static size_t
 array_payload_gpi_M1_t_gpi_M1_M1_t__getArraySize(const gpi_M1_M1_t_ *instance)
 {
     UNUSED(instance);
-    return ((M1_message_t_ *)(instance->_base.parent))->len;
+    return ((M1_message_t_ *)instance->_base.parent)->len;
 }
 
 static void
@@ -1290,11 +1290,11 @@ array_gpi_M1_M1_t_M1_message_t__unparseSelf(const M1_message_t_ *instance, UStat
 static size_t
 array_gpi_M1_M1_t_M1_message_t__getArraySize(const M1_message_t_ *instance)
 {
-    if (instance->M1_msgid.array[0] == 0x21) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->M1_msgid.array[0] == 0x21) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1417,11 +1417,11 @@ array_M1_message_t_message__unparseSelf(const message_ *instance, UState *ustate
 static size_t
 array_M1_message_t_message__getArraySize(const message_ *instance)
 {
-    if (instance->stx.array[0] == 0xFE) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->stx.array[0] == 0xFE) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1468,7 +1468,7 @@ static size_t
 array_payload_sp_M2_t_sp_M2_M2_t__getArraySize(const sp_M2_M2_t_ *instance)
 {
     UNUSED(instance);
-    return ((M2_message_t_ *)(instance->_base.parent))->len;
+    return ((M2_message_t_ *)instance->_base.parent)->len;
 }
 
 static void
@@ -1534,11 +1534,11 @@ array_sp_M2_M2_t_M2_message_t__unparseSelf(const M2_message_t_ *instance, UState
 static size_t
 array_sp_M2_M2_t_M2_message_t__getArraySize(const M2_message_t_ *instance)
 {
-    if (instance->M2_msgid.array[0] == 0x1D && instance->M2_msgid.array[1] == 0x00 && instance->M2_msgid.array[2] == 0x00) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->M2_msgid.array[0] == 0x1D && instance->M2_msgid.array[1] == 0x00 && instance->M2_msgid.array[2] == 0x00) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1585,7 +1585,7 @@ static size_t
 array_payload_att_M2_t_att_M2_M2_t__getArraySize(const att_M2_M2_t_ *instance)
 {
     UNUSED(instance);
-    return ((M2_message_t_ *)(instance->_base.parent))->len;
+    return ((M2_message_t_ *)instance->_base.parent)->len;
 }
 
 static void
@@ -1651,11 +1651,11 @@ array_att_M2_M2_t_M2_message_t__unparseSelf(const M2_message_t_ *instance, UStat
 static size_t
 array_att_M2_M2_t_M2_message_t__getArraySize(const M2_message_t_ *instance)
 {
-    if (instance->M2_msgid.array[0] == 0x1E && instance->M2_msgid.array[1] == 0x00 && instance->M2_msgid.array[2] == 0x00) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->M2_msgid.array[0] == 0x1E && instance->M2_msgid.array[1] == 0x00 && instance->M2_msgid.array[2] == 0x00) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1702,7 +1702,7 @@ static size_t
 array_payload_gpi_M2_t_gpi_M2_M2_t__getArraySize(const gpi_M2_M2_t_ *instance)
 {
     UNUSED(instance);
-    return ((M2_message_t_ *)(instance->_base.parent))->len;
+    return ((M2_message_t_ *)instance->_base.parent)->len;
 }
 
 static void
@@ -1768,11 +1768,11 @@ array_gpi_M2_M2_t_M2_message_t__unparseSelf(const M2_message_t_ *instance, UStat
 static size_t
 array_gpi_M2_M2_t_M2_message_t__getArraySize(const M2_message_t_ *instance)
 {
-    if (instance->M2_msgid.array[0] == 0x21 && instance->M2_msgid.array[1] == 0x00 && instance->M2_msgid.array[2] == 0x00) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->M2_msgid.array[0] == 0x21 && instance->M2_msgid.array[1] == 0x00 && instance->M2_msgid.array[2] == 0x00) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1818,11 +1818,11 @@ array_signature_M2_t_M2_message_t__unparseSelf(const M2_message_t_ *instance, US
 static size_t
 array_signature_M2_t_M2_message_t__getArraySize(const M2_message_t_ *instance)
 {
-    if (instance->inc_flags.array[0] == 0x01) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->inc_flags.array[0] == 0x01) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
@@ -1980,11 +1980,11 @@ array_M2_message_t_message__unparseSelf(const message_ *instance, UState *ustate
 static size_t
 array_M2_message_t_message__getArraySize(const message_ *instance)
 {
-    if(instance->stx.array[0] == 0xFD) {
-        return(1);
-    } else {
-        return(0);
-    }
+if (instance->stx.array[0] == 0xFD) {
+    return(1);
+} else {
+    return(0);
+}
 }
 
 static void
