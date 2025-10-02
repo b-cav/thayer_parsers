@@ -1,3 +1,6 @@
+cd ./c/ && make
+cd ..
+
 perfect=0
 
 for file in ../tests/pass.*; do
