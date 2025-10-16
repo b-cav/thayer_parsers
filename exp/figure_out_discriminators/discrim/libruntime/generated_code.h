@@ -22,6 +22,8 @@ typedef struct message_
     uint8_t     _a_stx_M1[1];
     HexBinary   stx_M2;
     uint8_t     _a_stx_M2[1];
+    HexBinary   NL;
+    uint8_t     _a_NL[1];
 } message_;
 
 #endif // GENERATED_CODE_H

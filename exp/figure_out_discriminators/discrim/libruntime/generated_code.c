@@ -41,16 +41,28 @@ static const ERD stx_M2_message_t_ERD = {
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
-static const message_ message__compute_offsets;
-
-static const size_t message__childrenOffsets[2] = {
-    (const char *)&message__compute_offsets.stx_M1 - (const char *)&message__compute_offsets,
-    (const char *)&message__compute_offsets.stx_M2 - (const char *)&message__compute_offsets
+static const ERD NL_message_t_ERD = {
+    {
+        NULL, // namedQName.prefix
+        "NL", // namedQName.local
+        NULL, // namedQName.ns
+    },
+    PRIMITIVE_HEXBINARY, // typeCode
+    0, NULL, NULL, NULL, NULL, {NULL}
 };
 
-static const ERD *const message__childrenERDs[2] = {
+static const message_ message__compute_offsets;
+
+static const size_t message__childrenOffsets[3] = {
+    (const char *)&message__compute_offsets.stx_M1 - (const char *)&message__compute_offsets,
+    (const char *)&message__compute_offsets.stx_M2 - (const char *)&message__compute_offsets,
+    (const char *)&message__compute_offsets.NL - (const char *)&message__compute_offsets
+};
+
+static const ERD *const message__childrenERDs[3] = {
     &stx_M1_message_t_ERD,
-    &stx_M2_message_t_ERD
+    &stx_M2_message_t_ERD,
+    &NL_message_t_ERD
 };
 
 static const ERD message_ERD = {
@@ -60,7 +72,7 @@ static const ERD message_ERD = {
         NULL, // namedQName.ns
     },
     COMPLEX, // typeCode
-    2, // numChildren
+    3, // numChildren
     message__childrenOffsets,
     message__childrenERDs,
     (ERDParseSelf)&message__parseSelf,
@@ -81,6 +93,9 @@ message__initERD(message_ *instance, InfosetBase *parent)
     instance->stx_M2.array = instance->_a_stx_M2;
     instance->stx_M2.lengthInBytes = sizeof(instance->_a_stx_M2);
     instance->stx_M2.dynamic = false;
+    instance->NL.array = instance->_a_NL;
+    instance->NL.lengthInBytes = sizeof(instance->_a_NL);
+    instance->NL.dynamic = false;
 }
 
 static void
@@ -98,6 +113,12 @@ message__parseSelf(message_ *instance, PState *pstate)
     HexBinary enums_stx_M2[] = {{arrays_stx_M2[0], 1, false}};
     validate_hexbinary_enumeration(&instance->stx_M2, 1, enums_stx_M2, "stx_M2", &pstate->pu);
     if (pstate->pu.error) return;
+    parse_hexBinary(&instance->NL, pstate);
+    if (pstate->pu.error) return;
+    uint8_t arrays_NL[][1] = {{0x0a}};
+    HexBinary enums_NL[] = {{arrays_NL[0], 1, false}};
+    validate_hexbinary_enumeration(&instance->NL, 1, enums_NL, "NL", &pstate->pu);
+    if (pstate->pu.error) return;
 }
 
 static void
@@ -114,6 +135,12 @@ message__unparseSelf(const message_ *instance, UState *ustate)
     uint8_t arrays_stx_M2[][1] = {{0xFD}};
     HexBinary enums_stx_M2[] = {{arrays_stx_M2[0], 1, false}};
     validate_hexbinary_enumeration(&instance->stx_M2, 1, enums_stx_M2, "stx_M2", &ustate->pu);
+    if (ustate->pu.error) return;
+    unparse_hexBinary(instance->NL, ustate);
+    if (ustate->pu.error) return;
+    uint8_t arrays_NL[][1] = {{0x0a}};
+    HexBinary enums_NL[] = {{arrays_NL[0], 1, false}};
+    validate_hexbinary_enumeration(&instance->NL, 1, enums_NL, "NL", &ustate->pu);
     if (ustate->pu.error) return;
 }
 

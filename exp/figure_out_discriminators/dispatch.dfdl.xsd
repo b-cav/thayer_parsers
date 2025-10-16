@@ -25,22 +25,15 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
 
   <!-- Combined message definition -->
   <xs:complexType name="message_t">
-    <xs:choice>
-      <xs:element name="stx_M1" type="M1_stx_t">
-        <xs:annotation>
-          <xs:appinfo source="http://www.ogf.org/dfdl/">
-            <dfdl:discriminator test="{. eq xs:hexBinary('FE')}" />
-          </xs:appinfo>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="stx_M2" type="M2_stx_t">
-        <xs:annotation>
-          <xs:appinfo source="http://www.ogf.org/dfdl/">
-            <dfdl:discriminator test="{. eq xs:hexBinary('FD')}" />
-          </xs:appinfo>
-        </xs:annotation>
-      </xs:element>
-    </xs:choice>
+    <xs:sequence>
+      <xs:choice dfdl:choiceDispatchKey="{ xs:string(dfdlx:lookAhead(0, 8)) }">
+        <xs:element name="stx_M1" type="M1_stx_t"
+          dfdl:choiceBranchKey="254"/>
+        <xs:element name="stx_M2" type="M2_stx_t"
+          dfdl:choiceBranchKey="253"/>
+      </xs:choice>
+      <xs:element name="NL" type="NL_t"/>
+    </xs:sequence>
   </xs:complexType>
 
   <!-- MAVLINK 1 magic number definition -->
@@ -56,6 +49,13 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
       <xs:enumeration value="FD"/>
     </xs:restriction>
   </xs:simpleType>
+
+  <xs:simpleType name="NL_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="0a"/>
+    </xs:restriction>
+  </xs:simpleType>
+
 
 </xs:schema>
 

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
+
+
+8-17-2025
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" representation="binary"/>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:element name="message" type="message_t"/>
+
+  <!-- Combined message definition -->
+  <xs:complexType name="message_t">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="stx_M1" type="M1_stx_t">
+          <xs:annotation>
+            <xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator test="{. eq xs:hexBinary('FE')}" />
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="stx_M2" type="M2_stx_t">
+          <xs:annotation>
+            <xs:appinfo source="http://www.ogf.org/dfdl/">
+              <dfdl:discriminator test="{. eq xs:hexBinary('FD')}" />
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element name="NL" type="NL_t"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- MAVLINK 1 magic number definition -->
+  <xs:simpleType name="M1_stx_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="FE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- MAVLINK 2 magic number definition -->
+  <xs:simpleType name="M2_stx_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="FD"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="NL_t" dfdl:lengthKind="explicit" dfdl:length="1">
+    <xs:restriction base="xs:hexBinary">
+      <xs:enumeration value="0a"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+</xs:schema>
+
