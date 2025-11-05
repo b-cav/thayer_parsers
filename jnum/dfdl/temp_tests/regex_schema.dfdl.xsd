@@ -18,7 +18,6 @@ Ben Cavanagh
   <xs:annotation>
     <xs:appinfo source="http://www.ogf.org/dfdl/">
       <dfdl:format ref="GeneralFormat"
-        lengthKind="pattern" lengthPattern="-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?"
         representation="binary" encoding="utf-8"/>
     </xs:appinfo>
   </xs:annotation>
@@ -35,7 +34,7 @@ Ben Cavanagh
        '+' or '-' (optional)
        <1 or more digits>
 -->
-  <xs:element name="jnum">
+  <xs:element name="jnum" dfdl:lengthKind="delimited" dfdl:terminatorKind="implicit">
     <xs:simpleType>
       <xs:restriction base="xs:string">
         <xs:pattern value="-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?"/>

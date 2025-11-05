@@ -111,14 +111,9 @@ void
 validate_hexbinary_enumeration(const HexBinary *hexBinary, size_t num_enums, HexBinary enums[],
                                const char *element, ParserOrUnparserState *pu)
 {
-    printf("entered the validate hexbinary function with %ld enums to match\n", num_enums);
     bool match_found = false;
     for (size_t i = 0; !match_found && i < num_enums; i++)
     {
-        printf("i is %ld\n", i);
-        printf("Trying to match %x with %x\n", 
-               *(hexBinary->array), *(enums[i].array));
-        printf("%p\n", hexBinary->array);
         bool same_lengths = hexBinary->lengthInBytes == enums[i].lengthInBytes;
         if (same_lengths && memcmp(hexBinary->array, enums[i].array, hexBinary->lengthInBytes) == 0)
         {

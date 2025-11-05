@@ -102,47 +102,24 @@ static void
 message__parseSelf(message_ *instance, PState *pstate)
 {
     parse_hexBinary(&instance->stx_M1, pstate);
-    if (pstate->pu.error) {
-        printf("error in parsing M1\n");
-        return;
-    }
-
+    if (pstate->pu.error) return;
     uint8_t arrays_stx_M1[][1] = {{0xFE}};
     HexBinary enums_stx_M1[] = {{arrays_stx_M1[0], 1, false}};
     validate_hexbinary_enumeration(&instance->stx_M1, 1, enums_stx_M1, "stx_M1", &pstate->pu);
-    if (pstate->pu.error) {
-        printf("error in validating M1\n");
-        return;
-    }
-
+    if (pstate->pu.error) return;
     parse_hexBinary(&instance->stx_M2, pstate);
-    if (pstate->pu.error) {
-        printf("error in parsing M2\n");
-        return;
-    }
-
+    if (pstate->pu.error) return;
     uint8_t arrays_stx_M2[][1] = {{0xFD}};
     HexBinary enums_stx_M2[] = {{arrays_stx_M2[0], 1, false}};
     validate_hexbinary_enumeration(&instance->stx_M2, 1, enums_stx_M2, "stx_M2", &pstate->pu);
-    if (pstate->pu.error) {
-        printf("error in validating M2\n");
-        return;
-    }
-
+    if (pstate->pu.error) return;
     parse_hexBinary(&instance->NL, pstate);
-    if (pstate->pu.error) {
-        printf("error in parsing NL\n");
-        return;
-    }
-
-    uint8_t arrays_NL[][1] = {{0x0a}};
+    if (pstate->pu.error) return;
+    uint8_t arrays_NL[][1] = {{0x0A}};
     HexBinary enums_NL[] = {{arrays_NL[0], 1, false}};
     validate_hexbinary_enumeration(&instance->NL, 1, enums_NL, "NL", &pstate->pu);
-    if (pstate->pu.error) {
-        printf("error in validating NL\n");
-        return;
-    }
- }
+    if (pstate->pu.error) return;
+}
 
 static void
 message__unparseSelf(const message_ *instance, UState *ustate)
@@ -161,7 +138,7 @@ message__unparseSelf(const message_ *instance, UState *ustate)
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->NL, ustate);
     if (ustate->pu.error) return;
-    uint8_t arrays_NL[][1] = {{0x0a}};
+    uint8_t arrays_NL[][1] = {{0x0A}};
     HexBinary enums_NL[] = {{arrays_NL[0], 1, false}};
     validate_hexbinary_enumeration(&instance->NL, 1, enums_NL, "NL", &ustate->pu);
     if (ustate->pu.error) return;

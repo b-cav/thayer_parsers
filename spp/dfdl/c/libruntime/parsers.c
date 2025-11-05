@@ -536,8 +536,6 @@ void
 parse_hexBinary(HexBinary *hexBinary, PState *pstate)
 {
     read_bits(hexBinary->array, hexBinary->lengthInBytes * BYTE_WIDTH, pstate);
-    printf("parsed %x at bit position %ld\n", *(hexBinary->array), 
-           pstate->pu.bitPos0b);
     if (pstate->pu.error) return;
     pstate->pu.bitPos0b += hexBinary->lengthInBytes * BYTE_WIDTH;
 }

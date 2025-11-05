@@ -62,7 +62,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK Scaled Pressure message
 
   <xs:simpleType name="NL_t" dfdl:lengthKind="explicit" dfdl:length="1">
     <xs:restriction base="xs:hexBinary">
-      <xs:enumeration value="0a"/>
+      <xs:enumeration value="0A"/>
     </xs:restriction>
   </xs:simpleType>
 
