@@ -64,7 +64,7 @@ do
 				pushd ./${DIR}/hmr
 				echo [$DIR/hmr]
 				rm -f Makefile
-				ln -s ../../Makefile.hmr ./Makefile				
+ 				ln -s ../../Makefile.hmr ./Makefile
 				make ${MODE} clean
 				make ${MODE}
 				popd

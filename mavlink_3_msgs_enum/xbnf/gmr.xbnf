@@ -1,0 +1,340 @@
+P : message ;
+
+/* Message is either MAVLink v1 or MAVLink v2 */
+message : msg_v1 | msg_v2 ;
+
+/* Message is either v1, v2 signed, or v2 unsigned */
+msg_v2 : msg_sg | msg_us ;
+
+/* This grammar supports MAVLink HEARTBEAT, SYS_STATUS, and VFR_HUD messages */
+msg_v1 : stx_v1 msg_v1_opts crc ;
+msg_sg : stx_v2 msg_sg_opts crc sig ;
+msg_us : stx_v2 msg_us_opts crc ;
+
+msg_v1_opts : v1_hb | v1_ss | v1_hud ;
+msg_sg_opts : sg_hb | sg_ss | sg_hud ;
+msg_us_opts : us_hb | us_ss | us_hud ;
+
+/* -------------------------------------------------------------- */
+/* BEGIN HEARTBEAT (0) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* HEARTBEAT Top Level Message Structures are v1, us, sg */
+v1_hb : len_L09 v1_SSC v1_hb_ID v1_hb_PL ;
+us_hb : us_hb_L09 ;
+sg_hb : sg_hb_L09 ;
+
+/* HEARTBEAT us, sg Length Options - always 9 bytes */
+us_hb_L09 : len_L09 us_ICSSC v2_hb_ID v2_hb_PL_L09 ;
+sg_hb_L09 : len_L09 sg_ICSSC v2_hb_ID v2_hb_PL_L09 ;
+
+
+/* HEARTBEAT Payloads */
+/* v1 HEARTBEAT PAYLOAD - payload always 9 bytes */
+v1_hb_PL : hb_PL_cust hb_PL_type hb_PL_auto hb_PL_base hb_PL_stat hb_PL_mvrs ;
+
+/* v2 HEARTBEAT PAYLOAD - payload always 9 bytes */
+v2_hb_PL_L09 : hb_PL_cust hb_PL_type hb_PL_auto hb_PL_base hb_PL_stat hb_PL_mvrs ;
+
+/* HEARTBEAT Payload Fields */
+hb_PL_cust : allhex4b ;
+hb_PL_type : [ '\x00' - '\x31' ] ;
+hb_PL_auto : [ '\x00' - '\x14' ] ;
+hb_PL_base : allhex1b ;
+hb_PL_stat : [ '\x00' - '\x08' ] ;
+hb_PL_mvrs : allhex1b ;
+
+/* HEARTBEAT ID Fields */
+v1_hb_ID : '\x00' ;
+v2_hb_ID : '\x00' '\x00' '\x00' ;
+
+/* -------------------------------------------------------------- */
+/* END HEARTBEAT (0) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* -------------------------------------------------------------- */
+/* BEGIN SYS_STATUS (1) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* SYS_STATUS Top Level Message Structures are v1, us, sg */
+v1_ss : len_L31 v1_SSC v1_ss_ID v1_ss_PL ;
+us_ss : us_ss_L01 | us_ss_L02 | us_ss_L03 | us_ss_L04 | us_ss_L05 | us_ss_L06 | us_ss_L07 | us_ss_L08 | us_ss_L09 | us_ss_L10 | us_ss_L11 | us_ss_L12 | us_ss_L13 | us_ss_L14 | us_ss_L15 | us_ss_L16 | us_ss_L17 | us_ss_L18 | us_ss_L19 | us_ss_L20 | us_ss_L21 | us_ss_L22 | us_ss_L23 | us_ss_L24 | us_ss_L25 | us_ss_L26 | us_ss_L27 | us_ss_L28 | us_ss_L29 | us_ss_L30 | us_ss_L31 ;
+sg_ss : sg_ss_L01 | sg_ss_L02 | sg_ss_L03 | sg_ss_L04 | sg_ss_L05 | sg_ss_L06 | sg_ss_L07 | sg_ss_L08 | sg_ss_L09 | sg_ss_L10 | sg_ss_L11 | sg_ss_L12 | sg_ss_L13 | sg_ss_L14 | sg_ss_L15 | sg_ss_L16 | sg_ss_L17 | sg_ss_L18 | sg_ss_L19 | sg_ss_L20 | sg_ss_L21 | sg_ss_L22 | sg_ss_L23 | sg_ss_L24 | sg_ss_L25 | sg_ss_L26 | sg_ss_L27 | sg_ss_L28 | sg_ss_L29 | sg_ss_L30 | sg_ss_L31 ;
+
+/* SYS_STATUS us, sg Length Options - 1-31 bytes */
+us_ss_L01 : len_L01 us_ICSSC v2_ss_ID v2_ss_PL_L01 ;
+us_ss_L02 : len_L02 us_ICSSC v2_ss_ID v2_ss_PL_L02 ;
+us_ss_L03 : len_L03 us_ICSSC v2_ss_ID v2_ss_PL_L03 ;
+us_ss_L04 : len_L04 us_ICSSC v2_ss_ID v2_ss_PL_L04 ;
+us_ss_L05 : len_L05 us_ICSSC v2_ss_ID v2_ss_PL_L05 ;
+us_ss_L06 : len_L06 us_ICSSC v2_ss_ID v2_ss_PL_L06 ;
+us_ss_L07 : len_L07 us_ICSSC v2_ss_ID v2_ss_PL_L07 ;
+us_ss_L08 : len_L08 us_ICSSC v2_ss_ID v2_ss_PL_L08 ;
+us_ss_L09 : len_L09 us_ICSSC v2_ss_ID v2_ss_PL_L09 ;
+us_ss_L10 : len_L10 us_ICSSC v2_ss_ID v2_ss_PL_L10 ;
+us_ss_L11 : len_L11 us_ICSSC v2_ss_ID v2_ss_PL_L11 ;
+us_ss_L12 : len_L12 us_ICSSC v2_ss_ID v2_ss_PL_L12 ;
+us_ss_L13 : len_L13 us_ICSSC v2_ss_ID v2_ss_PL_L13 ;
+us_ss_L14 : len_L14 us_ICSSC v2_ss_ID v2_ss_PL_L14 ;
+us_ss_L15 : len_L15 us_ICSSC v2_ss_ID v2_ss_PL_L15 ;
+us_ss_L16 : len_L16 us_ICSSC v2_ss_ID v2_ss_PL_L16 ;
+us_ss_L17 : len_L17 us_ICSSC v2_ss_ID v2_ss_PL_L17 ;
+us_ss_L18 : len_L18 us_ICSSC v2_ss_ID v2_ss_PL_L18 ;
+us_ss_L19 : len_L19 us_ICSSC v2_ss_ID v2_ss_PL_L19 ;
+us_ss_L20 : len_L20 us_ICSSC v2_ss_ID v2_ss_PL_L20 ;
+us_ss_L21 : len_L21 us_ICSSC v2_ss_ID v2_ss_PL_L21 ;
+us_ss_L22 : len_L22 us_ICSSC v2_ss_ID v2_ss_PL_L22 ;
+us_ss_L23 : len_L23 us_ICSSC v2_ss_ID v2_ss_PL_L23 ;
+us_ss_L24 : len_L24 us_ICSSC v2_ss_ID v2_ss_PL_L24 ;
+us_ss_L25 : len_L25 us_ICSSC v2_ss_ID v2_ss_PL_L25 ;
+us_ss_L26 : len_L26 us_ICSSC v2_ss_ID v2_ss_PL_L26 ;
+us_ss_L27 : len_L27 us_ICSSC v2_ss_ID v2_ss_PL_L27 ;
+us_ss_L28 : len_L28 us_ICSSC v2_ss_ID v2_ss_PL_L28 ;
+us_ss_L29 : len_L29 us_ICSSC v2_ss_ID v2_ss_PL_L29 ;
+us_ss_L30 : len_L30 us_ICSSC v2_ss_ID v2_ss_PL_L30 ;
+us_ss_L31 : len_L31 us_ICSSC v2_ss_ID v2_ss_PL_L31 ;
+
+sg_ss_L01 : len_L01 sg_ICSSC v2_ss_ID v2_ss_PL_L01 ;
+sg_ss_L02 : len_L02 sg_ICSSC v2_ss_ID v2_ss_PL_L02 ;
+sg_ss_L03 : len_L03 sg_ICSSC v2_ss_ID v2_ss_PL_L03 ;
+sg_ss_L04 : len_L04 sg_ICSSC v2_ss_ID v2_ss_PL_L04 ;
+sg_ss_L05 : len_L05 sg_ICSSC v2_ss_ID v2_ss_PL_L05 ;
+sg_ss_L06 : len_L06 sg_ICSSC v2_ss_ID v2_ss_PL_L06 ;
+sg_ss_L07 : len_L07 sg_ICSSC v2_ss_ID v2_ss_PL_L07 ;
+sg_ss_L08 : len_L08 sg_ICSSC v2_ss_ID v2_ss_PL_L08 ;
+sg_ss_L09 : len_L09 sg_ICSSC v2_ss_ID v2_ss_PL_L09 ;
+sg_ss_L10 : len_L10 sg_ICSSC v2_ss_ID v2_ss_PL_L10 ;
+sg_ss_L11 : len_L11 sg_ICSSC v2_ss_ID v2_ss_PL_L11 ;
+sg_ss_L12 : len_L12 sg_ICSSC v2_ss_ID v2_ss_PL_L12 ;
+sg_ss_L13 : len_L13 sg_ICSSC v2_ss_ID v2_ss_PL_L13 ;
+sg_ss_L14 : len_L14 sg_ICSSC v2_ss_ID v2_ss_PL_L14 ;
+sg_ss_L15 : len_L15 sg_ICSSC v2_ss_ID v2_ss_PL_L15 ;
+sg_ss_L16 : len_L16 sg_ICSSC v2_ss_ID v2_ss_PL_L16 ;
+sg_ss_L17 : len_L17 sg_ICSSC v2_ss_ID v2_ss_PL_L17 ;
+sg_ss_L18 : len_L18 sg_ICSSC v2_ss_ID v2_ss_PL_L18 ;
+sg_ss_L19 : len_L19 sg_ICSSC v2_ss_ID v2_ss_PL_L19 ;
+sg_ss_L20 : len_L20 sg_ICSSC v2_ss_ID v2_ss_PL_L20 ;
+sg_ss_L21 : len_L21 sg_ICSSC v2_ss_ID v2_ss_PL_L21 ;
+sg_ss_L22 : len_L22 sg_ICSSC v2_ss_ID v2_ss_PL_L22 ;
+sg_ss_L23 : len_L23 sg_ICSSC v2_ss_ID v2_ss_PL_L23 ;
+sg_ss_L24 : len_L24 sg_ICSSC v2_ss_ID v2_ss_PL_L24 ;
+sg_ss_L25 : len_L25 sg_ICSSC v2_ss_ID v2_ss_PL_L25 ;
+sg_ss_L26 : len_L26 sg_ICSSC v2_ss_ID v2_ss_PL_L26 ;
+sg_ss_L27 : len_L27 sg_ICSSC v2_ss_ID v2_ss_PL_L27 ;
+sg_ss_L28 : len_L28 sg_ICSSC v2_ss_ID v2_ss_PL_L28 ;
+sg_ss_L29 : len_L29 sg_ICSSC v2_ss_ID v2_ss_PL_L29 ;
+sg_ss_L30 : len_L30 sg_ICSSC v2_ss_ID v2_ss_PL_L30 ;
+sg_ss_L31 : len_L31 sg_ICSSC v2_ss_ID v2_ss_PL_L31 ;
+
+/* SYS_STATUS Payloads */
+/* v1 SYS_STATUS PAYLOAD - payload always 31 bytes */
+v1_ss_PL : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 ss_PL_cnt3 ss_PL_cnt4 ss_PL_batr ;
+
+/* v2 SYS_STATUS PAYLOAD - payload 1-31 bytes */
+v2_ss_PL_L01 : allhex1b ;
+v2_ss_PL_L02 : allhex2b ;
+v2_ss_PL_L03 : allhex3b ;
+v2_ss_PL_L04 : ss_PL_ocsp ;
+v2_ss_PL_L05 : ss_PL_ocsp allhex1b ;
+v2_ss_PL_L06 : ss_PL_ocsp allhex2b ;
+v2_ss_PL_L07 : ss_PL_ocsp allhex3b ;
+v2_ss_PL_L08 : ss_PL_ocsp ss_PL_ocse ;
+v2_ss_PL_L09 : ss_PL_ocsp ss_PL_ocse allhex1b ;
+v2_ss_PL_L10 : ss_PL_ocsp ss_PL_ocse allhex2b ;
+v2_ss_PL_L11 : ss_PL_ocsp ss_PL_ocse allhex3b ;
+v2_ss_PL_L12 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ;
+v2_ss_PL_L13 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh [ '\x00' - '\x03' ] ;
+v2_ss_PL_L14 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ;
+v2_ss_PL_L15 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load allhex1b ;
+v2_ss_PL_L16 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ;
+v2_ss_PL_L17 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat allhex1b ;
+v2_ss_PL_L18 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ;
+v2_ss_PL_L19 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat [ '\x00' - '\x27' ] ;
+v2_ss_PL_L20 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ;
+v2_ss_PL_L21 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc allhex1b ;
+v2_ss_PL_L22 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ;
+v2_ss_PL_L23 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc allhex1b ;
+v2_ss_PL_L24 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 allhex1b ;
+v2_ss_PL_L25 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 ;
+v2_ss_PL_L26 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 ;
+v2_ss_PL_L27 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 allhex1b ;
+v2_ss_PL_L28 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 ss_PL_cnt3 ;
+v2_ss_PL_L29 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 ss_PL_cnt3 allhex1b ;
+v2_ss_PL_L30 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 ss_PL_cnt3 ss_PL_cnt4 ;
+v2_ss_PL_L31 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ss_PL_cnt1 ss_PL_cnt2 ss_PL_cnt3 ss_PL_cnt4 ss_PL_batr ;
+
+/* SYS_STATUS Payload Fields */
+ss_PL_ocsp : allhex4b ;
+ss_PL_ocse : allhex4b ;
+ss_PL_ocsh : allhex4b ;
+ss_PL_load : [ 'uint16(0)' - 'uint16(1000)' ] ;
+ss_PL_vbat : allhex2b ;
+ss_PL_cbat : allhex2b ; /* Battery current, in 10x milliamperes (1 means 10 milliampere), -1 means autopilot does not measure the current */
+ss_PL_drc : [ 'uint16(0)' - 'uint16(10000)' ] ; /* Communication drops in percent, (0pct is 0, 100pct is 10000), (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) */
+ss_PL_errc : allhex2b ;
+ss_PL_cnt1 : allhex2b ;
+ss_PL_cnt2 : allhex2b ;
+ss_PL_cnt3 : allhex2b ;
+ss_PL_cnt4 : allhex2b ;
+ss_PL_batr : [ 'int8(0)' - 'int8(100)' ] | 'int8(-1)' ; /* Remaining battery energy (0pct is 0, 100pct is 100), -1 means autopilot estimate not sent */
+
+/* SYS_STATUS ID Fields */
+v1_ss_ID : '\x01' ;
+v2_ss_ID : '\x01' '\x00' '\x00' ;
+
+/* -------------------------------------------------------------- */
+/* END SYS_STATUS (1) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* -------------------------------------------------------------- */
+/* BEGIN VFR_HUD (74) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* VFR_HUD Top Level Message Structures are v1, us, sg */
+v1_hud : len_L20 v1_SSC v1_hud_ID v1_hud_PL ;
+us_hud : us_hud_L01 | us_hud_L02 | us_hud_L03 | us_hud_L04 | us_hud_L05 | us_hud_L06 | us_hud_L07 | us_hud_L08 | us_hud_L09 | us_hud_L10 | us_hud_L11 | us_hud_L12 | us_hud_L13 | us_hud_L14 | us_hud_L15 | us_hud_L16 | us_hud_L17 | us_hud_L18 | us_hud_L19 | us_hud_L20 ;
+sg_hud : sg_hud_L01 | sg_hud_L02 | sg_hud_L03 | sg_hud_L04 | sg_hud_L05 | sg_hud_L06 | sg_hud_L07 | sg_hud_L08 | sg_hud_L09 | sg_hud_L10 | sg_hud_L11 | sg_hud_L12 | sg_hud_L13 | sg_hud_L14 | sg_hud_L15 | sg_hud_L16 | sg_hud_L17 | sg_hud_L18 | sg_hud_L19 | sg_hud_L20 ;
+
+/* VFR_HUD us, sg Length Options - 1-20 bytes */
+us_hud_L01 : len_L01 us_ICSSC v2_hud_ID v2_hud_PL_L01 ;
+us_hud_L02 : len_L02 us_ICSSC v2_hud_ID v2_hud_PL_L02 ;
+us_hud_L03 : len_L03 us_ICSSC v2_hud_ID v2_hud_PL_L03 ;
+us_hud_L04 : len_L04 us_ICSSC v2_hud_ID v2_hud_PL_L04 ;
+us_hud_L05 : len_L05 us_ICSSC v2_hud_ID v2_hud_PL_L05 ;
+us_hud_L06 : len_L06 us_ICSSC v2_hud_ID v2_hud_PL_L06 ;
+us_hud_L07 : len_L07 us_ICSSC v2_hud_ID v2_hud_PL_L07 ;
+us_hud_L08 : len_L08 us_ICSSC v2_hud_ID v2_hud_PL_L08 ;
+us_hud_L09 : len_L09 us_ICSSC v2_hud_ID v2_hud_PL_L09 ;
+us_hud_L10 : len_L10 us_ICSSC v2_hud_ID v2_hud_PL_L10 ;
+us_hud_L11 : len_L11 us_ICSSC v2_hud_ID v2_hud_PL_L11 ;
+us_hud_L12 : len_L12 us_ICSSC v2_hud_ID v2_hud_PL_L12 ;
+us_hud_L13 : len_L13 us_ICSSC v2_hud_ID v2_hud_PL_L13 ;
+us_hud_L14 : len_L14 us_ICSSC v2_hud_ID v2_hud_PL_L14 ;
+us_hud_L15 : len_L15 us_ICSSC v2_hud_ID v2_hud_PL_L15 ;
+us_hud_L16 : len_L16 us_ICSSC v2_hud_ID v2_hud_PL_L16 ;
+us_hud_L17 : len_L17 us_ICSSC v2_hud_ID v2_hud_PL_L17 ;
+us_hud_L18 : len_L18 us_ICSSC v2_hud_ID v2_hud_PL_L18 ;
+us_hud_L19 : len_L19 us_ICSSC v2_hud_ID v2_hud_PL_L19 ;
+us_hud_L20 : len_L20 us_ICSSC v2_hud_ID v2_hud_PL_L20 ;
+
+sg_hud_L01 : len_L01 sg_ICSSC v2_hud_ID v2_hud_PL_L01 ;
+sg_hud_L02 : len_L02 sg_ICSSC v2_hud_ID v2_hud_PL_L02 ;
+sg_hud_L03 : len_L03 sg_ICSSC v2_hud_ID v2_hud_PL_L03 ;
+sg_hud_L04 : len_L04 sg_ICSSC v2_hud_ID v2_hud_PL_L04 ;
+sg_hud_L05 : len_L05 sg_ICSSC v2_hud_ID v2_hud_PL_L05 ;
+sg_hud_L06 : len_L06 sg_ICSSC v2_hud_ID v2_hud_PL_L06 ;
+sg_hud_L07 : len_L07 sg_ICSSC v2_hud_ID v2_hud_PL_L07 ;
+sg_hud_L08 : len_L08 sg_ICSSC v2_hud_ID v2_hud_PL_L08 ;
+sg_hud_L09 : len_L09 sg_ICSSC v2_hud_ID v2_hud_PL_L09 ;
+sg_hud_L10 : len_L10 sg_ICSSC v2_hud_ID v2_hud_PL_L10 ;
+sg_hud_L11 : len_L11 sg_ICSSC v2_hud_ID v2_hud_PL_L11 ;
+sg_hud_L12 : len_L12 sg_ICSSC v2_hud_ID v2_hud_PL_L12 ;
+sg_hud_L13 : len_L13 sg_ICSSC v2_hud_ID v2_hud_PL_L13 ;
+sg_hud_L14 : len_L14 sg_ICSSC v2_hud_ID v2_hud_PL_L14 ;
+sg_hud_L15 : len_L15 sg_ICSSC v2_hud_ID v2_hud_PL_L15 ;
+sg_hud_L16 : len_L16 sg_ICSSC v2_hud_ID v2_hud_PL_L16 ;
+sg_hud_L17 : len_L17 sg_ICSSC v2_hud_ID v2_hud_PL_L17 ;
+sg_hud_L18 : len_L18 sg_ICSSC v2_hud_ID v2_hud_PL_L18 ;
+sg_hud_L19 : len_L19 sg_ICSSC v2_hud_ID v2_hud_PL_L19 ;
+sg_hud_L20 : len_L20 sg_ICSSC v2_hud_ID v2_hud_PL_L20 ;
+
+/* VFR_HUD Payloads */
+/* v1 VFR_HUD PAYLOAD - payload always 20 bytes */
+v1_hud_PL : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng hud_PL_thtl ;
+
+/* v2 VFR_HUD PAYLOAD - payload 1-31 bytes */
+v2_hud_PL_L01 : allhex1b ;
+v2_hud_PL_L02 : allhex2b ;
+v2_hud_PL_L03 : allhex3b ;
+v2_hud_PL_L04 : hud_PL_aspd ;
+v2_hud_PL_L05 : hud_PL_aspd allhex1b ;
+v2_hud_PL_L06 : hud_PL_aspd allhex2b ;
+v2_hud_PL_L07 : hud_PL_aspd allhex3b ;
+v2_hud_PL_L08 : hud_PL_aspd hud_PL_gspd ;
+v2_hud_PL_L09 : hud_PL_aspd hud_PL_gspd allhex1b ;
+v2_hud_PL_L10 : hud_PL_aspd hud_PL_gspd allhex2b ;
+v2_hud_PL_L11 : hud_PL_aspd hud_PL_gspd allhex3b ;
+v2_hud_PL_L12 : hud_PL_aspd hud_PL_gspd hud_PL_alt ;
+v2_hud_PL_L13 : hud_PL_aspd hud_PL_gspd hud_PL_alt allhex1b ;
+v2_hud_PL_L14 : hud_PL_aspd hud_PL_gspd hud_PL_alt allhex2b ;
+v2_hud_PL_L15 : hud_PL_aspd hud_PL_gspd hud_PL_alt allhex3b ;
+v2_hud_PL_L16 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb ;
+v2_hud_PL_L17 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb [ '\x00' - '\x01' ] ;
+v2_hud_PL_L18 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng ;
+v2_hud_PL_L19 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng '\x00' ;
+v2_hud_PL_L20 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng hud_PL_thtl ;
+
+/* VFR_HUD Payload Fields */
+hud_PL_aspd : allhex4b ;
+hud_PL_gspd : allhex4b ;
+hud_PL_alt : allhex4b ;
+hud_PL_clmb : allhex4b ;
+hud_PL_hdng : [ 'int16(0)' - 'int16(360)' ] ;
+hud_PL_thtl : [ 'uint16(0)' - 'uint16(100)' ] ;
+
+/* VFR_HUD ID Fields */
+v1_hud_ID : '\x4A' ;
+v2_hud_ID : '\x4A' '\x00' '\x00' ;
+
+/* -------------------------------------------------------------- */
+/* END VFR_HUD (74) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* -------------------------------------------------------------- */
+/* Common Ranges and Enumerations */
+/* -------------------------------------------------------------- */
+
+/* Header fields */
+stx_v1 : '\xFE' ;
+stx_v2 : '\xFD' ;
+
+/*       sequence systemID  compID    */
+v1_SSC : allhex1b nonzero1b nonzero1b ;
+
+/*         inc    cmp      sequence systemID  compID */
+us_ICSSC : '\x00' allhex1b allhex1b nonzero1b nonzero1b ;
+sg_ICSSC : '\x01' allhex1b allhex1b nonzero1b nonzero1b ;
+
+crc : allhex2b ;
+sig : allhex4b allhex4b allhex4b allhex1b ;
+
+/* Numbers and ranges */
+len_L01 : '\x01' ;
+len_L02 : '\x02' ;
+len_L03 : '\x03' ;
+len_L04 : '\x04' ;
+len_L05 : '\x05' ;
+len_L06 : '\x06' ;
+len_L07 : '\x07' ;
+len_L08 : '\x08' ;
+len_L09 : '\x09' ;
+len_L10 : '\x10' ;
+len_L11 : '\x11' ;
+len_L12 : '\x12' ;
+len_L13 : '\x13' ;
+len_L14 : '\x14' ;
+len_L15 : '\x15' ;
+len_L16 : '\x16' ;
+len_L17 : '\x17' ;
+len_L18 : '\x18' ;
+len_L19 : '\x19' ;
+len_L20 : '\x20' ;
+len_L21 : '\x21' ;
+len_L22 : '\x22' ;
+len_L23 : '\x23' ;
+len_L24 : '\x24' ;
+len_L25 : '\x25' ;
+len_L26 : '\x26' ;
+len_L27 : '\x27' ;
+len_L28 : '\x28' ;
+len_L29 : '\x29' ;
+len_L30 : '\x30' ;
+len_L31 : '\x31' ;
+
+allhex4b : allhex1b allhex1b allhex1b allhex1b ;
+allhex3b : allhex1b allhex1b allhex1b ;
+allhex2b : allhex1b allhex1b ;
+allhex1b : [ '\x00' - '\xFF' ] ;
+
+nonzero1b : [ '\x01' - '\xFF' ] ;
+

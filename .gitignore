@@ -22,3 +22,6 @@ RESULTS
 */xbnf/gmr.y
 xbnf/bison/xbnf
 abnf/bison/abnf
+
+# Neovim backups
+.nvim_backup/

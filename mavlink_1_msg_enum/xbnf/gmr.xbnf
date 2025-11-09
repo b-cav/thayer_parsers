@@ -1,0 +1,76 @@
+P : message ;
+
+/* Message is either MAVLink v1 or MAVLink v2 */
+message : msg_v1 | msg_v2 ;
+
+/* Message is either v1, v2 signed, or v2 unsigned */
+msg_v2 : msg_sg | msg_us ;
+
+/* This grammar supports MAVLink HEARTBEAT messages */
+msg_v1 : stx_v1 v1_hb crc ;
+msg_sg : stx_v2 sg_hb crc sig ;
+msg_us : stx_v2 us_hb crc ;
+
+/* -------------------------------------------------------------- */
+/* BEGIN HEARTBEAT (0) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* HEARTBEAT Top Level Message Structures are v1, us, sg */
+v1_hb : len_L09 v1_SSC v1_hb_ID v1_hb_PL ;
+us_hb : us_hb_L09 ;
+sg_hb : sg_hb_L09 ;
+
+/* HEARTBEAT us, sg Length Options - always 9 bytes */
+us_hb_L09 : len_L09 us_ICSSC v2_hb_ID v2_hb_PL_L09 ;
+sg_hb_L09 : len_L09 sg_ICSSC v2_hb_ID v2_hb_PL_L09 ;
+
+
+/* HEARTBEAT Payloads */
+/* v1 HEARTBEAT PAYLOAD - payload always 9 bytes */
+v1_hb_PL : hb_PL_cust hb_PL_type hb_PL_auto hb_PL_base hb_PL_stat hb_PL_mvrs ;
+
+/* v2 HEARTBEAT PAYLOAD - payload always 9 bytes */
+v2_hb_PL_L09 : hb_PL_cust hb_PL_type hb_PL_auto hb_PL_base hb_PL_stat hb_PL_mvrs ;
+
+/* HEARTBEAT Payload Fields */
+hb_PL_cust : allhex4b ;
+hb_PL_type : [ '\x00' - '\x31' ] ;
+hb_PL_auto : [ '\x00' - '\x14' ] ;
+hb_PL_base : allhex1b ;
+hb_PL_stat : [ '\x00' - '\x08' ] ;
+hb_PL_mvrs : allhex1b ;
+
+v1_hb_ID : '\x00' ;
+v2_hb_ID : '\x00' '\x00' '\x00' ;
+
+/* -------------------------------------------------------------- */
+/* END HEARTBEAT (0) MESSAGE */
+/* -------------------------------------------------------------- */
+
+/* -------------------------------------------------------------- */
+/* Common Ranges and Enumerations */
+/* -------------------------------------------------------------- */
+
+/* Header fields */
+stx_v1 : '\xFE' ;
+stx_v2 : '\xFD' ;
+
+/*       sequence systemID  compID    */
+v1_SSC : allhex1b nonzero1b nonzero1b ;
+
+/*         inc    cmp      sequence systemID  compID */
+us_ICSSC : '\x00' allhex1b allhex1b nonzero1b nonzero1b ;
+sg_ICSSC : '\x01' allhex1b allhex1b nonzero1b nonzero1b ;
+
+crc : allhex2b ;
+sig : allhex4b allhex4b allhex4b allhex1b ;
+
+/* Numbers and ranges */
+len_L09 : '\x09' ;
+
+allhex4b : allhex1b allhex1b allhex1b allhex1b ;
+allhex2b : allhex1b allhex1b ;
+allhex1b : [ '\x00' - '\xFF' ] ;
+
+nonzero1b : [ '\x01' - '\xFF' ] ;
+
