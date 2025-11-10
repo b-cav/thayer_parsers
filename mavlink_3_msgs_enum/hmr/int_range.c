@@ -119,18 +119,16 @@ HParser *init_parser() {
     H_RULE(ss_PL_ocsp, allhex4b);
     H_RULE(ss_PL_ocse, allhex4b);
     H_RULE(ss_PL_ocsh, allhex4b);
-    H_RULE(ss_PL_load, h_choice(h_sequence(h_ch_range(0x00, 0x02), h_ch_range(0x00, 0xFF), NULL),
-                                h_sequence(h_ch(0x03), h_ch_range(0x00, 0xE8), NULL), NULL)); /* 0x0000 to 0x03E8 uint16 0 to 1000*/
-    H_RULE(ss_PL_vbat, allhex2b); /* 0x0000 to 0xFFFE*/
-    H_RULE(ss_PL_cbat, allhex2b);
-    H_RULE(ss_PL_drc,  h_choice(h_sequence(h_ch_range(0x00, 0x02), h_ch_range(0x00, 0xFF), NULL),
-                                h_sequence(h_ch(0x03), h_ch_range(0x00, 0xE8), NULL), NULL)); /* 0x0000 to 0x03E8 uint16 0 to 10000 */
+    H_RULE(ss_PL_load, h_int_range(h_uint16(), 0, 1000));
+    H_RULE(ss_PL_vbat, h_int_range(h_uint16(), 0, 65534));
+    H_RULE(ss_PL_cbat, allhex2b); /* Battery current, in 10x milliamperes (1 means 10 milliampere), -1 means autopilot does not measure the current */
+    H_RULE(ss_PL_drc,  h_int_range(h_uint16(), 0, 10000)); /* Comm drops in pct, (0pct is 0, 100pct is 10000), (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) */
     H_RULE(ss_PL_errc, allhex2b);
     H_RULE(ss_PL_cnt1, allhex2b);
     H_RULE(ss_PL_cnt2, allhex2b);
     H_RULE(ss_PL_cnt3, allhex2b);
     H_RULE(ss_PL_cnt4, allhex2b);
-    H_RULE(ss_PL_batr, h_choice(h_ch_range(0x00, 0x64), h_ch(0xFF), NULL)); /* 0x00 to 0x64 or 0xFF int8 0-100 or -1 */
+    H_RULE(ss_PL_batr, h_choice(h_int_range(h_int8(), 0, 100), h_ch(0xFF), NULL)); /* Remaining battery energy (0pct is 0, 100pct is 100), -1 means autopilot estimate not sent */
 
     /* SYS_STATUS v1/v2 Payloads */
     /* v1 SYS_STATUS PAYLOAD - payload always 31 bytes */
@@ -264,9 +262,8 @@ HParser *init_parser() {
     H_RULE(hud_PL_gspd, allhex4b);
     H_RULE(hud_PL_alt,  allhex4b);
     H_RULE(hud_PL_clmb, allhex4b);
-    H_RULE(hud_PL_hdng, h_choice(h_sequence(h_ch(0x00), h_ch_range(0x00, 0xFF), NULL),
-                                 h_sequence(h_ch(0x01), h_ch_range(0x00, 0x68), NULL), NULL)); /* 0x0000 to 0x0168 int16 0 to 360 */
-    H_RULE(hud_PL_thtl, h_sequence(h_ch(0x00), h_ch_range(0x00, 0x64), NULL));
+    H_RULE(hud_PL_hdng, h_int_range(h_int16(), 0, 360));
+    H_RULE(hud_PL_thtl, h_int_range(h_uint16(), 0, 100));
 
     /* VFR_HUD v1/v2 Payloads */
     /* v1 VFR_HUD PAYLOAD - payload always 20 bytes */
@@ -366,7 +363,10 @@ HParser *init_parser() {
     /* Top-level MAVLink structures */
     /* -------------------------------------------------------------- */
     /* Message is either v1, v2 signed, or v2 unsigned */
-    H_RULE(message, h_choice(msg_v1, msg_sg, msg_us, NULL));
+    H_RULE(msg_v2, h_choice(msg_sg, msg_us, NULL));
+
+    /* Message is either MAVLink v1 or MAVLink v2 */
+    H_RULE(message, h_choice(msg_v1, msg_v2, NULL));
 
     mav_3_enum_parser = h_sequence(message, h_end_p(), NULL);
 

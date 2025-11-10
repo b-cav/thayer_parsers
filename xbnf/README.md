@@ -21,7 +21,7 @@ __'little_endian(\<integer\>, \<type\>)'__ -- Signifying an integer in little-en
 
 ## Usage: xbnf \<infile\> [ -h -d -o \<outfile\>]
 
-Parses the input grammer in _\<infile\>_ and produces a Bison grammar in
+Parses the input grammar in _\<infile\>_ and produces a Bison grammar in
 _\<outfile\>_ (default: _output.y_). The output of xbnf is a Bison grammar
 that can be fed to Bison directly. Flags: -h provides usage, -d passed on to bison.
 
@@ -51,5 +51,5 @@ __P : ['uint16(0)' - 'uint16(10)'] ;__ -- accepts any unsigned 16 bit integer wi
 
 __P : ['little_endian(-5, int32)' - 'little_endian(10, int32)'] ;__ -- accepts any signed 32 bit integer with values between -5 and 10 in little-endian representation.
 
-Note that whitespace is allowed in any range or enumeration amd fixed width ingeters are not accepted in enumerations.
+Note that whitespace is allowed in any range or enumeration amd fixed width integers are not accepted in enumerations.
 

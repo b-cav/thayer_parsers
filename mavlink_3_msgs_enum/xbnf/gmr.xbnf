@@ -1,10 +1,7 @@
 P : message ;
 
-/* Message is either MAVLink v1 or MAVLink v2 */
-message : msg_v1 | msg_v2 ;
-
-/* Message is either v1, v2 signed, or v2 unsigned */
-msg_v2 : msg_sg | msg_us ;
+/* Message is either MAVLink v1, v2 signed, or v2 unsigned */
+message : msg_v1 | msg_sg | msg_us ;
 
 /* This grammar supports MAVLink HEARTBEAT, SYS_STATUS, and VFR_HUD messages */
 msg_v1 : stx_v1 msg_v1_opts crc ;
