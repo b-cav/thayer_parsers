@@ -693,7 +693,7 @@ static const ERD ss_PL_batr_ss_PL_L31_t_ERD = {
         "ss_PL_batr", // namedQName.local
         NULL, // namedQName.ns
     },
-    PRIMITIVE_UINT8, // typeCode
+    PRIMITIVE_INT8, // typeCode
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
@@ -867,7 +867,7 @@ static const ERD hud_PL_hdng_hud_PL_L20_t_ERD = {
         "hud_PL_hdng", // namedQName.local
         NULL, // namedQName.ns
     },
-    PRIMITIVE_UINT16, // typeCode
+    PRIMITIVE_INT16, // typeCode
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
@@ -877,7 +877,7 @@ static const ERD hud_PL_thtl_hud_PL_L20_t_ERD = {
         "hud_PL_thtl", // namedQName.local
         NULL, // namedQName.ns
     },
-    PRIMITIVE_UINT8, // typeCode
+    PRIMITIVE_UINT16, // typeCode
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
@@ -2784,10 +2784,10 @@ static const ERD ss_PL_cbat_ss_PL_L19_t_ERD = {
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
-static const ERD ss_PL_drc_ss_PL_L19_t_ERD = {
+static const ERD ss_PL_drc_1b_ss_PL_L19_t_ERD = {
     {
         NULL, // namedQName.prefix
-        "ss_PL_drc", // namedQName.local
+        "ss_PL_drc_1b", // namedQName.local
         NULL, // namedQName.ns
     },
     PRIMITIVE_UINT8, // typeCode
@@ -2803,7 +2803,7 @@ static const size_t M2_ss_PL_L19_M2_ss_PL_t__childrenOffsets[7] = {
     (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets.ss_PL_load - (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets,
     (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets.ss_PL_vbat - (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets,
     (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets.ss_PL_cbat - (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets,
-    (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets.ss_PL_drc - (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets
+    (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets.ss_PL_drc_1b - (const char *)&M2_ss_PL_L19_M2_ss_PL_t__compute_offsets
 };
 
 static const ERD *const M2_ss_PL_L19_M2_ss_PL_t__childrenERDs[7] = {
@@ -2813,7 +2813,7 @@ static const ERD *const M2_ss_PL_L19_M2_ss_PL_t__childrenERDs[7] = {
     &ss_PL_load_ss_PL_L19_t_ERD,
     &ss_PL_vbat_ss_PL_L19_t_ERD,
     &ss_PL_cbat_ss_PL_L19_t_ERD,
-    &ss_PL_drc_ss_PL_L19_t_ERD
+    &ss_PL_drc_1b_ss_PL_L19_t_ERD
 };
 
 static const ERD M2_ss_PL_L19_M2_ss_PL_t_ERD = {
@@ -6146,7 +6146,7 @@ static const ERD hud_PL_hdng_1b_hud_PL_L17_t_ERD = {
         "hud_PL_hdng_1b", // namedQName.local
         NULL, // namedQName.ns
     },
-    PRIMITIVE_HEXBINARY, // typeCode
+    PRIMITIVE_INT8, // typeCode
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
@@ -6254,7 +6254,7 @@ static const ERD hud_PL_hdng_hud_PL_L18_t_ERD = {
         "hud_PL_hdng", // namedQName.local
         NULL, // namedQName.ns
     },
-    PRIMITIVE_UINT16, // typeCode
+    PRIMITIVE_INT16, // typeCode
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
@@ -6362,7 +6362,7 @@ static const ERD hud_PL_hdng_hud_PL_L19_t_ERD = {
         "hud_PL_hdng", // namedQName.local
         NULL, // namedQName.ns
     },
-    PRIMITIVE_UINT16, // typeCode
+    PRIMITIVE_INT16, // typeCode
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
@@ -6372,7 +6372,7 @@ static const ERD hud_PL_thtl_1b_hud_PL_L19_t_ERD = {
         "hud_PL_thtl_1b", // namedQName.local
         NULL, // namedQName.ns
     },
-    PRIMITIVE_HEXBINARY, // typeCode
+    PRIMITIVE_UINT8, // typeCode
     0, NULL, NULL, NULL, NULL, {NULL}
 };
 
@@ -6753,17 +6753,17 @@ M2_hb_L09_hb_PL_t__parseSelf(M2_hb_L09_hb_PL_t_ *instance, PState *pstate)
 {
     parse_hexBinary(&instance->hb_PL_cust, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->hb_PL_type, 8, pstate);
+    parse_le_uint8(&instance->hb_PL_type, 8, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->hb_PL_type <= 49, "hb_PL_type", &pstate->pu);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->hb_PL_auto, 8, pstate);
+    parse_le_uint8(&instance->hb_PL_auto, 8, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->hb_PL_auto <= 20, "hb_PL_auto", &pstate->pu);
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->hb_PL_base, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->hb_PL_stat, 8, pstate);
+    parse_le_uint8(&instance->hb_PL_stat, 8, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->hb_PL_stat <= 8, "hb_PL_stat", &pstate->pu);
     if (pstate->pu.error) return;
@@ -6776,17 +6776,17 @@ M2_hb_L09_hb_PL_t__unparseSelf(const M2_hb_L09_hb_PL_t_ *instance, UState *ustat
 {
     unparse_hexBinary(instance->hb_PL_cust, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->hb_PL_type, 8, ustate);
+    unparse_le_uint8(instance->hb_PL_type, 8, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->hb_PL_type <= 49, "hb_PL_type", &ustate->pu);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->hb_PL_auto, 8, ustate);
+    unparse_le_uint8(instance->hb_PL_auto, 8, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->hb_PL_auto <= 20, "hb_PL_auto", &ustate->pu);
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->hb_PL_base, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->hb_PL_stat, 8, ustate);
+    unparse_le_uint8(instance->hb_PL_stat, 8, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->hb_PL_stat <= 8, "hb_PL_stat", &ustate->pu);
     if (ustate->pu.error) return;
@@ -6958,7 +6958,7 @@ M1_ss_PL_L31_M1_ss_PL_t__parseSelf(M1_ss_PL_L31_M1_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -6966,7 +6966,7 @@ M1_ss_PL_L31_M1_ss_PL_t__parseSelf(M1_ss_PL_L31_M1_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -6980,9 +6980,9 @@ M1_ss_PL_L31_M1_ss_PL_t__parseSelf(M1_ss_PL_L31_M1_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cnt4, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->ss_PL_batr, 8, pstate);
+    parse_le_int8(&instance->ss_PL_batr, 8, pstate);
     if (pstate->pu.error) return;
-    validate_schema_range(instance->ss_PL_batr <= 100, "ss_PL_batr", &pstate->pu);
+    validate_schema_range(instance->ss_PL_batr >= -1 && instance->ss_PL_batr <= 100, "ss_PL_batr", &pstate->pu);
     if (pstate->pu.error) return;
 }
 
@@ -6995,7 +6995,7 @@ M1_ss_PL_L31_M1_ss_PL_t__unparseSelf(const M1_ss_PL_L31_M1_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -7003,7 +7003,7 @@ M1_ss_PL_L31_M1_ss_PL_t__unparseSelf(const M1_ss_PL_L31_M1_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -7017,9 +7017,9 @@ M1_ss_PL_L31_M1_ss_PL_t__unparseSelf(const M1_ss_PL_L31_M1_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cnt4, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->ss_PL_batr, 8, ustate);
+    unparse_le_int8(instance->ss_PL_batr, 8, ustate);
     if (ustate->pu.error) return;
-    validate_schema_range(instance->ss_PL_batr <= 100, "ss_PL_batr", &ustate->pu);
+    validate_schema_range(instance->ss_PL_batr >= -1 && instance->ss_PL_batr <= 100, "ss_PL_batr", &ustate->pu);
     if (ustate->pu.error) return;
 }
 
@@ -7064,7 +7064,7 @@ array_M1_ss_PL_L31_M1_ss_PL_t_M1_ss_PL_M1_t__unparseSelf(const M1_ss_PL_M1_t_ *i
 static size_t
 array_M1_ss_PL_L31_M1_ss_PL_t_M1_ss_PL_M1_t__getArraySize(const M1_ss_PL_M1_t_ *instance)
 {
-if (((M1_message_t_ *)instance->_base.parent)->len.array[0] == 0x31) {
+if (((M1_message_t_ *)instance->_base.parent)->len.array[0] == 0x1F) {
     return(1);
 } else {
     return(0);
@@ -7171,11 +7171,11 @@ M1_hud_PL_L20_M1_hud_PL_t__parseSelf(M1_hud_PL_L20_M1_hud_PL_t_ *instance, PStat
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->hud_PL_clmb, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->hud_PL_hdng, 16, pstate);
+    parse_le_int16(&instance->hud_PL_hdng, 16, pstate);
     if (pstate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->hud_PL_thtl, 8, pstate);
+    parse_le_uint16(&instance->hud_PL_thtl, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->hud_PL_thtl <= 100, "hud_PL_thtl", &pstate->pu);
     if (pstate->pu.error) return;
@@ -7192,11 +7192,11 @@ M1_hud_PL_L20_M1_hud_PL_t__unparseSelf(const M1_hud_PL_L20_M1_hud_PL_t_ *instanc
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->hud_PL_clmb, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->hud_PL_hdng, 16, ustate);
+    unparse_le_int16(instance->hud_PL_hdng, 16, ustate);
     if (ustate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->hud_PL_thtl, 8, ustate);
+    unparse_le_uint16(instance->hud_PL_thtl, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->hud_PL_thtl <= 100, "hud_PL_thtl", &ustate->pu);
     if (ustate->pu.error) return;
@@ -7243,7 +7243,7 @@ array_M1_hud_PL_L20_M1_hud_PL_t_M1_hud_PL_M1_t__unparseSelf(const M1_hud_PL_M1_t
 static size_t
 array_M1_hud_PL_L20_M1_hud_PL_t_M1_hud_PL_M1_t__getArraySize(const M1_hud_PL_M1_t_ *instance)
 {
-if (((M1_message_t_ *)instance->_base.parent)->len.array[0] == 0x20) {
+if (((M1_message_t_ *)instance->_base.parent)->len.array[0] == 0x14) {
     return(1);
 } else {
     return(0);
@@ -8337,7 +8337,7 @@ array_M2_ss_PL_L10_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L10_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x10) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0A) {
     return(1);
 } else {
     return(0);
@@ -8423,7 +8423,7 @@ array_M2_ss_PL_L11_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L11_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x11) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0B) {
     return(1);
 } else {
     return(0);
@@ -8509,7 +8509,7 @@ array_M2_ss_PL_L12_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L12_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x12) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0C) {
     return(1);
 } else {
     return(0);
@@ -8546,10 +8546,6 @@ M2_ss_PL_L13_M2_ss_PL_t__parseSelf(M2_ss_PL_L13_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_load_1b, pstate);
     if (pstate->pu.error) return;
-    uint8_t arrays_ss_PL_load_1b[][1] = {{0x00}, {0x01}, {0x02}, {0x03}};
-    HexBinary enums_ss_PL_load_1b[] = {{arrays_ss_PL_load_1b[0], 1, false}, {arrays_ss_PL_load_1b[1], 1, false}, {arrays_ss_PL_load_1b[2], 1, false}, {arrays_ss_PL_load_1b[3], 1, false}};
-    validate_hexbinary_enumeration(&instance->ss_PL_load_1b, 4, enums_ss_PL_load_1b, "ss_PL_load_1b", &pstate->pu);
-    if (pstate->pu.error) return;
 }
 
 static void
@@ -8562,10 +8558,6 @@ M2_ss_PL_L13_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L13_M2_ss_PL_t_ *instance, U
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_load_1b, ustate);
-    if (ustate->pu.error) return;
-    uint8_t arrays_ss_PL_load_1b[][1] = {{0x00}, {0x01}, {0x02}, {0x03}};
-    HexBinary enums_ss_PL_load_1b[] = {{arrays_ss_PL_load_1b[0], 1, false}, {arrays_ss_PL_load_1b[1], 1, false}, {arrays_ss_PL_load_1b[2], 1, false}, {arrays_ss_PL_load_1b[3], 1, false}};
-    validate_hexbinary_enumeration(&instance->ss_PL_load_1b, 4, enums_ss_PL_load_1b, "ss_PL_load_1b", &ustate->pu);
     if (ustate->pu.error) return;
 }
 
@@ -8610,7 +8602,7 @@ array_M2_ss_PL_L13_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L13_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x13) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0D) {
     return(1);
 } else {
     return(0);
@@ -8642,7 +8634,7 @@ M2_ss_PL_L14_M2_ss_PL_t__parseSelf(M2_ss_PL_L14_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -8657,7 +8649,7 @@ M2_ss_PL_L14_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L14_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -8704,7 +8696,7 @@ array_M2_ss_PL_L14_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L14_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x14) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0E) {
     return(1);
 } else {
     return(0);
@@ -8739,7 +8731,7 @@ M2_ss_PL_L15_M2_ss_PL_t__parseSelf(M2_ss_PL_L15_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -8756,7 +8748,7 @@ M2_ss_PL_L15_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L15_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -8805,7 +8797,7 @@ array_M2_ss_PL_L15_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L15_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x15) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0F) {
     return(1);
 } else {
     return(0);
@@ -8840,7 +8832,7 @@ M2_ss_PL_L16_M2_ss_PL_t__parseSelf(M2_ss_PL_L16_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -8857,7 +8849,7 @@ M2_ss_PL_L16_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L16_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -8906,7 +8898,7 @@ array_M2_ss_PL_L16_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L16_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x16) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x10) {
     return(1);
 } else {
     return(0);
@@ -8944,7 +8936,7 @@ M2_ss_PL_L17_M2_ss_PL_t__parseSelf(M2_ss_PL_L17_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -8963,7 +8955,7 @@ M2_ss_PL_L17_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L17_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9014,7 +9006,7 @@ array_M2_ss_PL_L17_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L17_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x17) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x11) {
     return(1);
 } else {
     return(0);
@@ -9052,7 +9044,7 @@ M2_ss_PL_L18_M2_ss_PL_t__parseSelf(M2_ss_PL_L18_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9071,7 +9063,7 @@ M2_ss_PL_L18_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L18_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9122,7 +9114,7 @@ array_M2_ss_PL_L18_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L18_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x18) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x12) {
     return(1);
 } else {
     return(0);
@@ -9160,7 +9152,7 @@ M2_ss_PL_L19_M2_ss_PL_t__parseSelf(M2_ss_PL_L19_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9168,9 +9160,7 @@ M2_ss_PL_L19_M2_ss_PL_t__parseSelf(M2_ss_PL_L19_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->ss_PL_drc, 8, pstate);
-    if (pstate->pu.error) return;
-    validate_schema_range(instance->ss_PL_drc <= 39, "ss_PL_drc", &pstate->pu);
+    parse_le_uint8(&instance->ss_PL_drc_1b, 8, pstate);
     if (pstate->pu.error) return;
 }
 
@@ -9183,7 +9173,7 @@ M2_ss_PL_L19_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L19_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9191,9 +9181,7 @@ M2_ss_PL_L19_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L19_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->ss_PL_drc, 8, ustate);
-    if (ustate->pu.error) return;
-    validate_schema_range(instance->ss_PL_drc <= 39, "ss_PL_drc", &ustate->pu);
+    unparse_le_uint8(instance->ss_PL_drc_1b, 8, ustate);
     if (ustate->pu.error) return;
 }
 
@@ -9238,7 +9226,7 @@ array_M2_ss_PL_L19_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L19_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x19) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x13) {
     return(1);
 } else {
     return(0);
@@ -9276,7 +9264,7 @@ M2_ss_PL_L20_M2_ss_PL_t__parseSelf(M2_ss_PL_L20_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9284,7 +9272,7 @@ M2_ss_PL_L20_M2_ss_PL_t__parseSelf(M2_ss_PL_L20_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9299,7 +9287,7 @@ M2_ss_PL_L20_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L20_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9307,7 +9295,7 @@ M2_ss_PL_L20_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L20_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9354,7 +9342,7 @@ array_M2_ss_PL_L20_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L20_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x20) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x14) {
     return(1);
 } else {
     return(0);
@@ -9395,7 +9383,7 @@ M2_ss_PL_L21_M2_ss_PL_t__parseSelf(M2_ss_PL_L21_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9403,7 +9391,7 @@ M2_ss_PL_L21_M2_ss_PL_t__parseSelf(M2_ss_PL_L21_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9420,7 +9408,7 @@ M2_ss_PL_L21_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L21_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9428,7 +9416,7 @@ M2_ss_PL_L21_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L21_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9477,7 +9465,7 @@ array_M2_ss_PL_L21_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L21_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x21) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x15) {
     return(1);
 } else {
     return(0);
@@ -9518,7 +9506,7 @@ M2_ss_PL_L22_M2_ss_PL_t__parseSelf(M2_ss_PL_L22_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9526,7 +9514,7 @@ M2_ss_PL_L22_M2_ss_PL_t__parseSelf(M2_ss_PL_L22_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9543,7 +9531,7 @@ M2_ss_PL_L22_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L22_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9551,7 +9539,7 @@ M2_ss_PL_L22_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L22_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9600,7 +9588,7 @@ array_M2_ss_PL_L22_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L22_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x22) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x16) {
     return(1);
 } else {
     return(0);
@@ -9644,7 +9632,7 @@ M2_ss_PL_L23_M2_ss_PL_t__parseSelf(M2_ss_PL_L23_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9652,7 +9640,7 @@ M2_ss_PL_L23_M2_ss_PL_t__parseSelf(M2_ss_PL_L23_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9671,7 +9659,7 @@ M2_ss_PL_L23_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L23_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9679,7 +9667,7 @@ M2_ss_PL_L23_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L23_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9730,7 +9718,7 @@ array_M2_ss_PL_L23_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L23_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x23) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x17) {
     return(1);
 } else {
     return(0);
@@ -9774,7 +9762,7 @@ M2_ss_PL_L24_M2_ss_PL_t__parseSelf(M2_ss_PL_L24_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9782,7 +9770,7 @@ M2_ss_PL_L24_M2_ss_PL_t__parseSelf(M2_ss_PL_L24_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9801,7 +9789,7 @@ M2_ss_PL_L24_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L24_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9809,7 +9797,7 @@ M2_ss_PL_L24_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L24_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9860,7 +9848,7 @@ array_M2_ss_PL_L24_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L24_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x24) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x18) {
     return(1);
 } else {
     return(0);
@@ -9907,7 +9895,7 @@ M2_ss_PL_L25_M2_ss_PL_t__parseSelf(M2_ss_PL_L25_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9915,7 +9903,7 @@ M2_ss_PL_L25_M2_ss_PL_t__parseSelf(M2_ss_PL_L25_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -9936,7 +9924,7 @@ M2_ss_PL_L25_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L25_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9944,7 +9932,7 @@ M2_ss_PL_L25_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L25_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -9997,7 +9985,7 @@ array_M2_ss_PL_L25_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L25_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x25) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x19) {
     return(1);
 } else {
     return(0);
@@ -10044,7 +10032,7 @@ M2_ss_PL_L26_M2_ss_PL_t__parseSelf(M2_ss_PL_L26_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10052,7 +10040,7 @@ M2_ss_PL_L26_M2_ss_PL_t__parseSelf(M2_ss_PL_L26_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10073,7 +10061,7 @@ M2_ss_PL_L26_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L26_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10081,7 +10069,7 @@ M2_ss_PL_L26_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L26_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10134,7 +10122,7 @@ array_M2_ss_PL_L26_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L26_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x26) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x1A) {
     return(1);
 } else {
     return(0);
@@ -10184,7 +10172,7 @@ M2_ss_PL_L27_M2_ss_PL_t__parseSelf(M2_ss_PL_L27_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10192,7 +10180,7 @@ M2_ss_PL_L27_M2_ss_PL_t__parseSelf(M2_ss_PL_L27_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10215,7 +10203,7 @@ M2_ss_PL_L27_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L27_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10223,7 +10211,7 @@ M2_ss_PL_L27_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L27_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10278,7 +10266,7 @@ array_M2_ss_PL_L27_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L27_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x27) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x1B) {
     return(1);
 } else {
     return(0);
@@ -10328,7 +10316,7 @@ M2_ss_PL_L28_M2_ss_PL_t__parseSelf(M2_ss_PL_L28_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10336,7 +10324,7 @@ M2_ss_PL_L28_M2_ss_PL_t__parseSelf(M2_ss_PL_L28_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10359,7 +10347,7 @@ M2_ss_PL_L28_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L28_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10367,7 +10355,7 @@ M2_ss_PL_L28_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L28_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10422,7 +10410,7 @@ array_M2_ss_PL_L28_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L28_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x28) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x1C) {
     return(1);
 } else {
     return(0);
@@ -10475,7 +10463,7 @@ M2_ss_PL_L29_M2_ss_PL_t__parseSelf(M2_ss_PL_L29_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10483,7 +10471,7 @@ M2_ss_PL_L29_M2_ss_PL_t__parseSelf(M2_ss_PL_L29_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10508,7 +10496,7 @@ M2_ss_PL_L29_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L29_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10516,7 +10504,7 @@ M2_ss_PL_L29_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L29_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10573,7 +10561,7 @@ array_M2_ss_PL_L29_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L29_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x29) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x1D) {
     return(1);
 } else {
     return(0);
@@ -10626,7 +10614,7 @@ M2_ss_PL_L30_M2_ss_PL_t__parseSelf(M2_ss_PL_L30_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10634,7 +10622,7 @@ M2_ss_PL_L30_M2_ss_PL_t__parseSelf(M2_ss_PL_L30_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10659,7 +10647,7 @@ M2_ss_PL_L30_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L30_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10667,7 +10655,7 @@ M2_ss_PL_L30_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L30_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10724,7 +10712,7 @@ array_M2_ss_PL_L30_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L30_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x30) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x1E) {
     return(1);
 } else {
     return(0);
@@ -10777,7 +10765,7 @@ M2_ss_PL_L31_M2_ss_PL_t__parseSelf(M2_ss_PL_L31_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_ocsh, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_load, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_load, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10785,7 +10773,7 @@ M2_ss_PL_L31_M2_ss_PL_t__parseSelf(M2_ss_PL_L31_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cbat, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->ss_PL_drc, 16, pstate);
+    parse_le_uint16(&instance->ss_PL_drc, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &pstate->pu);
     if (pstate->pu.error) return;
@@ -10799,9 +10787,9 @@ M2_ss_PL_L31_M2_ss_PL_t__parseSelf(M2_ss_PL_L31_M2_ss_PL_t_ *instance, PState *p
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->ss_PL_cnt4, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->ss_PL_batr, 8, pstate);
+    parse_le_int8(&instance->ss_PL_batr, 8, pstate);
     if (pstate->pu.error) return;
-    validate_schema_range(instance->ss_PL_batr <= 100, "ss_PL_batr", &pstate->pu);
+    validate_schema_range(instance->ss_PL_batr >= -1 && instance->ss_PL_batr <= 100, "ss_PL_batr", &pstate->pu);
     if (pstate->pu.error) return;
 }
 
@@ -10814,7 +10802,7 @@ M2_ss_PL_L31_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L31_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_ocsh, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_load, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_load, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_load <= 1000, "ss_PL_load", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10822,7 +10810,7 @@ M2_ss_PL_L31_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L31_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cbat, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->ss_PL_drc, 16, ustate);
+    unparse_le_uint16(instance->ss_PL_drc, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->ss_PL_drc <= 10000, "ss_PL_drc", &ustate->pu);
     if (ustate->pu.error) return;
@@ -10836,9 +10824,9 @@ M2_ss_PL_L31_M2_ss_PL_t__unparseSelf(const M2_ss_PL_L31_M2_ss_PL_t_ *instance, U
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->ss_PL_cnt4, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->ss_PL_batr, 8, ustate);
+    unparse_le_int8(instance->ss_PL_batr, 8, ustate);
     if (ustate->pu.error) return;
-    validate_schema_range(instance->ss_PL_batr <= 100, "ss_PL_batr", &ustate->pu);
+    validate_schema_range(instance->ss_PL_batr >= -1 && instance->ss_PL_batr <= 100, "ss_PL_batr", &ustate->pu);
     if (ustate->pu.error) return;
 }
 
@@ -10883,7 +10871,7 @@ array_M2_ss_PL_L31_M2_ss_PL_t_M2_ss_PL_M2_t__unparseSelf(const M2_ss_PL_M2_t_ *i
 static size_t
 array_M2_ss_PL_L31_M2_ss_PL_t_M2_ss_PL_M2_t__getArraySize(const M2_ss_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x31) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x1F) {
     return(1);
 } else {
     return(0);
@@ -11879,7 +11867,7 @@ array_M2_hud_PL_L10_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L10_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x10) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0A) {
     return(1);
 } else {
     return(0);
@@ -11965,7 +11953,7 @@ array_M2_hud_PL_L11_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L11_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x11) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0B) {
     return(1);
 } else {
     return(0);
@@ -12051,7 +12039,7 @@ array_M2_hud_PL_L12_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L12_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x12) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0C) {
     return(1);
 } else {
     return(0);
@@ -12144,7 +12132,7 @@ array_M2_hud_PL_L13_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L13_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x13) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0D) {
     return(1);
 } else {
     return(0);
@@ -12237,7 +12225,7 @@ array_M2_hud_PL_L14_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L14_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x14) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0E) {
     return(1);
 } else {
     return(0);
@@ -12330,7 +12318,7 @@ array_M2_hud_PL_L15_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L15_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x15) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x0F) {
     return(1);
 } else {
     return(0);
@@ -12423,7 +12411,7 @@ array_M2_hud_PL_L16_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L16_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x16) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x10) {
     return(1);
 } else {
     return(0);
@@ -12447,9 +12435,6 @@ M2_hud_PL_L17_M2_hud_PL_t__initERD(M2_hud_PL_L17_M2_hud_PL_t_ *instance, Infoset
     instance->hud_PL_clmb.array = instance->_a_hud_PL_clmb;
     instance->hud_PL_clmb.lengthInBytes = sizeof(instance->_a_hud_PL_clmb);
     instance->hud_PL_clmb.dynamic = false;
-    instance->hud_PL_hdng_1b.array = instance->_a_hud_PL_hdng_1b;
-    instance->hud_PL_hdng_1b.lengthInBytes = sizeof(instance->_a_hud_PL_hdng_1b);
-    instance->hud_PL_hdng_1b.dynamic = false;
 }
 
 static void
@@ -12463,11 +12448,7 @@ M2_hud_PL_L17_M2_hud_PL_t__parseSelf(M2_hud_PL_L17_M2_hud_PL_t_ *instance, PStat
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->hud_PL_clmb, pstate);
     if (pstate->pu.error) return;
-    parse_hexBinary(&instance->hud_PL_hdng_1b, pstate);
-    if (pstate->pu.error) return;
-    uint8_t arrays_hud_PL_hdng_1b[][1] = {{0x00}, {0x01}};
-    HexBinary enums_hud_PL_hdng_1b[] = {{arrays_hud_PL_hdng_1b[0], 1, false}, {arrays_hud_PL_hdng_1b[1], 1, false}};
-    validate_hexbinary_enumeration(&instance->hud_PL_hdng_1b, 2, enums_hud_PL_hdng_1b, "hud_PL_hdng_1b", &pstate->pu);
+    parse_le_int8(&instance->hud_PL_hdng_1b, 8, pstate);
     if (pstate->pu.error) return;
 }
 
@@ -12482,11 +12463,7 @@ M2_hud_PL_L17_M2_hud_PL_t__unparseSelf(const M2_hud_PL_L17_M2_hud_PL_t_ *instanc
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->hud_PL_clmb, ustate);
     if (ustate->pu.error) return;
-    unparse_hexBinary(instance->hud_PL_hdng_1b, ustate);
-    if (ustate->pu.error) return;
-    uint8_t arrays_hud_PL_hdng_1b[][1] = {{0x00}, {0x01}};
-    HexBinary enums_hud_PL_hdng_1b[] = {{arrays_hud_PL_hdng_1b[0], 1, false}, {arrays_hud_PL_hdng_1b[1], 1, false}};
-    validate_hexbinary_enumeration(&instance->hud_PL_hdng_1b, 2, enums_hud_PL_hdng_1b, "hud_PL_hdng_1b", &ustate->pu);
+    unparse_le_int8(instance->hud_PL_hdng_1b, 8, ustate);
     if (ustate->pu.error) return;
 }
 
@@ -12531,7 +12508,7 @@ array_M2_hud_PL_L17_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L17_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x17) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x11) {
     return(1);
 } else {
     return(0);
@@ -12568,9 +12545,9 @@ M2_hud_PL_L18_M2_hud_PL_t__parseSelf(M2_hud_PL_L18_M2_hud_PL_t_ *instance, PStat
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->hud_PL_clmb, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->hud_PL_hdng, 16, pstate);
+    parse_le_int16(&instance->hud_PL_hdng, 16, pstate);
     if (pstate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
     if (pstate->pu.error) return;
 }
 
@@ -12585,9 +12562,9 @@ M2_hud_PL_L18_M2_hud_PL_t__unparseSelf(const M2_hud_PL_L18_M2_hud_PL_t_ *instanc
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->hud_PL_clmb, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->hud_PL_hdng, 16, ustate);
+    unparse_le_int16(instance->hud_PL_hdng, 16, ustate);
     if (ustate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
     if (ustate->pu.error) return;
 }
 
@@ -12632,7 +12609,7 @@ array_M2_hud_PL_L18_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L18_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x18) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x12) {
     return(1);
 } else {
     return(0);
@@ -12656,9 +12633,6 @@ M2_hud_PL_L19_M2_hud_PL_t__initERD(M2_hud_PL_L19_M2_hud_PL_t_ *instance, Infoset
     instance->hud_PL_clmb.array = instance->_a_hud_PL_clmb;
     instance->hud_PL_clmb.lengthInBytes = sizeof(instance->_a_hud_PL_clmb);
     instance->hud_PL_clmb.dynamic = false;
-    instance->hud_PL_thtl_1b.array = instance->_a_hud_PL_thtl_1b;
-    instance->hud_PL_thtl_1b.lengthInBytes = sizeof(instance->_a_hud_PL_thtl_1b);
-    instance->hud_PL_thtl_1b.dynamic = false;
 }
 
 static void
@@ -12672,15 +12646,11 @@ M2_hud_PL_L19_M2_hud_PL_t__parseSelf(M2_hud_PL_L19_M2_hud_PL_t_ *instance, PStat
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->hud_PL_clmb, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->hud_PL_hdng, 16, pstate);
+    parse_le_int16(&instance->hud_PL_hdng, 16, pstate);
     if (pstate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
     if (pstate->pu.error) return;
-    parse_hexBinary(&instance->hud_PL_thtl_1b, pstate);
-    if (pstate->pu.error) return;
-    uint8_t arrays_hud_PL_thtl_1b[][1] = {{0x00}};
-    HexBinary enums_hud_PL_thtl_1b[] = {{arrays_hud_PL_thtl_1b[0], 1, false}};
-    validate_hexbinary_enumeration(&instance->hud_PL_thtl_1b, 1, enums_hud_PL_thtl_1b, "hud_PL_thtl_1b", &pstate->pu);
+    parse_le_uint8(&instance->hud_PL_thtl_1b, 8, pstate);
     if (pstate->pu.error) return;
 }
 
@@ -12695,15 +12665,11 @@ M2_hud_PL_L19_M2_hud_PL_t__unparseSelf(const M2_hud_PL_L19_M2_hud_PL_t_ *instanc
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->hud_PL_clmb, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->hud_PL_hdng, 16, ustate);
+    unparse_le_int16(instance->hud_PL_hdng, 16, ustate);
     if (ustate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
     if (ustate->pu.error) return;
-    unparse_hexBinary(instance->hud_PL_thtl_1b, ustate);
-    if (ustate->pu.error) return;
-    uint8_t arrays_hud_PL_thtl_1b[][1] = {{0x00}};
-    HexBinary enums_hud_PL_thtl_1b[] = {{arrays_hud_PL_thtl_1b[0], 1, false}};
-    validate_hexbinary_enumeration(&instance->hud_PL_thtl_1b, 1, enums_hud_PL_thtl_1b, "hud_PL_thtl_1b", &ustate->pu);
+    unparse_le_uint8(instance->hud_PL_thtl_1b, 8, ustate);
     if (ustate->pu.error) return;
 }
 
@@ -12748,7 +12714,7 @@ array_M2_hud_PL_L19_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L19_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x19) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x13) {
     return(1);
 } else {
     return(0);
@@ -12785,11 +12751,11 @@ M2_hud_PL_L20_M2_hud_PL_t__parseSelf(M2_hud_PL_L20_M2_hud_PL_t_ *instance, PStat
     if (pstate->pu.error) return;
     parse_hexBinary(&instance->hud_PL_clmb, pstate);
     if (pstate->pu.error) return;
-    parse_be_uint16(&instance->hud_PL_hdng, 16, pstate);
+    parse_le_int16(&instance->hud_PL_hdng, 16, pstate);
     if (pstate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &pstate->pu);
     if (pstate->pu.error) return;
-    parse_be_uint8(&instance->hud_PL_thtl, 8, pstate);
+    parse_le_uint16(&instance->hud_PL_thtl, 16, pstate);
     if (pstate->pu.error) return;
     validate_schema_range(instance->hud_PL_thtl <= 100, "hud_PL_thtl", &pstate->pu);
     if (pstate->pu.error) return;
@@ -12806,11 +12772,11 @@ M2_hud_PL_L20_M2_hud_PL_t__unparseSelf(const M2_hud_PL_L20_M2_hud_PL_t_ *instanc
     if (ustate->pu.error) return;
     unparse_hexBinary(instance->hud_PL_clmb, ustate);
     if (ustate->pu.error) return;
-    unparse_be_uint16(instance->hud_PL_hdng, 16, ustate);
+    unparse_le_int16(instance->hud_PL_hdng, 16, ustate);
     if (ustate->pu.error) return;
-    validate_schema_range(instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
+    validate_schema_range(instance->hud_PL_hdng >= 0 && instance->hud_PL_hdng <= 360, "hud_PL_hdng", &ustate->pu);
     if (ustate->pu.error) return;
-    unparse_be_uint8(instance->hud_PL_thtl, 8, ustate);
+    unparse_le_uint16(instance->hud_PL_thtl, 16, ustate);
     if (ustate->pu.error) return;
     validate_schema_range(instance->hud_PL_thtl <= 100, "hud_PL_thtl", &ustate->pu);
     if (ustate->pu.error) return;
@@ -12857,7 +12823,7 @@ array_M2_hud_PL_L20_M2_hud_PL_t_M2_hud_PL_M2_t__unparseSelf(const M2_hud_PL_M2_t
 static size_t
 array_M2_hud_PL_L20_M2_hud_PL_t_M2_hud_PL_M2_t__getArraySize(const M2_hud_PL_M2_t_ *instance)
 {
-if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x20) {
+if (((M2_message_t_ *)instance->_base.parent)->len.array[0] == 0x14) {
     return(1);
 } else {
     return(0);

@@ -18,7 +18,8 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
   <xs:annotation>
     <xs:appinfo source="http://www.ogf.org/dfdl/">
       <dfdl:format ref="GeneralFormat" representation="binary"
-        lengthUnits="bytes" byteOrder="bigEndian"/>
+        lengthUnits="bytes" byteOrder="littleEndian"/>
+      <!-- Note M2 msgID is bigEndian so is read backwards -->
     </xs:appinfo>
   </xs:annotation>
 
@@ -60,24 +61,21 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
         <!-- MAVLink HEARTBEAT message payload -->
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <xs:element name="M1_hb_PL" type="hb_PL_t"
-          minOccurs="0" maxOccurs="1"
-          dfdl:occursCountKind="expression"
+          minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
           dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('00')) then 1 else 0 }" />
 
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <!-- MAVLink SYS_STATUS message payload -->
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <xs:element name="M1_ss_PL" type="M1_ss_PL_t"
-          minOccurs="0" maxOccurs="1"
-          dfdl:occursCountKind="expression"
+          minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
           dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('01')) then 1 else 0 }" />
 
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <!-- MAVLink VFR_HUD message payload -->
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <xs:element name="M1_hud_PL" type="M1_hud_PL_t"
-          minOccurs="0" maxOccurs="1"
-          dfdl:occursCountKind="expression"
+          minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
           dfdl:occursCount="{ if (../M1_msgid eq xs:hexBinary('4A')) then 1 else 0 }" />
       </xs:sequence>
 
@@ -98,7 +96,6 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
       <xs:element name="sysid" type="sysid_t"/>
       <xs:element name="compid" type="compid_t"/>
       <xs:element name="M2_msgid" type="M2_msgid_t"/>
-
       <xs:sequence>
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <!-- MAVLink HEARTBEAT message payload -->
@@ -176,136 +173,104 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <xs:complexType name="M1_ss_PL_t"> <xs:sequence>
     <xs:element name="M1_ss_PL_L31" type="ss_PL_L31_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('31')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('1F')) then 1 else 0 }" />
   </xs:sequence> </xs:complexType>
 
   <xs:complexType name="M2_ss_PL_t"> <xs:sequence>
     <xs:element name="M2_ss_PL_L01" type="ss_PL_L01_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('01')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L02" type="ss_PL_L02_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('02')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L03" type="ss_PL_L03_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('03')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L04" type="ss_PL_L04_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('04')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L05" type="ss_PL_L05_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('05')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L06" type="ss_PL_L06_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('06')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L07" type="ss_PL_L07_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('07')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L08" type="ss_PL_L08_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('08')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L09" type="ss_PL_L09_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
       dfdl:occursCount="{ if (../../len eq xs:hexBinary('09')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L10" type="ss_PL_L10_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('10')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0A')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L11" type="ss_PL_L11_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('11')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0B')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L12" type="ss_PL_L12_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('12')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0C')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L13" type="ss_PL_L13_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('13')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0D')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L14" type="ss_PL_L14_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('14')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0E')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L15" type="ss_PL_L15_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('15')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0F')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L16" type="ss_PL_L16_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('16')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('10')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L17" type="ss_PL_L17_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('17')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('11')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L18" type="ss_PL_L18_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('18')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('12')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L19" type="ss_PL_L19_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('19')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('13')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L20" type="ss_PL_L20_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('20')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('14')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L21" type="ss_PL_L21_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('21')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('15')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L22" type="ss_PL_L22_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('22')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('16')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L23" type="ss_PL_L23_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('23')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('17')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L24" type="ss_PL_L24_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('24')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('18')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L25" type="ss_PL_L25_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('25')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('19')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L26" type="ss_PL_L26_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('26')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('1A')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L27" type="ss_PL_L27_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('27')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('1B')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L28" type="ss_PL_L28_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('28')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('1C')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L29" type="ss_PL_L29_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('29')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('1D')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L30" type="ss_PL_L30_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('30')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('1E')) then 1 else 0 }" />
     <xs:element name="M2_ss_PL_L31" type="ss_PL_L31_t"
-      minOccurs="0" maxOccurs="1"
-      dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('31')) then 1 else 0 }" />
+      minOccurs="0" maxOccurs="1" dfdl:occursCountKind="expression"
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('1F')) then 1 else 0 }" />
   </xs:sequence> </xs:complexType> 
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -376,9 +341,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="ss_PL_ocsp" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="ss_PL_ocse" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="ss_PL_ocsh" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
-    <xs:element name="ss_PL_load_1b"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="1">
-      <xs:restriction base="xs:hexBinary"> <xs:enumeration value="00"/> <xs:enumeration value="01"/>
-        <xs:enumeration value="02"/> <xs:enumeration value="03"/> </xs:restriction> </xs:simpleType> </xs:element>
+    <xs:element name="ss_PL_load_1b" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="1"/>
   </xs:sequence> </xs:complexType>
 
   <xs:complexType name="ss_PL_L14_t"> <xs:sequence>
@@ -441,9 +404,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
       </xs:restriction> </xs:simpleType> </xs:element>
     <xs:element name="ss_PL_vbat" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="2"/>
     <xs:element name="ss_PL_cbat" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="2"/>
-    <xs:element name="ss_PL_drc"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="1">
-      <xs:restriction base="xs:unsignedByte"> <xs:minInclusive value="0"/> <xs:maxInclusive value="39"/>
-      </xs:restriction> </xs:simpleType> </xs:element>
+    <xs:element name="ss_PL_drc_1b" type="xs:unsignedByte" dfdl:lengthKind="explicit" dfdl:length="1"/>
   </xs:sequence> </xs:complexType>
 
   <xs:complexType name="ss_PL_L20_t"> <xs:sequence>
@@ -648,7 +609,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="ss_PL_cnt3" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="2"/>
     <xs:element name="ss_PL_cnt4" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="2"/>
     <xs:element name="ss_PL_batr"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="1">
-      <xs:restriction base="xs:unsignedByte"> <xs:minInclusive value="0"/> <xs:maxInclusive value="100"/>
+      <xs:restriction base="xs:byte"> <xs:minInclusive value="-1"/> <xs:maxInclusive value="100"/>
       </xs:restriction> </xs:simpleType> </xs:element>
   </xs:sequence> </xs:complexType>
 
@@ -660,7 +621,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="M1_hud_PL_L20" type="hud_PL_L20_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('20')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('14')) then 1 else 0 }" />
   </xs:sequence> </xs:complexType>
 
   <xs:complexType name="M2_hud_PL_t"> <xs:sequence>
@@ -703,47 +664,47 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="M2_hud_PL_L10" type="hud_PL_L10_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('10')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0A')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L11" type="hud_PL_L11_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('11')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0B')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L12" type="hud_PL_L12_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('12')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0C')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L13" type="hud_PL_L13_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('13')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0D')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L14" type="hud_PL_L14_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('14')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0E')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L15" type="hud_PL_L15_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('15')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('0F')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L16" type="hud_PL_L16_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('16')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('10')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L17" type="hud_PL_L17_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('17')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('11')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L18" type="hud_PL_L18_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('18')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('12')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L19" type="hud_PL_L19_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('19')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('13')) then 1 else 0 }" />
     <xs:element name="M2_hud_PL_L20" type="hud_PL_L20_t"
       minOccurs="0" maxOccurs="1"
       dfdl:occursCountKind="expression"
-      dfdl:occursCount="{ if (../../len eq xs:hexBinary('20')) then 1 else 0 }" />
+      dfdl:occursCount="{ if (../../len eq xs:hexBinary('14')) then 1 else 0 }" />
   </xs:sequence> </xs:complexType>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -843,9 +804,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="hud_PL_gspd" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_alt" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_clmb" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
-    <xs:element name="hud_PL_hdng_1b"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="1">
-      <xs:restriction base="xs:hexBinary"> <xs:enumeration value="00"/> <xs:enumeration value="01"/>
-      </xs:restriction> </xs:simpleType> </xs:element>
+    <xs:element name="hud_PL_hdng_1b" type="xs:byte" dfdl:lengthKind="explicit" dfdl:length="1"/>
   </xs:sequence> </xs:complexType>
 
   <xs:complexType name="hud_PL_L18_t"> <xs:sequence>
@@ -854,7 +813,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="hud_PL_alt" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_clmb" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_hdng"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="2">
-      <xs:restriction base="xs:unsignedShort"> <xs:minInclusive value="0"/> <xs:maxInclusive value="360"/>
+      <xs:restriction base="xs:short"> <xs:minInclusive value="0"/> <xs:maxInclusive value="360"/>
       </xs:restriction> </xs:simpleType> </xs:element>
   </xs:sequence> </xs:complexType>
 
@@ -864,10 +823,9 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="hud_PL_alt" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_clmb" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_hdng"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="2">
-      <xs:restriction base="xs:unsignedShort"> <xs:minInclusive value="0"/> <xs:maxInclusive value="360"/>
+      <xs:restriction base="xs:short"> <xs:minInclusive value="0"/> <xs:maxInclusive value="360"/>
       </xs:restriction> </xs:simpleType> </xs:element>
-    <xs:element name="hud_PL_thtl_1b"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="1">
-      <xs:restriction base="xs:hexBinary"> <xs:enumeration value="00"/> </xs:restriction> </xs:simpleType> </xs:element>
+    <xs:element name="hud_PL_thtl_1b" type="xs:unsignedByte" dfdl:lengthKind="explicit" dfdl:length="1"/>
   </xs:sequence> </xs:complexType>
 
   <xs:complexType name="hud_PL_L20_t"> <xs:sequence>
@@ -876,10 +834,10 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
     <xs:element name="hud_PL_alt" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_clmb" type="xs:hexBinary" dfdl:lengthKind="explicit" dfdl:length="4"/>
     <xs:element name="hud_PL_hdng"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="2">
-      <xs:restriction base="xs:unsignedShort"> <xs:minInclusive value="0"/> <xs:maxInclusive value="360"/>
+      <xs:restriction base="xs:short"> <xs:minInclusive value="0"/> <xs:maxInclusive value="360"/>
       </xs:restriction> </xs:simpleType> </xs:element>
-    <xs:element name="hud_PL_thtl"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="1">
-      <xs:restriction base="xs:unsignedByte"> <xs:minInclusive value="0"/> <xs:maxInclusive value="100"/>
+    <xs:element name="hud_PL_thtl"> <xs:simpleType dfdl:lengthKind="explicit" dfdl:length="2">
+      <xs:restriction base="xs:unsignedShort"> <xs:minInclusive value="0"/> <xs:maxInclusive value="100"/>
       </xs:restriction> </xs:simpleType> </xs:element>
   </xs:sequence> </xs:complexType>
 
@@ -933,7 +891,7 @@ gmr.dfdl.xsd - XML Schema for MAVLINK HEARTBEAT message
       <xs:enumeration value="000000"/>
       <xs:enumeration value="010000"/>
       <xs:enumeration value="4A0000"/>
-    </xs:restriction>
+    </xs:restriction> 
   </xs:simpleType>
 
   <xs:simpleType name="checksum_t" dfdl:lengthKind="explicit" dfdl:length="2">

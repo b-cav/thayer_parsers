@@ -1,12 +1,12 @@
 /*
  * mavlink.c --- implementation of the functions described in mavlink.h
- * 
+ *
  * Author: Joshua M. Meise
  * Created: 06-27-2024
  * Version: 1.0
- * 
+ *
  * Description: Allows for data processing and test generation.
- * 
+ *
  */
 
 // Library inclusions.
@@ -72,7 +72,8 @@
 #define OPEN_DRONE_ID_LOCATION 12901
 #define OPEN_DRONE_ID_SYSTEM 12904
 
-#define HEARTBEAT_LEN 9
+#define HEARTBEAT_MIN_LEN 9
+#define HEARTBEAT_MAX_LEN 9
 #define SYS_STATUS_LEN 43
 #define SYSTEM_TIME_LEN 12
 #define PING_LEN 14
@@ -94,7 +95,7 @@
 #define MISSION_COUNT_LEN 9
 #define MISSION_CLEAR_ALL_LEN 3
 #define MISSION_ITEM_REACHED_LEN 2
-#define MISSION_ACK_LEN 8 
+#define MISSION_ACK_LEN 8
 #define GPS_GLOBAL_ORIGIN_LEN 20
 #define MISSION_REQUEST_INT_LEN 5
 #define RC_CHANNELS_LEN 42
@@ -386,9 +387,9 @@ static void printMessagePcap(pcapMessage_t *mess) {
             else if (i == 50) buf =  mess->mav.mav1.packetSeq;
             else if (i == 51) buf = mess->mav.mav1.systemID;
             else if (i == 52) buf = mess->mav.mav1.compID;
-            else if (i == 53) buf = mess->mav.mav1.messageID;		
+            else if (i == 53) buf = mess->mav.mav1.messageID;
             else if (i < 54 + payload) buf = mess->mav.mav1.payload[i - 54];
-            else buf = mess->mav.mav1.crc[i - 54 - payload];		
+            else buf = mess->mav.mav1.crc[i - 54 - payload];
         }
         else if (mav2 && i >= 48) {
             if (i == 48) buf = mess->mav.mav2.mavCode;
@@ -402,7 +403,7 @@ static void printMessagePcap(pcapMessage_t *mess) {
             else if (i == 52) buf = mess->mav.mav2.packetSeq;
             else if (i == 53) buf = mess->mav.mav2.systemID;
             else if (i == 54) buf = mess->mav.mav2.compID;
-            else if (i < 58) buf = mess->mav.mav2.messageID[i - 55];		
+            else if (i < 58) buf = mess->mav.mav2.messageID[i - 55];
             else if (i < 58 + payload) buf = mess->mav.mav2.payload[i - 58];
             else if (i < 60 + payload) buf = mess->mav.mav2.crc[i - 58 - payload];
             else buf = mess->mav.mav2.signature[i - 60 - payload];
@@ -461,9 +462,9 @@ static void printMessageMav(mavMessage_t *mess) {
             else if (i == 2) buf = mess->mav1.packetSeq;
             else if (i == 3) buf = mess->mav1.systemID;
             else if (i == 4) buf = mess->mav1.compID;
-            else if (i == 5) buf = mess->mav1.messageID;		
+            else if (i == 5) buf = mess->mav1.messageID;
             else if (i < 6 + payload) buf = mess->mav1.payload[i - 6];
-            else buf = mess->mav1.crc[i - 6 - payload];		
+            else buf = mess->mav1.crc[i - 6 - payload];
         }
         else if (mav2) {
             if (i == 0) buf = mess->mav2.mavCode;
@@ -477,7 +478,7 @@ static void printMessageMav(mavMessage_t *mess) {
             else if (i == 4) buf = mess->mav2.packetSeq;
             else if (i == 5) buf = mess->mav2.systemID;
             else if (i == 6) buf = mess->mav2.compID;
-            else if (i < 10) buf = mess->mav2.messageID[i - 7];		
+            else if (i < 10) buf = mess->mav2.messageID[i - 7];
             else if (i < 10 + payload) buf = mess->mav2.payload[i - 10];
             else if (i < 12 + payload) buf = mess->mav2.crc[i - 10 - payload];
             else buf = mess->mav2.signature[i - 12 - payload];
@@ -538,9 +539,9 @@ static void printMessageTlog(tlogMessage_t *mess) {
             else if (i == 10) buf =  mess->mav.mav1.packetSeq;
             else if (i == 11) buf = mess->mav.mav1.systemID;
             else if (i == 12) buf = mess->mav.mav1.compID;
-            else if (i == 13) buf = mess->mav.mav1.messageID;		
+            else if (i == 13) buf = mess->mav.mav1.messageID;
             else if (i < 14 + payload) buf = mess->mav.mav1.payload[i - 14];
-            else buf = mess->mav.mav1.crc[i - 14 - payload];		
+            else buf = mess->mav.mav1.crc[i - 14 - payload];
         }
         else if (mav2 && i >= 8) {
             if (i == 8) buf = mess->mav.mav2.mavCode;
@@ -554,7 +555,7 @@ static void printMessageTlog(tlogMessage_t *mess) {
             else if (i == 12) buf = mess->mav.mav2.packetSeq;
             else if (i == 13) buf = mess->mav.mav2.systemID;
             else if (i == 14) buf = mess->mav.mav2.compID;
-            else if (i < 18) buf = mess->mav.mav2.messageID[i - 15];		
+            else if (i < 18) buf = mess->mav.mav2.messageID[i - 15];
             else if (i < 18 + payload) buf = mess->mav.mav2.payload[i - 18];
             else if (i < 20 + payload) buf = mess->mav.mav2.crc[i - 18 - payload];
             else buf = mess->mav.mav2.signature[i - 20 - payload];
@@ -624,9 +625,9 @@ static void writeMessageToFilePcap(pcapMessage_t *mess, FILE *fp) {
             else if (i == 50) buf =  mess->mav.mav1.packetSeq;
             else if (i == 51) buf = mess->mav.mav1.systemID;
             else if (i == 52) buf = mess->mav.mav1.compID;
-            else if (i == 53) buf = mess->mav.mav1.messageID;		
+            else if (i == 53) buf = mess->mav.mav1.messageID;
             else if (i < 54 + payload) buf = mess->mav.mav1.payload[i - 54];
-            else buf = mess->mav.mav1.crc[i - 54 - payload];		
+            else buf = mess->mav.mav1.crc[i - 54 - payload];
         }
         else if (mav2 && i >= 48) {
             if (i == 48) buf = mess->mav.mav2.mavCode;
@@ -640,7 +641,7 @@ static void writeMessageToFilePcap(pcapMessage_t *mess, FILE *fp) {
             else if (i == 52) buf = mess->mav.mav2.packetSeq;
             else if (i == 53) buf = mess->mav.mav2.systemID;
             else if (i == 54) buf = mess->mav.mav2.compID;
-            else if (i < 58) buf = mess->mav.mav2.messageID[i - 55];		
+            else if (i < 58) buf = mess->mav.mav2.messageID[i - 55];
             else if (i < 58 + payload) buf = mess->mav.mav2.payload[i - 58];
             else if (i < 60 + payload) buf = mess->mav.mav2.crc[i - 58 - payload];
             else buf = mess->mav.mav2.signature[i - 60 - payload];
@@ -696,9 +697,9 @@ static void writeMessageToFileMav(mavMessage_t *mess, FILE *fp) {
             else if (i == 2) buf = mess->mav1.packetSeq;
             else if (i == 3) buf = mess->mav1.systemID;
             else if (i == 4) buf = mess->mav1.compID;
-            else if (i == 5) buf = mess->mav1.messageID;		
+            else if (i == 5) buf = mess->mav1.messageID;
             else if (i < 6 + payload) buf = mess->mav1.payload[i - 6];
-            else buf = mess->mav1.crc[i - 6 - payload];		
+            else buf = mess->mav1.crc[i - 6 - payload];
         }
         else if (mav2) {
             if (i == 0) buf = mess->mav2.mavCode;
@@ -712,7 +713,7 @@ static void writeMessageToFileMav(mavMessage_t *mess, FILE *fp) {
             else if (i == 4) buf = mess->mav2.packetSeq;
             else if (i == 5) buf = mess->mav2.systemID;
             else if (i == 6) buf = mess->mav2.compID;
-            else if (i < 10) buf = mess->mav2.messageID[i - 7];		
+            else if (i < 10) buf = mess->mav2.messageID[i - 7];
             else if (i < 10 + payload) buf = mess->mav2.payload[i - 10];
             else if (i < 12 + payload) buf = mess->mav2.crc[i - 10 - payload];
             else buf = mess->mav2.signature[i - 12 - payload];
@@ -745,7 +746,7 @@ static void writeAltFormatMessageToFileMav(mavMessage_t *mess, FILE *fp, int mav
 
     // Detect type of message.
     if (mavVersion == 1) mav1 = true;
-    else if (mavVersion == 2)	mav2 = true;
+    else if (mavVersion == 2)   mav2 = true;
 
     for (i = 0; i < numBytes; i++) {
         // Depending on the messsage type, set the respective fields.
@@ -755,7 +756,7 @@ static void writeAltFormatMessageToFileMav(mavMessage_t *mess, FILE *fp, int mav
             else if (i == 2) buf = mess->mav1.packetSeq;
             else if (i == 3) buf = mess->mav1.systemID;
             else if (i == 4) buf = mess->mav1.compID;
-            else if (i == 5) buf = mess->mav1.messageID;		
+            else if (i == 5) buf = mess->mav1.messageID;
             else if (i < 6 + payload) buf = mess->mav1.payload[i - 6];
             else if (i < 8 + payload) buf = mess->mav1.crc[i - 6 - payload];
             else buf = (uint8_t)(rand() % 256);
@@ -768,7 +769,7 @@ static void writeAltFormatMessageToFileMav(mavMessage_t *mess, FILE *fp, int mav
             else if (i == 4) buf = mess->mav2.packetSeq;
             else if (i == 5) buf = mess->mav2.systemID;
             else if (i == 6) buf = mess->mav2.compID;
-            else if (i < 10) buf = mess->mav2.messageID[i - 7];		
+            else if (i < 10) buf = mess->mav2.messageID[i - 7];
             else if (i < 10 + payload) buf = mess->mav2.payload[i - 10];
             else if (i < 12 + payload) buf = mess->mav2.crc[i - 10 - payload];
             else if (i < 14 + payload && mess->mav2.signedMess) buf = mess->mav2.signature[i - 12 - payload];
@@ -827,9 +828,9 @@ static void writeMessageToFileTlog(tlogMessage_t *mess, FILE *fp) {
             else if (i == 10) buf =  mess->mav.mav1.packetSeq;
             else if (i == 11) buf = mess->mav.mav1.systemID;
             else if (i == 12) buf = mess->mav.mav1.compID;
-            else if (i == 13) buf = mess->mav.mav1.messageID;		
+            else if (i == 13) buf = mess->mav.mav1.messageID;
             else if (i < 14 + payload) buf = mess->mav.mav1.payload[i - 14];
-            else buf = mess->mav.mav1.crc[i - 14 - payload];		
+            else buf = mess->mav.mav1.crc[i - 14 - payload];
         }
         else if (mav2 && i >= 8) {
             if (i == 8) buf = mess->mav.mav2.mavCode;
@@ -843,9 +844,9 @@ static void writeMessageToFileTlog(tlogMessage_t *mess, FILE *fp) {
             else if (i == 12) buf = mess->mav.mav2.packetSeq;
             else if (i == 13) buf = mess->mav.mav2.systemID;
             else if (i == 14) buf = mess->mav.mav2.compID;
-            else if (i < 18) buf = mess->mav.mav2.messageID[i - 15];		
+            else if (i < 18) buf = mess->mav.mav2.messageID[i - 15];
             else if (i < 18 + payload) buf = mess->mav.mav2.payload[i - 18];
-            else buf = mess->mav.mav2.crc[i - 18 - payload];		
+            else buf = mess->mav.mav2.crc[i - 18 - payload];
         }
 
         if (fwrite(&buf, sizeof(buf), 1, fp) != 1)
@@ -904,7 +905,7 @@ static mavMessage_t *tlogMessToMav(tlogMessage_t *tMess) {
                 if ((mess->mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
                     fprintf(stderr, "Memory allocation failed.\n");
                     return NULL;
-                }				
+                }
 
             }
             else if (i == 2) mess->mav1.packetSeq = tMess->mav.mav1.packetSeq;
@@ -912,7 +913,7 @@ static mavMessage_t *tlogMessToMav(tlogMessage_t *tMess) {
             else if (i == 4) mess->mav1.compID = tMess->mav.mav1.compID;
             else if (i == 5) mess->mav1.messageID = tMess->mav.mav1.messageID;
             else if (i < 6 + payload) mess->mav1.payload[i - 6] = tMess->mav.mav1.payload[i - 6];
-            else mess->mav1.crc[i - 6 - payload] = tMess->mav.mav1.crc[i - 6 - payload];		
+            else mess->mav1.crc[i - 6 - payload] = tMess->mav.mav1.crc[i - 6 - payload];
         }
         else if (mav2) {
             if (i == 0) {
@@ -993,7 +994,7 @@ static mavMessage_t *mavMessToMav(mavMessage_t *mMess) {
                 if ((mess->mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
                     fprintf(stderr, "Memory allocation failed.\n");
                     return NULL;
-                }				
+                }
 
             }
             else if (i == 2) mess->mav1.packetSeq = mMess->mav1.packetSeq;
@@ -1001,7 +1002,7 @@ static mavMessage_t *mavMessToMav(mavMessage_t *mMess) {
             else if (i == 4) mess->mav1.compID = mMess->mav1.compID;
             else if (i == 5) mess->mav1.messageID = mMess->mav1.messageID;
             else if (i < 6 + payload) mess->mav1.payload[i - 6] = mMess->mav1.payload[i - 6];
-            else mess->mav1.crc[i - 6 - payload] = mMess->mav1.crc[i - 6 - payload];		
+            else mess->mav1.crc[i - 6 - payload] = mMess->mav1.crc[i - 6 - payload];
         }
         else if (mav2) {
             if (i == 0) {
@@ -1114,7 +1115,7 @@ static pcapMessage_t *tlogMessToPcap(tlogMessage_t *tMess) {
     // Extract length of the MAVLink message
     mavLen = 0;
     if (tMess->mav.mav1.mavCode == 0xfe) mavLen = tMess->mav.mav1.payloadLen + 8;
-    else if (tMess->mav.mav2.mavCode == 0xfd)	mavLen = tMess->mav.mav2.payloadLen + 12;
+    else if (tMess->mav.mav2.mavCode == 0xfd)   mavLen = tMess->mav.mav2.payloadLen + 12;
 
     // Copy over all of the fields
     for (i = 0; i < mavLen; i++) {
@@ -1129,7 +1130,7 @@ static pcapMessage_t *tlogMessToPcap(tlogMessage_t *tMess) {
                 if ((mess->mav.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
                     fprintf(stderr, "Memory allocation failed.\n");
                     return NULL;
-                }				
+                }
 
             }
             else if (i == 2) mess->mav.mav1.packetSeq = tMess->mav.mav1.packetSeq;
@@ -1137,7 +1138,7 @@ static pcapMessage_t *tlogMessToPcap(tlogMessage_t *tMess) {
             else if (i == 4) mess->mav.mav1.compID = tMess->mav.mav1.compID;
             else if (i == 5) mess->mav.mav1.messageID = tMess->mav.mav1.messageID;
             else if (i < 6 + payload) mess->mav.mav1.payload[i - 6] = tMess->mav.mav1.payload[i - 6];
-            else mess->mav.mav1.crc[i - 6 - payload] = tMess->mav.mav1.crc[i - 6 - payload];		
+            else mess->mav.mav1.crc[i - 6 - payload] = tMess->mav.mav1.crc[i - 6 - payload];
         }
         else if (mav2) {
             if (i == 0) {
@@ -1252,7 +1253,7 @@ static pcapMessage_t *mavMessToPcap(mavMessage_t *mMess) {
     // Extract length of the MAVLink message
     mavLen = 0;
     if (mMess->mav1.mavCode == 0xfe) mavLen = mMess->mav1.payloadLen + 8;
-    else if (mMess->mav2.mavCode == 0xfd)	mavLen = mMess->mav2.payloadLen + 12;
+    else if (mMess->mav2.mavCode == 0xfd)       mavLen = mMess->mav2.payloadLen + 12;
 
     // Copy over all of the fields
     for (i = 0; i < mavLen; i++) {
@@ -1267,7 +1268,7 @@ static pcapMessage_t *mavMessToPcap(mavMessage_t *mMess) {
                 if ((mess->mav.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
                     fprintf(stderr, "Memory allocation failed.\n");
                     return NULL;
-                }				
+                }
 
             }
             else if (i == 2) mess->mav.mav1.packetSeq = mMess->mav1.packetSeq;
@@ -1275,7 +1276,7 @@ static pcapMessage_t *mavMessToPcap(mavMessage_t *mMess) {
             else if (i == 4) mess->mav.mav1.compID = mMess->mav1.compID;
             else if (i == 5) mess->mav.mav1.messageID = mMess->mav1.messageID;
             else if (i < 6 + payload) mess->mav.mav1.payload[i - 6] = mMess->mav1.payload[i - 6];
-            else mess->mav.mav1.crc[i - 6 - payload] = mMess->mav1.crc[i - 6 - payload];		
+            else mess->mav.mav1.crc[i - 6 - payload] = mMess->mav1.crc[i - 6 - payload];
         }
         else if (mav2) {
             if (i == 0) {
@@ -1358,7 +1359,7 @@ static mavMessage_t *pcapMessToMav(pcapMessage_t *pMess) {
                 if ((mess->mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
                     fprintf(stderr, "Memory allocation failed.\n");
                     return NULL;
-                }				
+                }
 
             }
             else if (i == 2) mess->mav1.packetSeq = pMess->mav.mav1.packetSeq;
@@ -1366,7 +1367,7 @@ static mavMessage_t *pcapMessToMav(pcapMessage_t *pMess) {
             else if (i == 4) mess->mav1.compID = pMess->mav.mav1.compID;
             else if (i == 5) mess->mav1.messageID = pMess->mav.mav1.messageID;
             else if (i < 6 + payload) mess->mav1.payload[i - 6] = pMess->mav.mav1.payload[i - 6];
-            else mess->mav1.crc[i - 6 - payload] = pMess->mav.mav1.crc[i - 6 - payload];		
+            else mess->mav1.crc[i - 6 - payload] = pMess->mav.mav1.crc[i - 6 - payload];
         }
         else if (mav2) {
             if (i == 0) {
@@ -1628,7 +1629,7 @@ static void generateEnumTests(int msgID, int ind, mavMessage_t mess, int maxLen,
         case HEARTBEAT:
             if (ind == 4) {
                 // Fill vector with enumerations
-                for (i = 0; i < 45; i++) {
+                for (i = 0; i < 50; i++) {
                     if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
                         fprintf(stderr, "Memory allocation failed.\n");
                         return;
@@ -2195,617 +2196,692 @@ static void generateEnumTests(int msgID, int ind, mavMessage_t mess, int maxLen,
                     if (vectorInsertBack(vec, (void *)ins) != 0)
                         fprintf(stderr, "Problem inserting value to vector.\n");
 }
-		}
-		else if (ind == 54) {
-			// Fill vector with enumerations
-			for (i = 0; i < 13; i++) {
-				if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
-					fprintf(stderr, "Memory allocation failed.\n");
-					return;
-				}
-				*ins = (uint8_t)i;
-				if (vectorInsertBack(vec, (void *)ins) != 0)
-					fprintf(stderr, "Problem inserting value to vector.\n");
-			}
-		}
-		else if (ind == 55) {
-			// Fill vector with enumerations
-			for (i = 0; i < 7; i++) {
-				if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
-					fprintf(stderr, "Memory allocation failed.\n");
-					return;
-				}
-				*ins = (uint8_t)i;
-				if (vectorInsertBack(vec, (void *)ins) != 0)
-					fprintf(stderr, "Problem inserting value to vector.\n");
-			}
-		}
-		else if (ind == 56) {
-			// Fill vector with enumerations
-			for (i = 0; i < 7; i++) {
-				if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
-					fprintf(stderr, "Memory allocation failed.\n");
-					return;
-				}
-				*ins = (uint8_t)i;
-				if (vectorInsertBack(vec, (void *)ins) != 0)
-					fprintf(stderr, "Problem inserting value to vector.\n");
-			}
-		}
-		else if (ind == 57) {
-			// Fill vector with enumerations
-			for (i = 0; i < 5; i++) {
-				if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
-					fprintf(stderr, "Memory allocation failed.\n");
-					return;
-				}
-				*ins = (uint8_t)i;
-				if (vectorInsertBack(vec, (void *)ins) != 0)
-					fprintf(stderr, "Problem inserting value to vector.\n");
-			}
-		}
-		else if (ind == 58) {
-			// Fill vector with enumerations
-			for (i = 0; i < 15; i++) {
-				if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
-					fprintf(stderr, "Memory allocation failed.\n");
-					return;
-				}
-				*ins = (uint8_t)i;
-				if (vectorInsertBack(vec, (void *)ins) != 0)
-					fprintf(stderr, "Problem inserting value to vector.\n");
-			}
-		}
-		break;
-	case OPEN_DRONE_ID_SYSTEM:
-		if (ind == 50) {
-			// Fill vector with enumerations
-			for (i = 0; i < 3; i++) {
-				if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
-					fprintf(stderr, "Memory allocation failed.\n");
-					return;
-				}
-				*ins = (uint8_t)i;
-				if (vectorInsertBack(vec, (void *)ins) != 0)
-					fprintf(stderr, "Problem inserting value to vector.\n");
-			}
-		}
-		else if (ind == 51) {
-			// Fill vector with enumerations
-			for (i = 0; i < 2; i++) {
-				if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
-					fprintf(stderr, "Memory allocation failed.\n");
-					return;
-				}
-				*ins = (uint8_t)i;
-				if (vectorInsertBack(vec, (void *)ins) != 0)
-					fprintf(stderr, "Problem inserting value to vector.\n");
-			}
-		}
-		break;
-	default:
-		return;
-	}
-	
-	// Write the tests to pass/fail files.
-	writeEnumTests(mess, ind, vec, maxLen, msgID, passSeed, failSeed);
-	
-	// Clean up memory.
-	vectorApply(vec, free);
-	vectorFree(vec);
+                }
+                else if (ind == 54) {
+                        // Fill vector with enumerations
+                        for (i = 0; i < 13; i++) {
+                                if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
+                                        fprintf(stderr, "Memory allocation failed.\n");
+                                        return;
+                                }
+                                *ins = (uint8_t)i;
+                                if (vectorInsertBack(vec, (void *)ins) != 0)
+                                        fprintf(stderr, "Problem inserting value to vector.\n");
+                        }
+                }
+                else if (ind == 55) {
+                        // Fill vector with enumerations
+                        for (i = 0; i < 7; i++) {
+                                if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
+                                        fprintf(stderr, "Memory allocation failed.\n");
+                                        return;
+                                }
+                                *ins = (uint8_t)i;
+                                if (vectorInsertBack(vec, (void *)ins) != 0)
+                                        fprintf(stderr, "Problem inserting value to vector.\n");
+                        }
+                }
+                else if (ind == 56) {
+                        // Fill vector with enumerations
+                        for (i = 0; i < 7; i++) {
+                                if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
+                                        fprintf(stderr, "Memory allocation failed.\n");
+                                        return;
+                                }
+                                *ins = (uint8_t)i;
+                                if (vectorInsertBack(vec, (void *)ins) != 0)
+                                        fprintf(stderr, "Problem inserting value to vector.\n");
+                        }
+                }
+                else if (ind == 57) {
+                        // Fill vector with enumerations
+                        for (i = 0; i < 5; i++) {
+                                if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
+                                        fprintf(stderr, "Memory allocation failed.\n");
+                                        return;
+                                }
+                                *ins = (uint8_t)i;
+                                if (vectorInsertBack(vec, (void *)ins) != 0)
+                                        fprintf(stderr, "Problem inserting value to vector.\n");
+                        }
+                }
+                else if (ind == 58) {
+                        // Fill vector with enumerations
+                        for (i = 0; i < 15; i++) {
+                                if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
+                                        fprintf(stderr, "Memory allocation failed.\n");
+                                        return;
+                                }
+                                *ins = (uint8_t)i;
+                                if (vectorInsertBack(vec, (void *)ins) != 0)
+                                        fprintf(stderr, "Problem inserting value to vector.\n");
+                        }
+                }
+                break;
+        case OPEN_DRONE_ID_SYSTEM:
+            if (ind == 50) {
+                // Fill vector with enumerations
+                for (i = 0; i < 3; i++) {
+                    if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return;
+                    }
+                    *ins = (uint8_t)i;
+                    if (vectorInsertBack(vec, (void *)ins) != 0)
+                        fprintf(stderr, "Problem inserting value to vector.\n");
+                }
+            }
+            else if (ind == 51) {
+                // Fill vector with enumerations
+                for (i = 0; i < 2; i++) {
+                    if ((ins = (uint8_t *)malloc(sizeof(uint8_t))) == NULL) {
+                                        fprintf(stderr, "Memory allocation failed.\n");
+                                        return;
+                                }
+                                *ins = (uint8_t)i;
+                                if (vectorInsertBack(vec, (void *)ins) != 0)
+                                        fprintf(stderr, "Problem inserting value to vector.\n");
+                        }
+                }
+            break;
+        case SYS_STATUS:
+            if (ind == 12) { // Load
+                // Fill vector with enumerations
+                for (i = 0; i < 1001; i++) {
+                    if ((ins = (uint16_t *)malloc(sizeof(uint16_t))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return;
+                    }
+                    *ins = (uint16_t)i;
+                    if (vectorInsertBack(vec, (void *)ins) != 0)
+                        fprintf(stderr, "Problem inserting value to vector.\n");
+                }
+            }
+            else if (ind == 18) { // DRC
+                // Fill vector with enumerations
+                for (i = 0; i < 10001; i++) {
+                    if ((ins = (uint16_t *)malloc(sizeof(uint16_t))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return;
+                    }
+                    *ins = (uint16_t)i;
+                    if (vectorInsertBack(vec, (void *)ins) != 0)
+                        fprintf(stderr, "Problem inserting value to vector.\n");
+                }
+            }
+            else if (ind == 30) {
+                // Fill vector with enumerations
+                for (i = 0; i < 101; i++) {
+                    if ((ins = (int8_t *)malloc(sizeof(int8_t))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return;
+                    }
+                    *ins = (int8_t)i;
+                    if (vectorInsertBack(vec, (void *)ins) != 0)
+                        fprintf(stderr, "Problem inserting value to vector.\n");
+                }
+                i = -1;
+                if ((ins = (int8_t *)malloc(sizeof(int8_t))) == NULL) {
+                    fprintf(stderr, "Memory allocation failed.\n");
+                    return;
+                }
+                *ins = (int8_t)i;
+                if (vectorInsertBack(vec, (void *)ins) != 0)
+                    fprintf(stderr, "Problem inserting value to vector.\n");
+            }
+            break;
+        case VFR_HUD:
+            if (ind == 16) { // Heading
+                // Fill vector with enumerations
+                for (i = 0; i < 361; i++) {
+                    if ((ins = (int16_t *)malloc(sizeof(int16_t))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return;
+                    }
+                    *ins = (int16_t)i;
+                    if (vectorInsertBack(vec, (void *)ins) != 0)
+                        fprintf(stderr, "Problem inserting value to vector.\n");
+                }
+            }
+            else if (ind == 18) { // Throttle
+                // Fill vector with enumerations
+                for (i = 0; i < 101; i++) {
+                    if ((ins = (uint16_t *)malloc(sizeof(uint16_t))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return;
+                    }
+                    *ins = (uint16_t)i;
+                    if (vectorInsertBack(vec, (void *)ins) != 0)
+                        fprintf(stderr, "Problem inserting value to vector.\n");
+                }
+            }
+            break;
+        default:
+            return;
+    }
+
+    // Write the tests to pass/fail files.
+    writeEnumTests(mess, ind, vec, maxLen, msgID, passSeed, failSeed);
+
+    // Clean up memory.
+    vectorApply(vec, free);
+    vectorFree(vec);
 }
 
 /*
  * Given a message ID, initialise the enumerated fields vector and set maximum lengths.
- * Inputs: message id, pointer to MAVLink 1 max length, pointer to MAVLink 2 max length
+ * Inputs: message id, pointer to MAVLink 2 min length, pointer to MAVLink 1 max length, pointer to MAVLink 2 max length
  * Outputs: enumerated fields vector; NULL if unsuccessfull
  */
-static vector_t *initialiseMessageType(int msgID, int *maxLenM1, int *maxLenM2) {
-	// Variable declarations.
-	vector_t *enFields;
-	int *ins;
-	
-	// Allocate vector for enumerated fields.
-	if ((enFields = vectorInit()) == NULL) {
-		fprintf(stderr, "Error allocating vector.\n");
-		return NULL;
-	}
-	
-	switch (msgID) {
-	case HEARTBEAT:
-		if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-			fprintf(stderr, "Memory allocation failed.\n");
-			return NULL;
-		}
-		*ins = 4;
-		if (vectorInsertBack(enFields, (void *)ins) != 0)
-			fprintf(stderr, "Error inserting value to vector.\n");
-		
-		if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-			fprintf(stderr, "Memory allocation failed.\n");
-			return NULL;
-		}
-		*ins = 5;
-		if (vectorInsertBack(enFields, (void *)ins) != 0)
-			fprintf(stderr, "Error inserting value to vector.\n");
-		
-		if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-			fprintf(stderr, "Memory allocation failed.\n");
-			return NULL;
-		}
-		*ins = 7;
-		if (vectorInsertBack(enFields, (void *)ins) != 0)
-		  fprintf(stderr, "Error inserting value to vector.\n");
-		
-		*maxLenM1 = *maxLenM2 = HEARTBEAT_LEN;
-		break;
-	case SYS_STATUS:
-	  *maxLenM1 = SYS_STATUS_LEN - 12;
-	  *maxLenM2 = SYS_STATUS_LEN;
-	  break;
-	case SYSTEM_TIME:
-	  *maxLenM1 = *maxLenM2 = SYSTEM_TIME_LEN;
-	  break;
-	case PING:
-	  *maxLenM1 = *maxLenM2 = PING_LEN;
-	  break;
-	case LINK_NODE_STATUS:
-	  *maxLenM1 = *maxLenM2 = LINK_NODE_STATUS_LEN;
-	  break;
-	case SET_MODE:
-	  *maxLenM1 = *maxLenM2 = SET_MODE_LEN;
-	  break;
-	case PARAM_REQUEST_READ:
-	  *maxLenM1 = *maxLenM2 = PARAM_REQUEST_READ_LEN;
-	  break;
-	case PARAM_REQUEST_LIST:
-	  *maxLenM1 = *maxLenM2 = PARAM_REQUEST_LIST_LEN;
-	  break;
-	case PARAM_VALUE:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 24;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = *maxLenM2 = PARAM_VALUE_LEN;
-	  break;
-	case PARAM_SET:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 22;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = *maxLenM2 = PARAM_SET_LEN;
-	  break;
-	case GPS_RAW_INT:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 28;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = GPS_RAW_INT_LEN - 22;
-	  *maxLenM2 = GPS_RAW_INT_LEN;
-	  break;
-	case SCALED_PRESSURE:
-	  *maxLenM1 = SCALED_PRESSURE_LEN - 2;
-	  *maxLenM2 = SCALED_PRESSURE_LEN;
-	  break;
-	case ATTITUDE:
-	  *maxLenM1 = *maxLenM2 = ATTITUDE_LEN;
-	  break;
-	case ATTITUDE_QUATERNION:
-	  *maxLenM1 = ATTITUDE_QUATERNION_LEN - 16;
-	  *maxLenM2 = ATTITUDE_QUATERNION_LEN;
-	  break;
-	case LOCAL_POSITION_NED:
-	  *maxLenM1 = *maxLenM2 = LOCAL_POSITION_NED_LEN;
-	  break;
-	case GLOBAL_POSITION_INT:
-	  *maxLenM1 = *maxLenM2 = GLOBAL_POSITION_INT_LEN;
-	  break;
-	case MISSION_REQUEST:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 4;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_REQUEST_LEN - 1;
-	  *maxLenM2 = MISSION_REQUEST_LEN;
-	  break;
-	case MISSION_CURRENT:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 4;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 5;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_CURRENT_LEN - 16;
-	  *maxLenM2 = MISSION_CURRENT_LEN;
-	  break;
-	case MISSION_REQUEST_LIST:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 2;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_REQUEST_LIST_LEN - 1;
-	  *maxLenM2 = MISSION_REQUEST_LIST_LEN;
-	  break;
-	case MISSION_COUNT:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 4;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_COUNT_LEN - 5;
-	  *maxLenM2 = MISSION_COUNT_LEN;
-	  break;
-	case MISSION_CLEAR_ALL:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 2;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_CLEAR_ALL_LEN - 1;
-	  *maxLenM2 = MISSION_CLEAR_ALL_LEN;
-	  break;
-	case MISSION_ITEM_REACHED:
-	  *maxLenM1 = *maxLenM2 = MISSION_ITEM_REACHED_LEN;
-	  break;
-	case MISSION_ACK:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 2;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 3;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_ACK_LEN - 5;
-	  *maxLenM2 = MISSION_ACK_LEN;
-	  break;
-	case GPS_GLOBAL_ORIGIN:
-	  *maxLenM1 = *maxLenM2 = GPS_GLOBAL_ORIGIN_LEN;
-	  break;
-	case MISSION_REQUEST_INT:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 4;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_REQUEST_INT_LEN - 1;
-	  *maxLenM2 = MISSION_REQUEST_INT_LEN;
-	  break;
-	case RC_CHANNELS:
-	  *maxLenM1 = *maxLenM2 = RC_CHANNELS_LEN;;
-	  break;
-	case MANUAL_CONTROL:
-	  *maxLenM1 = MANUAL_CONTROL_LEN - 19;
-	  *maxLenM2 = MANUAL_CONTROL_LEN;
-	  break;
-	case MISSION_ITEM_INT:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 34;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 37;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = MISSION_ITEM_INT_LEN - 1;
-	  *maxLenM2 = MISSION_ITEM_INT_LEN;
-	  break;
-	case VFR_HUD:
-	  *maxLenM1 = *maxLenM2 = VFR_HUD_LEN;
-	  break;
-	case COMMAND_LONG:
-	  *maxLenM1 = *maxLenM2 = COMMAND_LONG_LEN;
-		break;
-	case COMMAND_ACK:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 2;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = COMMAND_ACK_LEN - 7;
-	  *maxLenM2 = COMMAND_ACK_LEN;
-	  break;
-	case ATTITUDE_TARGET:
-	  *maxLenM1 = *maxLenM2 = ATTITUDE_TARGET_LEN;
-	  break;
-	case POSITION_TARGET_LOCAL_NED:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 50;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = *maxLenM2 = POSITION_TARGET_LOCAL_NED_LEN;
-	  break;
-	case POSITION_TARGET_GLOBAL_INT:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 50;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = *maxLenM2 = POSITION_TARGET_GLOBAL_INT_LEN;
-	  break;
-	case RADIO_STATUS:
-	  *maxLenM1 = *maxLenM2 = RADIO_STATUS_LEN;
-	  break;
-	case DISTANCE_SENSOR:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 10;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 12;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = DISTANCE_SENSOR_LEN - 25;
-	  *maxLenM2 = DISTANCE_SENSOR_LEN;
-	  break;
-	case ALTITUDE:
-	  *maxLenM1 = *maxLenM2 = ALTITUDE_LEN;
-	  break;
-	case BATTERY_STATUS:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 33;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 34;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 40;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 49;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = BATTERY_STATUS_LEN - 18;
-	  *maxLenM2 = BATTERY_STATUS_LEN;
-	  break;
-	case AUTOPILOT_VERSION:
-	  *maxLenM1 = AUTOPILOT_VERSION_LEN - 18;
-	  *maxLenM2 = AUTOPILOT_VERSION_LEN;
-	  break;
-	case ESTIMATOR_STATUS:
-	  *maxLenM1 = *maxLenM2 = ESTIMATOR_STATUS_LEN;
-	  break;
-	case VIBRATION:
-	  *maxLenM1 = *maxLenM2 = VIBRATION_LEN;
-	  break;
-	case HOME_POSITION:
-	  *maxLenM1 = HOME_POSITION_LEN - 8;
-	  *maxLenM2 = HOME_POSITION_LEN;
-	  break;
-	case EXTENDED_SYS_STATE:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 0;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 1;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = *maxLenM2 = EXTENDED_SYS_STATE_LEN;
-	  break;
-	case STATUSTEXT:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 0;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM1 = STATUSTEXT_LEN - 3;
-	  *maxLenM2 = STATUSTEXT_LEN;
-	  break;
-	case PROTOCOL_VERSION:
-	  *maxLenM2 = PROTOCOL_VERSION_LEN;
-	  break;
-	case UTM_GLOBAL_POSITION:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 68;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  *maxLenM2 = UTM_GLOBAL_POSITION_LEN;
-	  break;
-	case TIME_ESTIMATE_TO_TARGET:
-	  *maxLenM2 = TIME_ESTIMATE_TO_TARGET_LEN;
-	  break;
-	case COMPONENT_METADATA:
-	  *maxLenM2 = COMPONENT_METADATA_LEN;
-	  break;
-	case EVENT:
-	  *maxLenM2 = EVENT_LEN;
-	  break;
-	case CURRENT_EVENT_SEQUENCE:
-	  *maxLenM2 = CURRENT_EVENT_SEQUENCE_LEN;
-	  break;
-	case OPEN_DRONE_ID_LOCATION:
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 52;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 53;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 54;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 55;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 56;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 57;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-	    fprintf(stderr, "Error inserting value to vector.\n");
-	  
-	  if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-	    fprintf(stderr, "Memory allocation failed.\n");
-	    return NULL;
-	  }
-	  *ins = 58;
-	  if (vectorInsertBack(enFields, (void *)ins) != 0)
-			fprintf(stderr, "Error inserting value to vector.\n");
+static vector_t *initialiseMessageType(int msgID, int *minLenM2, int *maxLenM1, int *maxLenM2) {
+    // Variable declarations.
+    vector_t *enFields;
+    int *ins;
 
-		*maxLenM2 = OPEN_DRONE_ID_LOCATION_LEN;
-		break;
-	case OPEN_DRONE_ID_SYSTEM:
-		if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-			fprintf(stderr, "Memory allocation failed.\n");
-			return NULL;
-		}
-		*ins = 50;
-		if (vectorInsertBack(enFields, (void *)ins) != 0)
-			fprintf(stderr, "Error inserting value to vector.\n");
+    // Allocate vector for enumerated fields.
+    if ((enFields = vectorInit()) == NULL) {
+        fprintf(stderr, "Error allocating vector.\n");
+        return NULL;
+    }
 
-		if ((ins = (int *)malloc(sizeof(int))) == NULL) {
-			fprintf(stderr, "Memory allocation failed.\n");
-			return NULL;
-		}
-		*ins = 51;
-		if (vectorInsertBack(enFields, (void *)ins) != 0)
-			fprintf(stderr, "Error inserting value to vector.\n");
+    *minLenM2 = 1;
 
-		*maxLenM2 = OPEN_DRONE_ID_SYSTEM_LEN;
-		break;
-	default:
-		fprintf(stderr, "Invalid message ID %d.\n", msgID);
-		return NULL;
-	}
+    switch (msgID) {
+        case HEARTBEAT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 4;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
 
-	return enFields;
-	
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 5;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 7;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *minLenM2 = HEARTBEAT_MIN_LEN;
+            *maxLenM1 = *maxLenM2 = HEARTBEAT_MAX_LEN;
+            break;
+        case SYS_STATUS:
+            *maxLenM1 = SYS_STATUS_LEN - 12;
+            *maxLenM2 = SYS_STATUS_LEN;
+            break;
+        case SYSTEM_TIME:
+            *maxLenM1 = *maxLenM2 = SYSTEM_TIME_LEN;
+            break;
+        case PING:
+            *maxLenM1 = *maxLenM2 = PING_LEN;
+            break;
+        case LINK_NODE_STATUS:
+            *maxLenM1 = *maxLenM2 = LINK_NODE_STATUS_LEN;
+            break;
+        case SET_MODE:
+            *maxLenM1 = *maxLenM2 = SET_MODE_LEN;
+            break;
+        case PARAM_REQUEST_READ:
+            *maxLenM1 = *maxLenM2 = PARAM_REQUEST_READ_LEN;
+            break;
+        case PARAM_REQUEST_LIST:
+            *maxLenM1 = *maxLenM2 = PARAM_REQUEST_LIST_LEN;
+            break;
+        case PARAM_VALUE:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 24;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = *maxLenM2 = PARAM_VALUE_LEN;
+            break;
+        case PARAM_SET:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 22;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = *maxLenM2 = PARAM_SET_LEN;
+            break;
+        case GPS_RAW_INT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 28;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = GPS_RAW_INT_LEN - 22;
+            *maxLenM2 = GPS_RAW_INT_LEN;
+            break;
+        case SCALED_PRESSURE:
+            *maxLenM1 = SCALED_PRESSURE_LEN - 2;
+            *maxLenM2 = SCALED_PRESSURE_LEN;
+            break;
+        case ATTITUDE:
+            *maxLenM1 = *maxLenM2 = ATTITUDE_LEN;
+            break;
+        case ATTITUDE_QUATERNION:
+            *maxLenM1 = ATTITUDE_QUATERNION_LEN - 16;
+            *maxLenM2 = ATTITUDE_QUATERNION_LEN;
+            break;
+        case LOCAL_POSITION_NED:
+            *maxLenM1 = *maxLenM2 = LOCAL_POSITION_NED_LEN;
+            break;
+        case GLOBAL_POSITION_INT:
+            *maxLenM1 = *maxLenM2 = GLOBAL_POSITION_INT_LEN;
+            break;
+        case MISSION_REQUEST:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 4;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_REQUEST_LEN - 1;
+            *maxLenM2 = MISSION_REQUEST_LEN;
+            break;
+        case MISSION_CURRENT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 4;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 5;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_CURRENT_LEN - 16;
+            *maxLenM2 = MISSION_CURRENT_LEN;
+            break;
+        case MISSION_REQUEST_LIST:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 2;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_REQUEST_LIST_LEN - 1;
+            *maxLenM2 = MISSION_REQUEST_LIST_LEN;
+            break;
+        case MISSION_COUNT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 4;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_COUNT_LEN - 5;
+            *maxLenM2 = MISSION_COUNT_LEN;
+            break;
+        case MISSION_CLEAR_ALL:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 2;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_CLEAR_ALL_LEN - 1;
+            *maxLenM2 = MISSION_CLEAR_ALL_LEN;
+            break;
+        case MISSION_ITEM_REACHED:
+            *maxLenM1 = *maxLenM2 = MISSION_ITEM_REACHED_LEN;
+            break;
+        case MISSION_ACK:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 2;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 3;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_ACK_LEN - 5;
+            *maxLenM2 = MISSION_ACK_LEN;
+            break;
+        case GPS_GLOBAL_ORIGIN:
+            *maxLenM1 = *maxLenM2 = GPS_GLOBAL_ORIGIN_LEN;
+            break;
+        case MISSION_REQUEST_INT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 4;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_REQUEST_INT_LEN - 1;
+            *maxLenM2 = MISSION_REQUEST_INT_LEN;
+            break;
+        case RC_CHANNELS:
+            *maxLenM1 = *maxLenM2 = RC_CHANNELS_LEN;;
+            break;
+        case MANUAL_CONTROL:
+            *maxLenM1 = MANUAL_CONTROL_LEN - 19;
+            *maxLenM2 = MANUAL_CONTROL_LEN;
+            break;
+        case MISSION_ITEM_INT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 34;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 37;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = MISSION_ITEM_INT_LEN - 1;
+            *maxLenM2 = MISSION_ITEM_INT_LEN;
+            break;
+        case VFR_HUD:
+            *maxLenM1 = *maxLenM2 = VFR_HUD_LEN;
+            break;
+        case COMMAND_LONG:
+            *maxLenM1 = *maxLenM2 = COMMAND_LONG_LEN;
+            break;
+        case COMMAND_ACK:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 2;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = COMMAND_ACK_LEN - 7;
+            *maxLenM2 = COMMAND_ACK_LEN;
+            break;
+        case ATTITUDE_TARGET:
+            *maxLenM1 = *maxLenM2 = ATTITUDE_TARGET_LEN;
+            break;
+        case POSITION_TARGET_LOCAL_NED:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 50;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = *maxLenM2 = POSITION_TARGET_LOCAL_NED_LEN;
+            break;
+        case POSITION_TARGET_GLOBAL_INT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 50;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = *maxLenM2 = POSITION_TARGET_GLOBAL_INT_LEN;
+            break;
+        case RADIO_STATUS:
+            *maxLenM1 = *maxLenM2 = RADIO_STATUS_LEN;
+            break;
+        case DISTANCE_SENSOR:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 10;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 12;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = DISTANCE_SENSOR_LEN - 25;
+            *maxLenM2 = DISTANCE_SENSOR_LEN;
+            break;
+        case ALTITUDE:
+            *maxLenM1 = *maxLenM2 = ALTITUDE_LEN;
+            break;
+        case BATTERY_STATUS:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 33;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 34;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 40;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 49;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = BATTERY_STATUS_LEN - 18;
+            *maxLenM2 = BATTERY_STATUS_LEN;
+            break;
+        case AUTOPILOT_VERSION:
+            *maxLenM1 = AUTOPILOT_VERSION_LEN - 18;
+            *maxLenM2 = AUTOPILOT_VERSION_LEN;
+            break;
+        case ESTIMATOR_STATUS:
+            *maxLenM1 = *maxLenM2 = ESTIMATOR_STATUS_LEN;
+            break;
+        case VIBRATION:
+            *maxLenM1 = *maxLenM2 = VIBRATION_LEN;
+            break;
+        case HOME_POSITION:
+            *maxLenM1 = HOME_POSITION_LEN - 8;
+            *maxLenM2 = HOME_POSITION_LEN;
+            break;
+        case EXTENDED_SYS_STATE:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 0;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 1;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = *maxLenM2 = EXTENDED_SYS_STATE_LEN;
+            break;
+        case STATUSTEXT:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 0;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM1 = STATUSTEXT_LEN - 3;
+            *maxLenM2 = STATUSTEXT_LEN;
+            break;
+        case PROTOCOL_VERSION:
+            *maxLenM2 = PROTOCOL_VERSION_LEN;
+            break;
+        case UTM_GLOBAL_POSITION:
+            if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+            }
+            *ins = 68;
+            if (vectorInsertBack(enFields, (void *)ins) != 0)
+                fprintf(stderr, "Error inserting value to vector.\n");
+
+            *maxLenM2 = UTM_GLOBAL_POSITION_LEN;
+            break;
+        case TIME_ESTIMATE_TO_TARGET:
+            *maxLenM2 = TIME_ESTIMATE_TO_TARGET_LEN;
+            break;
+        case COMPONENT_METADATA:
+            *maxLenM2 = COMPONENT_METADATA_LEN;
+break;
+        case EVENT:
+          *maxLenM2 = EVENT_LEN;
+          break;
+        case CURRENT_EVENT_SEQUENCE:
+          *maxLenM2 = CURRENT_EVENT_SEQUENCE_LEN;
+          break;
+        case OPEN_DRONE_ID_LOCATION:
+          if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            return NULL;
+          }
+          *ins = 52;
+          if (vectorInsertBack(enFields, (void *)ins) != 0)
+            fprintf(stderr, "Error inserting value to vector.\n");
+
+          if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            return NULL;
+          }
+          *ins = 53;
+          if (vectorInsertBack(enFields, (void *)ins) != 0)
+            fprintf(stderr, "Error inserting value to vector.\n");
+
+          if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            return NULL;
+          }
+          *ins = 54;
+          if (vectorInsertBack(enFields, (void *)ins) != 0)
+            fprintf(stderr, "Error inserting value to vector.\n");
+
+          if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            return NULL;
+          }
+          *ins = 55;
+          if (vectorInsertBack(enFields, (void *)ins) != 0)
+            fprintf(stderr, "Error inserting value to vector.\n");
+
+          if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            return NULL;
+          }
+          *ins = 56;
+          if (vectorInsertBack(enFields, (void *)ins) != 0)
+            fprintf(stderr, "Error inserting value to vector.\n");
+
+          if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            return NULL;
+          }
+          *ins = 57;
+          if (vectorInsertBack(enFields, (void *)ins) != 0)
+            fprintf(stderr, "Error inserting value to vector.\n");
+
+          if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            return NULL;
+          }
+          *ins = 58;
+          if (vectorInsertBack(enFields, (void *)ins) != 0)
+                        fprintf(stderr, "Error inserting value to vector.\n");
+
+                *maxLenM2 = OPEN_DRONE_ID_LOCATION_LEN;
+                break;
+        case OPEN_DRONE_ID_SYSTEM:
+                if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return NULL;
+                }
+                *ins = 50;
+                if (vectorInsertBack(enFields, (void *)ins) != 0)
+                        fprintf(stderr, "Error inserting value to vector.\n");
+
+                if ((ins = (int *)malloc(sizeof(int))) == NULL) {
+                        fprintf(stderr, "Memory allocation failed.\n");
+                        return NULL;
+                }
+                *ins = 51;
+                if (vectorInsertBack(enFields, (void *)ins) != 0)
+                        fprintf(stderr, "Error inserting value to vector.\n");
+
+                *maxLenM2 = OPEN_DRONE_ID_SYSTEM_LEN;
+                break;
+        default:
+                fprintf(stderr, "Invalid message ID %d.\n", msgID);
+                return NULL;
+        }
+
+        return enFields;
+
 }
 
 /*
@@ -2814,143 +2890,143 @@ static vector_t *initialiseMessageType(int msgID, int *maxLenM1, int *maxLenM2) 
  * Outputs: pcap file data structure; NULL if unsuccessful
  */
 pcap_t *readFilePcap(FILE *ifile) {
-	// Variable declarations.
-	pPcap_t *pcap;
-	int i, payload, bytesRead;
-	pcapMessage_t *mess;
-	uint8_t buf;
-	bool mav1, mav2, signedMess;
+        // Variable declarations.
+        pPcap_t *pcap;
+        int i, payload, bytesRead;
+        pcapMessage_t *mess;
+        uint8_t buf;
+        bool mav1, mav2, signedMess;
 
-	// Check argument.
-	if (ifile == NULL) {
-		fprintf(stderr, "Invalid argument.\n");
-		return NULL;
-	}
+        // Check argument.
+        if (ifile == NULL) {
+                fprintf(stderr, "Invalid argument.\n");
+                return NULL;
+        }
 
-	// Allocate memory and initialise pcap data structure.
-	if ((pcap = (pPcap_t *)malloc(sizeof(pPcap_t))) == NULL) {
-		fprintf(stderr, "Error allocating memory.\n");
-		return NULL;
-	}
+        // Allocate memory and initialise pcap data structure.
+        if ((pcap = (pPcap_t *)malloc(sizeof(pPcap_t))) == NULL) {
+                fprintf(stderr, "Error allocating memory.\n");
+                return NULL;
+        }
 
-	// Initialise vector.
-	if ((pcap->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Error initialising vector.\n");
-		return NULL;
-	}
+        // Initialise vector.
+        if ((pcap->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Error initialising vector.\n");
+                return NULL;
+        }
 
-	i = 0;
-	
-	// Read the first 24 bytes of the file - file header.
-	while(i < 24) {
-	  bytesRead = fread(&buf, sizeof(buf), 1, ifile);
-	  
-	  pcap->header[i] = buf;
-	  
-	  i++;
-	}
-	
-	i = 0;
-	payload = 0;
-	
-	// Read all of the successive bytes from the file.
-	while ((bytesRead = fread(&buf, sizeof(buf), 1, ifile)) == 1) {
-	  // Allocate memory for message.
-	  if (i == 0) {
-	    if ((mess = (pcapMessage_t *)malloc(sizeof(pcapMessage_t))) == NULL) {
-	      fprintf(stderr, "Error allocating memory.\n");
-	      return NULL;
-	    }
-	    
-	    mav1 = mav2 = signedMess = false;
-	  }
-	  
-	  if (i < 4) mess->prh.timeS[i] = buf;
-	  else if (i < 8) mess->prh.timeUNS[i - 4] = buf;
-	  else if (i < 12) mess->prh.capturedPacketLength[i - 8] = buf;
-	  else if (i < 16) mess->prh.originalPacketLength[i - 12] = buf;
-	  else if (i < 20) mess->eth.messageFam[i - 16] = buf;
-	  else if (i == 20) mess->eth.iphl = buf;
-	  else if (i == 21) mess->eth.dsf = buf;
-	  else if (i < 24) mess->eth.totalLength[i - 22] = buf;
-	  else if (i < 26) mess->eth.id[i - 24] = buf;
-	  else if (i < 28) mess->eth.ffOffset[i - 26] = buf;
-	  else if (i == 28) mess->eth.ttl = buf;
-	  else if (i == 29) mess->eth.protocol = buf;
-	  else if (i < 32) mess->eth.headerChecksum[i - 30] = buf;
-	  else if (i < 36) mess->eth.sourceAddr[i - 32] = buf;
-	  else if (i < 40) mess->eth.destAddr[i - 36] = buf;
-	  else if (i < 42) mess->eth.sourcePort[i - 40] = buf;
-	  else if (i < 44) mess->eth.destPort[i - 42] = buf;
-	  else if (i < 46) mess->eth.length[i - 44] = buf;
-	  else if (i < 48) mess->eth.checkSum[i - 46] = buf;
-	  else if (i == 48 && buf == 0xfe) mav1 = true;
-	  else if (i == 48 && buf == 0xfd) mav2 = true;
-	  
-	  // Depending on the messsage type, set the respective fields.
-	  if (mav1 && i >= 48) {
-	    if (i == 48) mess->mav.mav1.mavCode = buf;
-	    else if (i == 49) {
-	      mess->mav.mav1.payloadLen = buf;
-	      
-	      payload = (int)buf;
-	      
-	      if ((mess->mav.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	      }
-	    }
-	    else if (i == 50) mess->mav.mav1.packetSeq = buf;
-	    else if (i == 51) mess->mav.mav1.systemID = buf;
-	    else if (i == 52) mess->mav.mav1.compID = buf;
-	    else if (i == 53) mess->mav.mav1.messageID = buf;		
-	    else if (i < 54 + payload) mess->mav.mav1.payload[i - 54] = buf;
-	    else mess->mav.mav1.crc[i - 54 - payload] = buf;		
-	  }
-	  else if (mav2 && i >= 48) {
-	    if (i == 48) mess->mav.mav2.mavCode = buf;
-	    else if (i == 49) {
-	      mess->mav.mav2.payloadLen = buf;
-	      
-	      payload = (int)buf;
-	      
-	      if ((mess->mav.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	      }
-	    }
-	    else if (i == 50) {
-	      mess->mav.mav2.incompFlag = buf;
-	      
-	      // Detect a signed message.
-	      if (buf != 0) signedMess = mess->mav.mav2.signedMess = true;
-	      else mess->mav.mav2.signedMess = false;
-	    }
-	    else if (i == 51) mess->mav.mav2.compFlag = buf;
-	    else if (i == 52) mess->mav.mav2.packetSeq = buf;
-	    else if (i == 53) mess->mav.mav2.systemID = buf;
-	    else if (i == 54) mess->mav.mav2.compID = buf;
-	    else if (i < 58) mess->mav.mav2.messageID[i - 55] = buf;		
-	    else if (i < 58 + payload) mess->mav.mav2.payload[i - 58] = buf;
-	    else if (i < 60 + payload) mess->mav.mav2.crc[i - 58 - payload] = buf;
-	    else mess->mav.mav2.signature[i - 60 - payload] = buf;
-	  }
-	  
-	  i++;
-	  
-	  // If the end of a message has been reached.
-	  if (((i == 56 + payload && mav1) || (i == 60 + payload && mav2 && !signedMess) || (i == 73 + payload && mav2 && signedMess)) && payload != 0) {
-	    // Insert message into vector.
-	    if (vectorInsertBack(pcap->messages, mess) != 0)
-	      fprintf(stderr, "Error inserting into vector.\n");
-	    
-	    // Reset all variables
-	    i = 0;
-	    payload = 0;
-	  }
-	}
-	
-	return (pcap_t *)pcap;
+        i = 0;
+
+        // Read the first 24 bytes of the file - file header.
+        while(i < 24) {
+          bytesRead = fread(&buf, sizeof(buf), 1, ifile);
+
+          pcap->header[i] = buf;
+
+          i++;
+        }
+
+        i = 0;
+        payload = 0;
+
+        // Read all of the successive bytes from the file.
+        while ((bytesRead = fread(&buf, sizeof(buf), 1, ifile)) == 1) {
+          // Allocate memory for message.
+          if (i == 0) {
+            if ((mess = (pcapMessage_t *)malloc(sizeof(pcapMessage_t))) == NULL) {
+              fprintf(stderr, "Error allocating memory.\n");
+              return NULL;
+            }
+
+            mav1 = mav2 = signedMess = false;
+          }
+
+          if (i < 4) mess->prh.timeS[i] = buf;
+          else if (i < 8) mess->prh.timeUNS[i - 4] = buf;
+          else if (i < 12) mess->prh.capturedPacketLength[i - 8] = buf;
+          else if (i < 16) mess->prh.originalPacketLength[i - 12] = buf;
+          else if (i < 20) mess->eth.messageFam[i - 16] = buf;
+          else if (i == 20) mess->eth.iphl = buf;
+          else if (i == 21) mess->eth.dsf = buf;
+          else if (i < 24) mess->eth.totalLength[i - 22] = buf;
+          else if (i < 26) mess->eth.id[i - 24] = buf;
+          else if (i < 28) mess->eth.ffOffset[i - 26] = buf;
+          else if (i == 28) mess->eth.ttl = buf;
+          else if (i == 29) mess->eth.protocol = buf;
+          else if (i < 32) mess->eth.headerChecksum[i - 30] = buf;
+          else if (i < 36) mess->eth.sourceAddr[i - 32] = buf;
+          else if (i < 40) mess->eth.destAddr[i - 36] = buf;
+          else if (i < 42) mess->eth.sourcePort[i - 40] = buf;
+          else if (i < 44) mess->eth.destPort[i - 42] = buf;
+          else if (i < 46) mess->eth.length[i - 44] = buf;
+          else if (i < 48) mess->eth.checkSum[i - 46] = buf;
+          else if (i == 48 && buf == 0xfe) mav1 = true;
+          else if (i == 48 && buf == 0xfd) mav2 = true;
+
+          // Depending on the messsage type, set the respective fields.
+          if (mav1 && i >= 48) {
+            if (i == 48) mess->mav.mav1.mavCode = buf;
+            else if (i == 49) {
+              mess->mav.mav1.payloadLen = buf;
+
+              payload = (int)buf;
+
+              if ((mess->mav.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+              }
+            }
+            else if (i == 50) mess->mav.mav1.packetSeq = buf;
+            else if (i == 51) mess->mav.mav1.systemID = buf;
+            else if (i == 52) mess->mav.mav1.compID = buf;
+            else if (i == 53) mess->mav.mav1.messageID = buf;
+            else if (i < 54 + payload) mess->mav.mav1.payload[i - 54] = buf;
+            else mess->mav.mav1.crc[i - 54 - payload] = buf;
+          }
+          else if (mav2 && i >= 48) {
+            if (i == 48) mess->mav.mav2.mavCode = buf;
+            else if (i == 49) {
+              mess->mav.mav2.payloadLen = buf;
+
+              payload = (int)buf;
+
+              if ((mess->mav.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+              }
+            }
+            else if (i == 50) {
+              mess->mav.mav2.incompFlag = buf;
+
+              // Detect a signed message.
+              if (buf != 0) signedMess = mess->mav.mav2.signedMess = true;
+              else mess->mav.mav2.signedMess = false;
+            }
+            else if (i == 51) mess->mav.mav2.compFlag = buf;
+            else if (i == 52) mess->mav.mav2.packetSeq = buf;
+            else if (i == 53) mess->mav.mav2.systemID = buf;
+            else if (i == 54) mess->mav.mav2.compID = buf;
+            else if (i < 58) mess->mav.mav2.messageID[i - 55] = buf;
+            else if (i < 58 + payload) mess->mav.mav2.payload[i - 58] = buf;
+            else if (i < 60 + payload) mess->mav.mav2.crc[i - 58 - payload] = buf;
+            else mess->mav.mav2.signature[i - 60 - payload] = buf;
+          }
+
+          i++;
+
+          // If the end of a message has been reached.
+          if (((i == 56 + payload && mav1) || (i == 60 + payload && mav2 && !signedMess) || (i == 73 + payload && mav2 && signedMess)) && payload != 0) {
+            // Insert message into vector.
+            if (vectorInsertBack(pcap->messages, mess) != 0)
+              fprintf(stderr, "Error inserting into vector.\n");
+
+            // Reset all variables
+            i = 0;
+            payload = 0;
+          }
+        }
+
+        return (pcap_t *)pcap;
 }
 
 /*
@@ -2965,107 +3041,107 @@ mavlink_t *readFileMav(FILE *ifile) {
   mavMessage_t *mess;
   uint8_t buf;
   bool mav1, mav2, signedMess;
-  
+
   // Check argument.
   if (ifile == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return NULL;
   }
-  
+
   // Allocate memory and initialise pcap data structure.
   if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
     fprintf(stderr, "Error allocating memory.\n");
     return NULL;
   }
-  
+
   // Initialise vector.
   if ((mav->messages = vectorInit()) == NULL) {
     fprintf(stderr, "Error initialising vector.\n");
     return NULL;
   }
-  
+
   i = 0;
   payload = 0;
-  
+
   // Read all of the successive bytes from the file.
   while ((bytesRead = fread(&buf, sizeof(buf), 1, ifile)) == 1) {
     // Allocate memory for message.
     if (i == 0) {
       if ((mess = (mavMessage_t *)malloc(sizeof(mavMessage_t))) == NULL) {
-	fprintf(stderr, "Error allocating memory.\n");
-	return NULL;
+        fprintf(stderr, "Error allocating memory.\n");
+        return NULL;
       }
-      
+
       mav1 = mav2 = signedMess = false;
-      
+
       if (buf == 0xfe) mav1 = true;
       else if (buf == 0xfd) mav2 = true;
-      
+
     }
-    
+
     // Depending on the messsage type, set the respective fields.
     if (mav1) {
       if (i == 0) mess->mav1.mavCode = buf;
       else if (i == 1) {
-	mess->mav1.payloadLen = buf;
-	
-	payload = (int)buf;
-	
-	if ((mess->mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
-	  fprintf(stderr, "Memory allocation failed.\n");
-	  return NULL;
-	}
+        mess->mav1.payloadLen = buf;
+
+        payload = (int)buf;
+
+        if ((mess->mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
+          fprintf(stderr, "Memory allocation failed.\n");
+          return NULL;
+        }
       }
       else if (i == 2) mess->mav1.packetSeq = buf;
       else if (i == 3) mess->mav1.systemID = buf;
       else if (i == 4) mess->mav1.compID = buf;
-      else if (i == 5) mess->mav1.messageID = buf;		
+      else if (i == 5) mess->mav1.messageID = buf;
       else if (i < 6 + payload) mess->mav1.payload[i - 6] = buf;
-      else mess->mav1.crc[i - 6 - payload] = buf;		
+      else mess->mav1.crc[i - 6 - payload] = buf;
     }
     else if (mav2) {
       if (i == 0) mess->mav2.mavCode = buf;
       else if (i == 1) {
-	mess->mav2.payloadLen = buf;
-	
-	payload = (int)buf;
-	
-	if ((mess->mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
-	  fprintf(stderr, "Memory allocation failed.\n");
-	  return NULL;
-	}
+        mess->mav2.payloadLen = buf;
+
+        payload = (int)buf;
+
+        if ((mess->mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
+          fprintf(stderr, "Memory allocation failed.\n");
+          return NULL;
+        }
       }
       else if (i == 2) {
-	mess->mav2.incompFlag = buf;
-	
-	// Detect is signed message.
-	if (buf != 0) signedMess = mess->mav2.signedMess = true;
-	else mess->mav2.signedMess = false;
+        mess->mav2.incompFlag = buf;
+
+        // Detect is signed message.
+        if (buf != 0) signedMess = mess->mav2.signedMess = true;
+        else mess->mav2.signedMess = false;
       }
       else if (i == 3) mess->mav2.compFlag = buf;
       else if (i == 4) mess->mav2.packetSeq = buf;
       else if (i == 5) mess->mav2.systemID = buf;
       else if (i == 6) mess->mav2.compID = buf;
-      else if (i < 10) mess->mav2.messageID[i - 7] = buf;		
+      else if (i < 10) mess->mav2.messageID[i - 7] = buf;
       else if (i < 10 + payload) mess->mav2.payload[i - 10] = buf;
       else if (i < 12 + payload) mess->mav2.crc[i - 10 - payload] = buf;
       else mess->mav2.signature[i - 12 - payload] = buf;
     }
-    
+
     i++;
-    
+
     // If the end of a message has been reached.
     if (((i == 8 + payload && mav1) || (i == 12 + payload && mav2 && !signedMess) || (i == 25 + payload && mav2 && signedMess)) && payload != 0) {
       // Insert message into vector.
       if (vectorInsertBack(mav->messages, mess) != 0)
-	fprintf(stderr, "Error inserting into vector.\n");
-      
+        fprintf(stderr, "Error inserting into vector.\n");
+
       // Reset all variables
       i = 0;
       payload = 0;
     }
   }
-  
+
   return (mavlink_t *)mav;
 }
 
@@ -3082,107 +3158,107 @@ tlog_t *readFileTlog(FILE *ifile) {
   tlogMessage_t *mess;
   uint8_t buf;
   bool mav1, mav2, signedMess;
-  
+
   // Check argument.
   if (ifile == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return NULL;
   }
-  
+
   // Allocate memory and initialise pcap data structure.
   if ((tlog = (pTlog_t *)malloc(sizeof(pTlog_t))) == NULL) {
     fprintf(stderr, "Error allocating memory.\n");
     return NULL;
   }
-  
+
   // Initialise vector.
   if ((tlog->messages = vectorInit()) == NULL) {
     fprintf(stderr, "Error initialising vector.\n");
     return NULL;
   }
-  
+
   i = 0;
   payload = 0;
-  
+
   // Read all of the successive bytes from the file.
   while ((bytesRead = fread(&buf, sizeof(buf), 1, ifile)) == 1) {
     // Allocate memory for message.
     if (i == 0) {
       if ((mess = (tlogMessage_t *)malloc(sizeof(tlogMessage_t))) == NULL) {
-	fprintf(stderr, "Error allocating memory.\n");
-	return NULL;
+        fprintf(stderr, "Error allocating memory.\n");
+        return NULL;
       }
-      
+
       mav1 = mav2 = signedMess = false;
     }
-    
+
     if (i < 8) mess->header.bytes[i] = buf;
     else if (i == 8 && buf == 0xfe) mav1 = true;
     else if (i == 8 && buf == 0xfd) mav2 = true;
-    
+
     // Depending on the messsage type, set the respective fields.
     if (mav1 && i >= 8) {
       if (i == 8) mess->mav.mav1.mavCode = buf;
       else if (i == 9) {
-	mess->mav.mav1.payloadLen = buf;
-	
-	payload = (int)buf;
-	
-	if ((mess->mav.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
-	  fprintf(stderr, "Memory allocation failed.\n");
-	  return NULL;
-	}
+        mess->mav.mav1.payloadLen = buf;
+
+        payload = (int)buf;
+
+        if ((mess->mav.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
+          fprintf(stderr, "Memory allocation failed.\n");
+          return NULL;
+        }
       }
       else if (i == 10) mess->mav.mav1.packetSeq = buf;
       else if (i == 11) mess->mav.mav1.systemID = buf;
       else if (i == 12) mess->mav.mav1.compID = buf;
-      else if (i == 13) mess->mav.mav1.messageID = buf;		
+      else if (i == 13) mess->mav.mav1.messageID = buf;
       else if (i < 14 + payload) mess->mav.mav1.payload[i - 14] = buf;
-      else mess->mav.mav1.crc[i - 14 - payload] = buf;		
+      else mess->mav.mav1.crc[i - 14 - payload] = buf;
     }
     else if (mav2 && i >= 8) {
       if (i == 8) mess->mav.mav2.mavCode = buf;
       else if (i == 9) {
-	mess->mav.mav2.payloadLen = buf;
-	
-	payload = (int)buf;
-	
-	if ((mess->mav.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
-	  fprintf(stderr, "Memory allocation failed.\n");
-	  return NULL;
-	}
+        mess->mav.mav2.payloadLen = buf;
+
+        payload = (int)buf;
+
+        if ((mess->mav.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*payload)) == NULL) {
+          fprintf(stderr, "Memory allocation failed.\n");
+          return NULL;
+        }
       }
       else if (i == 10) {
-	mess->mav.mav2.incompFlag = buf;
-	
-	// Detect if signed message.
-	if (buf != 0) signedMess = mess->mav.mav2.signedMess = true;
-	else mess->mav.mav2.signedMess = false;
+        mess->mav.mav2.incompFlag = buf;
+
+        // Detect if signed message.
+        if (buf != 0) signedMess = mess->mav.mav2.signedMess = true;
+        else mess->mav.mav2.signedMess = false;
       }
       else if (i == 11) mess->mav.mav2.compFlag = buf;
       else if (i == 12) mess->mav.mav2.packetSeq = buf;
       else if (i == 13) mess->mav.mav2.systemID = buf;
       else if (i == 14) mess->mav.mav2.compID = buf;
-      else if (i < 18) mess->mav.mav2.messageID[i - 15] = buf;		
+      else if (i < 18) mess->mav.mav2.messageID[i - 15] = buf;
       else if (i < 18 + payload) mess->mav.mav2.payload[i - 18] = buf;
       else if (i < 20 + payload) mess->mav.mav2.crc[i - 18 - payload] = buf;
       else mess->mav.mav2.signature[i - 20 - payload] = buf;
     }
-    
+
     i++;
-    
+
     // If the end of a message has been reached.
     if (((i == 16 + payload && mav1) || (i == 20 + payload && mav2 && !signedMess) || (i == 33 + payload && mav2 && signedMess)) && payload != 0) {
       // Insert message into vector.
       if (vectorInsertBack(tlog->messages, (void *)mess) != 0)
-	fprintf(stderr, "Error inserting into vector.\n");
-      
+        fprintf(stderr, "Error inserting into vector.\n");
+
       // Reset all variables
       i = 0;
       payload = 0;
     }
   }
-  
+
   return (tlog_t *)tlog;
 }
 
@@ -3191,31 +3267,31 @@ tlog_t *readFileTlog(FILE *ifile) {
  * Inputs: PCAP file
  * Outputs: none
  */
-void printFilePcap(pcap_t *pcapP) {	
+void printFilePcap(pcap_t *pcapP) {
   // Variable declarations.
   int i;
   pPcap_t *pcap;
-  
+
   // Check argument.
   if (pcapP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   pcap = (pPcap_t *)pcapP;
-  
+
   // First print header.
   printf("Header: ");
-  
+
   for (i = 0; i < 24; i++)
     printf("%02x ", pcap->header[i]);
-  
+
   printf("\n");
-  
+
   // Now print each message.
   vectorApply(pcap->messages, printFuncPcap);
-  
+
 }
 
 /*
@@ -3226,19 +3302,19 @@ void printFilePcap(pcap_t *pcapP) {
 void printFileMav(mavlink_t *mavP) {
   // Variable declarations.
   pMavlink_t *mav;
-  
+
   // Check argument.
   if (mavP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   mav = (pMavlink_t *)mavP;
-  
+
   // Now print each message.
   vectorApply(mav->messages, printFuncMav);
-  
+
 }
 
 /*
@@ -3249,19 +3325,19 @@ void printFileMav(mavlink_t *mavP) {
 void printFileTlog(tlog_t *tlogP) {
   // Variable declarations.
   pTlog_t *tlog;
-  
+
   // Check argument.
   if (tlogP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   tlog = (pTlog_t *)tlogP;
-  
+
   // Now print each message.
   vectorApply(tlog->messages, printFuncTlog);
-  
+
 }
 
 /*
@@ -3274,30 +3350,30 @@ void writeToFilePcap(pcap_t *pcapP, FILE *fp) {
   int i;
   uint8_t buf;
   pPcap_t *pcap;
-  
+
   // Check argument.
   if (pcapP == NULL || fp == NULL) {
     fprintf(stderr, "Invalid argument(s).\n");
     return;
   }
-  
+
   // Coerce.
   pcap = (pPcap_t *)pcapP;
-  
+
   // Write PCAP file header.
   for (i = 0; i < 24; i++) {
     buf = pcap->header[i];
-    
+
     if (fwrite(&buf, sizeof(buf), 1, fp) != 1)
       fprintf(stderr, "Error writing byte %02x to file.\n", buf);
   }
-  
+
   // Set global variable to keeptrack of file.
   file = fp;
-  
+
   // Now print each message.
   vectorApply(pcap->messages, writeFuncPcap);
-  
+
 }
 
 /*
@@ -3308,19 +3384,19 @@ void writeToFilePcap(pcap_t *pcapP, FILE *fp) {
 void writeToFileMav(mavlink_t *mavP, FILE *fp) {
   // Variable declarations.
   pMavlink_t *mav;
-  
+
   // Check argument.
   if (mavP == NULL || fp == NULL) {
     fprintf(stderr, "Invalid argument(s).\n");
     return;
   }
-  
+
   // Coerce.
   mav = (pMavlink_t *)mavP;
-  
+
   // Set global variable to keeptrack of file.
   file = fp;
-  
+
   // Now print each message.
   vectorApply(mav->messages, writeFuncMav);
 }
@@ -3333,22 +3409,22 @@ void writeToFileMav(mavlink_t *mavP, FILE *fp) {
 void writeToFileTlog(tlog_t *tlogP, FILE *fp) {
   // Variable declarations.
   pTlog_t *tlog;
-  
+
   // Check argument.
   if (tlogP == NULL || fp == NULL) {
     fprintf(stderr, "Invalid argument(s).\n");
     return;
   }
-  
+
   // Coerce.
   tlog = (pTlog_t *)tlogP;
-  
+
   // Set global variable to keeptrack of file.
   file = fp;
-  
+
   // Now print each message.
   vectorApply(tlog->messages, writeFuncTlog);
-  
+
 }
 
 /*
@@ -3359,28 +3435,28 @@ void writeToFileTlog(tlog_t *tlogP, FILE *fp) {
 void freePcap(pcap_t *pcapP) {
   // Variable declarations.
   pPcap_t *pcap;
-  
+
   // Check arguments.
   if (pcapP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   pcap = (pPcap_t *)pcapP;
-  
+
   // Free payloads of each message.
   vectorApply(pcap->messages, freePayloadPcap);
-  
+
   // Free each message.
   vectorApply(pcap->messages, free);
-  
+
   // Deallocate memory from the vector.
   vectorFree(pcap->messages);
-  
+
   // Free the pcap structure itself.
   free(pcap);
-  
+
 }
 
 /*
@@ -3391,28 +3467,28 @@ void freePcap(pcap_t *pcapP) {
 void freeMav(mavlink_t *mavP)  {
   // Variable declarations.
   pMavlink_t *mav;
-  
+
   // Check arguments.
   if (mavP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   mav = (pMavlink_t *)mavP;
-  
+
   // Free payloads of each message.
   vectorApply(mav->messages, freePayloadMav);
-  
+
   // Free each message.
   vectorApply(mav->messages, free);
-  
+
   // Deallocate memory from the vector.
   vectorFree(mav->messages);
-  
+
   // Free the pcap structure itself.
   free(mav);
-  
+
 }
 
 /*
@@ -3423,28 +3499,28 @@ void freeMav(mavlink_t *mavP)  {
 void freeTlog(tlog_t *tlogP) {
   // Variable declarations.
   pTlog_t *tlog;
-  
+
   // Check arguments.
   if (tlogP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   tlog = (pTlog_t *)tlogP;
-  
+
   // Free payloads of each message.
   vectorApply(tlog->messages, freePayloadTlog);
-  
+
   // Free each message.
   vectorApply(tlog->messages, free);
-  
+
   // Deallocate memory from the vector.
   vectorFree(tlog->messages);
-  
+
   // Free the pcap structure itself.
   free(tlog);
-  
+
 }
 
 /*
@@ -3459,43 +3535,43 @@ mavlink_t *tlogToMav(tlog_t *tlogP) {
   mavMessage_t *mess;
   tlogMessage_t *tMess;
   int i;
-  
+
   // Check arguments.
   if (tlogP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return NULL;
   }
-  
+
   // Coerce.
   tlog = (pTlog_t *)tlogP;
-  
+
   // Allcoate memory for MAVLink file structure.
   if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
     fprintf(stderr, "Memory allocation failed.\n");
     return NULL;
   }
-  
+
   // Initialise vector.
   if ((mav->messages = vectorInit()) == NULL) {
     fprintf(stderr, "Vector initialisation failed.\n");
     return NULL;
   }
-  
+
   // Extract the MAVLink portion of each message.
   for (i = 0; i < vectorGetSize(tlog->messages); i++) {
     // Extract message from vector.
     if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
       fprintf(stderr, "Error extracting message %d from vector.\n", i);
-    
+
     if ((mess = tlogMessToMav(tMess)) == NULL)
       fprintf(stderr, "Error converting message %d.\n", i);
-    
+
     // Insert into vector.
     if (vectorInsertBack(mav->messages, (void *)mess) != 0)
       fprintf(stderr, "Insertion into vector failed.\n");
-    
+
   }
-  
+
   return (mavlink_t *)mav;
 }
 
@@ -3511,56 +3587,56 @@ pcap_t *tlogToPcap(tlog_t *tlogP) {
   pcapMessage_t *pMess;
   tlogMessage_t *tMess;
   int i;
-  
+
   // Check arguments.
   if (tlogP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return NULL;
   }
-  
+
   // Coerce.
   tlog = (pTlog_t *)tlogP;
-  
+
   // Allocate space for pacp file structure.
   if ((pcap = (pPcap_t *)malloc(sizeof(pPcap_t))) == NULL) {
     fprintf(stderr, "Memory allocation failed.\n");
     return NULL;
   }
-  
+
   // Initialise a vector to jhold messages.
   if ((pcap->messages = vectorInit()) == NULL) {
     fprintf(stderr, "Vector initialisation failed.\n");
     return NULL;
-	}
-	
-	// Fill the file header.
-	pcap->header[0] = 0xd4;
-	pcap->header[1] = 0xc3; 
-	pcap->header[2] = 0xb2;
-	pcap->header[3] = 0xa1;
-	pcap->header[4] = 0x02;
-	pcap->header[5] = 0;
-	pcap->header[6] = 0x04;
-	pcap->header[7] = 0;
-	for (i = 8; i < 24; i++)
-		pcap->header[i] = 0;
+        }
 
-	// For each message in the TLOG file create a corresponding PCAP message.
-	for (i = 0; i < vectorGetSize(tlog->messages); i++) {
-		// Extract message from vector.
-		if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message %d from vector.\n", i);
-		
-		if ((pMess = tlogMessToPcap(tMess)) == NULL)
-			fprintf(stderr, "Error converting message %d.\n", i);
+        // Fill the file header.
+        pcap->header[0] = 0xd4;
+        pcap->header[1] = 0xc3;
+        pcap->header[2] = 0xb2;
+        pcap->header[3] = 0xa1;
+        pcap->header[4] = 0x02;
+        pcap->header[5] = 0;
+        pcap->header[6] = 0x04;
+        pcap->header[7] = 0;
+        for (i = 8; i < 24; i++)
+                pcap->header[i] = 0;
 
-		// Insert into vector.
-		if (vectorInsertBack(pcap->messages, (void *)pMess) != 0)
-			fprintf(stderr, "Insertion into vector failed.\n");
-	}
-	
-	return (pcap_t *)pcap;
-	
+        // For each message in the TLOG file create a corresponding PCAP message.
+        for (i = 0; i < vectorGetSize(tlog->messages); i++) {
+                // Extract message from vector.
+                if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message %d from vector.\n", i);
+
+                if ((pMess = tlogMessToPcap(tMess)) == NULL)
+                        fprintf(stderr, "Error converting message %d.\n", i);
+
+                // Insert into vector.
+                if (vectorInsertBack(pcap->messages, (void *)pMess) != 0)
+                        fprintf(stderr, "Insertion into vector failed.\n");
+        }
+
+        return (pcap_t *)pcap;
+
 }
 
 /*
@@ -3569,61 +3645,61 @@ pcap_t *tlogToPcap(tlog_t *tlogP) {
  * Outputs: PCAP file structure; NUKLL if unsuccessful
  */
 pcap_t *mavToPcap(mavlink_t *mavP) {
-	// Variable declarations.
-	pMavlink_t *mav;
-	pPcap_t *pcap;
-	pcapMessage_t *pMess;
-	mavMessage_t *mMess;
-	int i;
+        // Variable declarations.
+        pMavlink_t *mav;
+        pPcap_t *pcap;
+        pcapMessage_t *pMess;
+        mavMessage_t *mMess;
+        int i;
 
-	// Check arguments.
-	if (mavP == NULL) {
-		fprintf(stderr, "Invalid argument.\n");
-		return NULL;
-	}
+        // Check arguments.
+        if (mavP == NULL) {
+                fprintf(stderr, "Invalid argument.\n");
+                return NULL;
+        }
 
-	// Coerce.
-	mav = (pMavlink_t *)mavP;
+        // Coerce.
+        mav = (pMavlink_t *)mavP;
 
-	// Allocate space for pacp file structure.
-	if ((pcap = (pPcap_t *)malloc(sizeof(pPcap_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Allocate space for pacp file structure.
+        if ((pcap = (pPcap_t *)malloc(sizeof(pPcap_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	// Initialise a vector to jhold messages.
-	if ((pcap->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
-	
-	// Fill the file header.
-	pcap->header[0] = 0xd4;
-	pcap->header[1] = 0xc3; 
-	pcap->header[2] = 0xb2;
-	pcap->header[3] = 0xa1;
-	pcap->header[4] = 0x02;
-	pcap->header[5] = 0;
-	pcap->header[6] = 0x04;
-	pcap->header[7] = 0;
-	for (i = 8; i < 24; i++)
-		pcap->header[i] = 0;
-	
-	// For each message in the MAVLink file create a corresponding PCAP message.
-	for (i = 0; i < vectorGetSize(mav->messages); i++) {
-		// Extract message from vector.
-		if ((mMess = (mavMessage_t *)vectorGetElement(mav->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message %d from vector.\n", i);
-		
-		if ((pMess = mavMessToPcap(mMess)) == NULL)
-			fprintf(stderr, "Error converting message %d.\n", i);
+        // Initialise a vector to jhold messages.
+        if ((pcap->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Insert into vector.
-		if (vectorInsertBack(pcap->messages, (void *)pMess) != 0)
-			fprintf(stderr, "Insertion into vector failed.\n");
-	}
-	
-	return (pcap_t *)pcap;
+        // Fill the file header.
+        pcap->header[0] = 0xd4;
+        pcap->header[1] = 0xc3;
+        pcap->header[2] = 0xb2;
+        pcap->header[3] = 0xa1;
+        pcap->header[4] = 0x02;
+        pcap->header[5] = 0;
+        pcap->header[6] = 0x04;
+        pcap->header[7] = 0;
+        for (i = 8; i < 24; i++)
+                pcap->header[i] = 0;
+
+        // For each message in the MAVLink file create a corresponding PCAP message.
+        for (i = 0; i < vectorGetSize(mav->messages); i++) {
+                // Extract message from vector.
+                if ((mMess = (mavMessage_t *)vectorGetElement(mav->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message %d from vector.\n", i);
+
+                if ((pMess = mavMessToPcap(mMess)) == NULL)
+                        fprintf(stderr, "Error converting message %d.\n", i);
+
+                // Insert into vector.
+                if (vectorInsertBack(pcap->messages, (void *)pMess) != 0)
+                        fprintf(stderr, "Insertion into vector failed.\n");
+        }
+
+        return (pcap_t *)pcap;
 
 }
 
@@ -3633,50 +3709,50 @@ pcap_t *mavToPcap(mavlink_t *mavP) {
  * Outputs: MAVLink file structure; NUKLL if unsuccessful
  */
 mavlink_t *pcapToMav(pcap_t *pcapP) {
-	// Variable declarations.
-	pPcap_t *pcap;
-	pMavlink_t *mav;
-	mavMessage_t *mess;
-	pcapMessage_t *pMess;
-	int i;
-	
-	// Check arguments.
-	if (pcapP == NULL) {
-		fprintf(stderr, "Invalid argument.\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pPcap_t *pcap;
+        pMavlink_t *mav;
+        mavMessage_t *mess;
+        pcapMessage_t *pMess;
+        int i;
 
-	// Coerce.
-	pcap = (pPcap_t *)pcapP;
+        // Check arguments.
+        if (pcapP == NULL) {
+                fprintf(stderr, "Invalid argument.\n");
+                return NULL;
+        }
 
-	// Allcoate memory for MAVLink file structure.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-	  fprintf(stderr, "Memory allocation failed.\n");
-	  return NULL;
-	}
-	
-	// Initialise vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-	  fprintf(stderr, "Vector initialisation failed.\n");
-	  return NULL;
-	}
-	
-	// Extract the MAVLink portion of each message.
-	for (i = 0; i < vectorGetSize(pcap->messages); i++) {
-	  // Extract message from vector.
-	  if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i)) == NULL)
-	    fprintf(stderr, "Error extracting message %d from vector.\n", i);
-	  
-	  if ((mess = pcapMessToMav(pMess)) == NULL)
-	    fprintf(stderr, "Error converting message %d.\n", i);
-	  
-	  // Insert into vector.
-	  if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-	    fprintf(stderr, "Insertion into vector failed.\n");
-	  
-	}
-	
-	return (mavlink_t *)mav;
+        // Coerce.
+        pcap = (pPcap_t *)pcapP;
+
+        // Allcoate memory for MAVLink file structure.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+          fprintf(stderr, "Memory allocation failed.\n");
+          return NULL;
+        }
+
+        // Initialise vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+          fprintf(stderr, "Vector initialisation failed.\n");
+          return NULL;
+        }
+
+        // Extract the MAVLink portion of each message.
+        for (i = 0; i < vectorGetSize(pcap->messages); i++) {
+          // Extract message from vector.
+          if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i)) == NULL)
+            fprintf(stderr, "Error extracting message %d from vector.\n", i);
+
+          if ((mess = pcapMessToMav(pMess)) == NULL)
+            fprintf(stderr, "Error converting message %d.\n", i);
+
+          // Insert into vector.
+          if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+            fprintf(stderr, "Insertion into vector failed.\n");
+
+        }
+
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -3690,49 +3766,49 @@ void countIDSPcap(pcap_t *pcapP) {
   vector_t *ids;
   int i, id, *idp;
   pcapMessage_t *mess;
-  
+
   // Check arguments.
   if (pcapP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   pcap = (pPcap_t *)pcapP;
-  
+
   // Initialise vector
   if ((ids = vectorInit()) == NULL) {
     fprintf(stderr, "Error initialising vector.\n");
     return;
   }
-  
+
   // Insert unique ids into vector.
   for (i = 0; i < vectorGetSize(pcap->messages); i++) {
     // Get the relevant message.
     if ((mess = (pcapMessage_t *)vectorGetElement(pcap->messages, i)) == NULL)
       fprintf(stderr, "Error getting element %d.\n", i);
-    
+
     if (mess->mav.mav1.mavCode == 0xfe)
       id = (int)mess->mav.mav1.messageID;
     else if (mess->mav.mav2.mavCode == 0xfd)
       id = toInt24le(mess->mav.mav2.messageID);
-    
+
     // If not in vector insert.
     if (!(vectorContains(ids, compareInt, (void *)&id))) {
       // Allocate memry for id.
       if ((idp = (int *)malloc(sizeof(int))) == NULL)
-	fprintf(stderr, "Memory allocation failed.\n");
-      
+        fprintf(stderr, "Memory allocation failed.\n");
+
       *idp = id;
-      
+
       if (vectorInsertBack(ids, (void *)idp) != 0)
-	fprintf(stderr, "Error inserting id %d into vector.\n", *idp);
+        fprintf(stderr, "Error inserting id %d into vector.\n", *idp);
     }
   }
-  
+
   printf("There are %d unique message IDs:\n", vectorGetSize(ids));
   vectorApply(ids, printID);
-  
+
   // Clean up memory.
   vectorApply(ids, free);
   vectorFree(ids);
@@ -3749,49 +3825,49 @@ void countIDSMav(mavlink_t *mavP) {
   vector_t *ids;
   int i, id, *idp;
   mavMessage_t *mess;
-  
+
   // Check arguments.
   if (mavP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   mav = (pMavlink_t *)mavP;
-  
+
   // Initialise vector
   if ((ids = vectorInit()) == NULL) {
     fprintf(stderr, "Error initialising vector.\n");
     return;
   }
-  
+
   // Insert unique ids into vector.
   for (i = 0; i < vectorGetSize(mav->messages); i++) {
     // Get the relevant message.
     if ((mess = (mavMessage_t *)vectorGetElement(mav->messages, i)) == NULL)
       fprintf(stderr, "Error getting element %d.\n", i);
-    
+
     if (mess->mav1.mavCode == 0xfe)
       id = (int)mess->mav1.messageID;
     else if (mess->mav2.mavCode == 0xfd)
       id = toInt24le(mess->mav2.messageID);
-    
+
     // If not in vector insert.
     if (!(vectorContains(ids, compareInt, (void *)&id))) {
       // Allocate memry for id.
       if ((idp = (int *)malloc(sizeof(int))) == NULL)
-	fprintf(stderr, "Memory allocation failed.\n");
-      
+        fprintf(stderr, "Memory allocation failed.\n");
+
       *idp = id;
-      
+
       if (vectorInsertBack(ids, (void *)idp) != 0)
-	fprintf(stderr, "Error inserting id %d into vector.\n", *idp);
+        fprintf(stderr, "Error inserting id %d into vector.\n", *idp);
     }
   }
-  
+
   printf("There are %d unique message IDs:\n", vectorGetSize(ids));
   vectorApply(ids, printID);
-  
+
   // Clean up memory.
   vectorApply(ids, free);
   vectorFree(ids);
@@ -3808,49 +3884,49 @@ void countIDSTlog(tlog_t *tlogP) {
   vector_t *ids;
   int i, id, *idp;
   tlogMessage_t *mess;
-  
+
   // Check arguments.
   if (tlogP == NULL) {
     fprintf(stderr, "Invalid argument.\n");
     return;
   }
-  
+
   // Coerce.
   tlog = (pTlog_t *)tlogP;
-  
+
   // Initialise vector
   if ((ids = vectorInit()) == NULL) {
     fprintf(stderr, "Error initialising vector.\n");
     return;
   }
-  
+
   // Insert unique ids into vector.
   for (i = 0; i < vectorGetSize(tlog->messages); i++) {
     // Get the relevant message.
     if ((mess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
       fprintf(stderr, "Error getting element %d.\n", i);
-    
+
     if (mess->mav.mav1.mavCode == 0xfe)
       id = (int)mess->mav.mav1.messageID;
     else if (mess->mav.mav2.mavCode == 0xfd)
       id = toInt24le(mess->mav.mav2.messageID);
-    
+
     // If not in vector insert.
     if (!(vectorContains(ids, compareInt, (void *)&id))) {
       // Allocate memry for id.
       if ((idp = (int *)malloc(sizeof(int))) == NULL)
-	fprintf(stderr, "Memory allocation failed.\n");
-      
+        fprintf(stderr, "Memory allocation failed.\n");
+
       *idp = id;
-      
+
       if (vectorInsertBack(ids, (void *)idp) != 0)
-	fprintf(stderr, "Error inserting id %d into vector.\n", *idp);
+        fprintf(stderr, "Error inserting id %d into vector.\n", *idp);
     }
   }
-  
+
   printf("There are %d unique message IDs:\n", vectorGetSize(ids));
   vectorApply(ids, printID);
-  
+
   // Clean up memory.
   vectorApply(ids, free);
   vectorFree(ids);
@@ -3868,52 +3944,52 @@ mavlink_t *extractByIdPcapToMav(pcap_t *pcapP, vector_t *ids) {
   mavMessage_t *mess;
   pcapMessage_t *pMess;
   int i, id;
-  
+
   // Check arguments.
   if (pcapP == NULL || ids == NULL) {
     fprintf(stderr, "Invalid argument(s).\n");
     return NULL;
   }
-  
+
   // Coerce.
   pcap = (pPcap_t *)pcapP;
-  
+
   // Allocate memory for MAVLink file.
   if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
     fprintf(stderr, "Memory allocation failed.\n");
     return NULL;
   }
-  
+
   // Initialise message vector.
   if ((mav->messages = vectorInit()) == NULL) {
     fprintf(stderr, "Vector initialisation failed.\n");
     return NULL;
   }
-  
+
   // Check if each message's ID is in the vector
   for (i = 0; i < vectorGetSize(pcap->messages); i++) {
-		// Extract message.
-		if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+                // Extract message.
+                if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-		// Get id.
-		if (pMess->mav.mav1.mavCode == 0xfe)
-			id = (int)pMess->mav.mav1.messageID;
-		else if (pMess->mav.mav2.mavCode == 0xfd)
-			id = toInt24le(pMess->mav.mav2.messageID);
-		
-		// Check if ID is to be extracted.
-		if (vectorContains(ids, compareInt, (void *)&id)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = pcapMessToMav(pMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+                // Get id.
+                if (pMess->mav.mav1.mavCode == 0xfe)
+                        id = (int)pMess->mav.mav1.messageID;
+                else if (pMess->mav.mav2.mavCode == 0xfd)
+                        id = toInt24le(pMess->mav.mav2.messageID);
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
-		}
-	}
-	return (mavlink_t *)mav;
+                // Check if ID is to be extracted.
+                if (vectorContains(ids, compareInt, (void *)&id)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = pcapMessToMav(pMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -3922,58 +3998,58 @@ mavlink_t *extractByIdPcapToMav(pcap_t *pcapP, vector_t *ids) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractByIdTlogToMav(tlog_t *tlogP, vector_t *ids) {
-	// Variable declarations.
-	pTlog_t *tlog;
-	pMavlink_t *mav;
-	mavMessage_t *mess;
-	tlogMessage_t *tMess;
-	int i, id;
-	
-	// Check arguments.
-	if (tlogP == NULL || ids == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pTlog_t *tlog;
+        pMavlink_t *mav;
+        mavMessage_t *mess;
+        tlogMessage_t *tMess;
+        int i, id;
 
-	// Coerce.
-	tlog = (pTlog_t *)tlogP;
+        // Check arguments.
+        if (tlogP == NULL || ids == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        tlog = (pTlog_t *)tlogP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	// Check if each message's ID is in the vector
-	for (i = 0; i < vectorGetSize(tlog->messages); i++) {
-		// Extract message.
-		if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Get id.
-		if (tMess->mav.mav1.mavCode == 0xfe)
-			id = (int)tMess->mav.mav1.messageID;
-		else if (tMess->mav.mav2.mavCode == 0xfd)
-			id = toInt24le(tMess->mav.mav2.messageID);
-		
-		// Check if ID is to be extracted.
-		if (vectorContains(ids, compareInt, (void *)&id)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = tlogMessToMav(tMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        // Check if each message's ID is in the vector
+        for (i = 0; i < vectorGetSize(tlog->messages); i++) {
+                // Extract message.
+                if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
-		}
-	}
-	return (mavlink_t *)mav;
+                // Get id.
+                if (tMess->mav.mav1.mavCode == 0xfe)
+                        id = (int)tMess->mav.mav1.messageID;
+                else if (tMess->mav.mav2.mavCode == 0xfd)
+                        id = toInt24le(tMess->mav.mav2.messageID);
+
+                // Check if ID is to be extracted.
+                if (vectorContains(ids, compareInt, (void *)&id)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = tlogMessToMav(tMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -3982,56 +4058,56 @@ mavlink_t *extractByIdTlogToMav(tlog_t *tlogP, vector_t *ids) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractByIdMavToMav(mavlink_t *mavP, vector_t *ids) {
-	// Variable declarations.
-	pMavlink_t *m, *mav;
-	mavMessage_t *mMess, *mess;
-	int i, id;
-	
-	// Check arguments.
-	if (mavP == NULL || ids == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pMavlink_t *m, *mav;
+        mavMessage_t *mMess, *mess;
+        int i, id;
 
-	// Coerce.
-	m = (pMavlink_t *)mavP;
+        // Check arguments.
+        if (mavP == NULL || ids == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        m = (pMavlink_t *)mavP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	// Check if each message's ID is in the vector
-	for (i = 0; i < vectorGetSize(m->messages); i++) {
-		// Extract message.
-		if ((mMess = (mavMessage_t *)vectorGetElement(m->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Get id.
-		if (mMess->mav1.mavCode == 0xfe)
-			id = (int)mMess->mav1.messageID;
-		else if (mMess->mav2.mavCode == 0xfd)
-			id = toInt24le(mMess->mav2.messageID);
-		
-		// Check if ID is to be extracted.
-		if (vectorContains(ids, compareInt, (void *)&id)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = mavMessToMav(mMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        // Check if each message's ID is in the vector
+        for (i = 0; i < vectorGetSize(m->messages); i++) {
+                // Extract message.
+                if ((mMess = (mavMessage_t *)vectorGetElement(m->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
-		}
-	}
-	return (mavlink_t *)mav;
+                // Get id.
+                if (mMess->mav1.mavCode == 0xfe)
+                        id = (int)mMess->mav1.messageID;
+                else if (mMess->mav2.mavCode == 0xfd)
+                        id = toInt24le(mMess->mav2.messageID);
+
+                // Check if ID is to be extracted.
+                if (vectorContains(ids, compareInt, (void *)&id)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = mavMessToMav(mMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -4040,64 +4116,64 @@ mavlink_t *extractByIdMavToMav(mavlink_t *mavP, vector_t *ids) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractOneByIdPcapToMav(pcap_t *pcapP, vector_t *ids) {
-	// Variable declarations.
-	pPcap_t *pcap;
-	pMavlink_t *mav;
-	mavMessage_t *mess;
-	pcapMessage_t *pMess;
-	int i, id;
-	bool found;
-	
-	// Check arguments.
-	if (pcapP == NULL || ids == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pPcap_t *pcap;
+        pMavlink_t *mav;
+        mavMessage_t *mess;
+        pcapMessage_t *pMess;
+        int i, id;
+        bool found;
 
-	// Coerce.
-	pcap = (pPcap_t *)pcapP;
+        // Check arguments.
+        if (pcapP == NULL || ids == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        pcap = (pPcap_t *)pcapP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	found = false;
-	
-	// Check if each message's ID is in the vector
-	for (i = 0; i < vectorGetSize(pcap->messages) && !found; i++) {
-		// Extract message.
-		if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Get id.
-		if (pMess->mav.mav1.mavCode == 0xfe)
-			id = (int)pMess->mav.mav1.messageID;
-		else if (pMess->mav.mav2.mavCode == 0xfd)
-			id = toInt24le(pMess->mav.mav2.messageID);
-		
-		// Check if ID is to be extracted.
-		if (vectorContains(ids, compareInt, (void *)&id)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = pcapMessToMav(pMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        found = false;
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
+        // Check if each message's ID is in the vector
+        for (i = 0; i < vectorGetSize(pcap->messages) && !found; i++) {
+                // Extract message.
+                if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Message has been found.
-			found = true;
-		}
-	}
-	return (mavlink_t *)mav;
+                // Get id.
+                if (pMess->mav.mav1.mavCode == 0xfe)
+                        id = (int)pMess->mav.mav1.messageID;
+                else if (pMess->mav.mav2.mavCode == 0xfd)
+                        id = toInt24le(pMess->mav.mav2.messageID);
+
+                // Check if ID is to be extracted.
+                if (vectorContains(ids, compareInt, (void *)&id)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = pcapMessToMav(pMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+
+                        // Message has been found.
+                        found = true;
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -4106,64 +4182,64 @@ mavlink_t *extractOneByIdPcapToMav(pcap_t *pcapP, vector_t *ids) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractOneByIdTlogToMav(tlog_t *tlogP, vector_t *ids) {
-	// Variable declarations.
-	pTlog_t *tlog;
-	pMavlink_t *mav;
-	mavMessage_t *mess;
-	tlogMessage_t *tMess;
-	int i, id;
-	bool found;
-	
-	// Check arguments.
-	if (tlogP == NULL || ids == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pTlog_t *tlog;
+        pMavlink_t *mav;
+        mavMessage_t *mess;
+        tlogMessage_t *tMess;
+        int i, id;
+        bool found;
 
-	// Coerce.
-	tlog = (pTlog_t *)tlogP;
+        // Check arguments.
+        if (tlogP == NULL || ids == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        tlog = (pTlog_t *)tlogP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	found = false;
-	
-	// Check if each message's ID is in the vector
-	for (i = 0; i < vectorGetSize(tlog->messages) && !found; i++) {
-		// Extract message.
-		if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Get id.
-		if (tMess->mav.mav1.mavCode == 0xfe)
-			id = (int)tMess->mav.mav1.messageID;
-		else if (tMess->mav.mav2.mavCode == 0xfd)
-			id = toInt24le(tMess->mav.mav2.messageID);
-		
-		// Check if ID is to be extracted.
-		if (vectorContains(ids, compareInt, (void *)&id)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = tlogMessToMav(tMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        found = false;
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
+        // Check if each message's ID is in the vector
+        for (i = 0; i < vectorGetSize(tlog->messages) && !found; i++) {
+                // Extract message.
+                if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Message has been found.
-			found = true;
-		}
-	}
-	return (mavlink_t *)mav;
+                // Get id.
+                if (tMess->mav.mav1.mavCode == 0xfe)
+                        id = (int)tMess->mav.mav1.messageID;
+                else if (tMess->mav.mav2.mavCode == 0xfd)
+                        id = toInt24le(tMess->mav.mav2.messageID);
+
+                // Check if ID is to be extracted.
+                if (vectorContains(ids, compareInt, (void *)&id)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = tlogMessToMav(tMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+
+                        // Message has been found.
+                        found = true;
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -4172,62 +4248,62 @@ mavlink_t *extractOneByIdTlogToMav(tlog_t *tlogP, vector_t *ids) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractOneByIdMavToMav(mavlink_t *mavP, vector_t *ids) {
-	// Variable declarations.
-	pMavlink_t *m, *mav;
-	mavMessage_t *mMess, *mess;
-	int i, id;
-	bool found;
-	
-	// Check arguments.
-	if (mavP == NULL || ids == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pMavlink_t *m, *mav;
+        mavMessage_t *mMess, *mess;
+        int i, id;
+        bool found;
 
-	// Coerce.
-	m = (pMavlink_t *)mavP;
+        // Check arguments.
+        if (mavP == NULL || ids == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        m = (pMavlink_t *)mavP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	found = false;
-	
-	// Check if each message's ID is in the vector
-	for (i = 0; i < vectorGetSize(m->messages) && !found; i++) {
-		// Extract message.
-		if ((mMess = (mavMessage_t *)vectorGetElement(m->messages, i)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Get id.
-		if (mMess->mav1.mavCode == 0xfe)
-			id = (int)mMess->mav1.messageID;
-		else if (mMess->mav2.mavCode == 0xfd)
-			id = toInt24le(mMess->mav2.messageID);
-		
-		// Check if ID is to be extracted.
-		if (vectorContains(ids, compareInt, (void *)&id)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = mavMessToMav(mMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        found = false;
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
+        // Check if each message's ID is in the vector
+        for (i = 0; i < vectorGetSize(m->messages) && !found; i++) {
+                // Extract message.
+                if ((mMess = (mavMessage_t *)vectorGetElement(m->messages, i)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Message has been found.
-			found = true;
-		}
-	}
-	return (mavlink_t *)mav;
+                // Get id.
+                if (mMess->mav1.mavCode == 0xfe)
+                        id = (int)mMess->mav1.messageID;
+                else if (mMess->mav2.mavCode == 0xfd)
+                        id = toInt24le(mMess->mav2.messageID);
+
+                // Check if ID is to be extracted.
+                if (vectorContains(ids, compareInt, (void *)&id)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = mavMessToMav(mMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+
+                        // Message has been found.
+                        found = true;
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 
@@ -4237,52 +4313,52 @@ mavlink_t *extractOneByIdMavToMav(mavlink_t *mavP, vector_t *ids) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractByNumberPcapToMav(pcap_t *pcapP, vector_t *numbers) {
-	// Variable declarations.
-	pPcap_t *pcap;
-	pMavlink_t *mav;
-	mavMessage_t *mess;
-	pcapMessage_t *pMess;
-	int i;
-	
-	// Check arguments.
-	if (pcapP == NULL || numbers == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pPcap_t *pcap;
+        pMavlink_t *mav;
+        mavMessage_t *mess;
+        pcapMessage_t *pMess;
+        int i;
 
-	// Coerce.
-	pcap = (pPcap_t *)pcapP;
+        // Check arguments.
+        if (pcapP == NULL || numbers == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        pcap = (pPcap_t *)pcapP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	// Check if each message's ID is in the vector
-	for (i = 1; i <= vectorGetSize(pcap->messages); i++) {
-		// Extract message.
-		if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i - 1)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Check if number is to be extracted.
-		if (vectorContains(numbers, compareInt, (void *)&i)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = pcapMessToMav(pMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        // Check if each message's ID is in the vector
+        for (i = 1; i <= vectorGetSize(pcap->messages); i++) {
+                // Extract message.
+                if ((pMess = (pcapMessage_t *)vectorGetElement(pcap->messages, i - 1)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
-		}
-	}
-	return (mavlink_t *)mav;
+                // Check if number is to be extracted.
+                if (vectorContains(numbers, compareInt, (void *)&i)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = pcapMessToMav(pMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -4291,52 +4367,52 @@ mavlink_t *extractByNumberPcapToMav(pcap_t *pcapP, vector_t *numbers) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractByNumberTlogToMav(tlog_t *tlogP, vector_t *numbers) {
-	// Variable declarations.
-	pTlog_t *tlog;
-	pMavlink_t *mav;
-	mavMessage_t *mess;
-	tlogMessage_t *tMess;
-	int i;
-	
-	// Check arguments.
-	if (tlogP == NULL || numbers == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pTlog_t *tlog;
+        pMavlink_t *mav;
+        mavMessage_t *mess;
+        tlogMessage_t *tMess;
+        int i;
 
-	// Coerce.
-	tlog = (pTlog_t *)tlogP;
+        // Check arguments.
+        if (tlogP == NULL || numbers == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        tlog = (pTlog_t *)tlogP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	// Check if each message's ID is in the vector
-	for (i = 1; i <= vectorGetSize(tlog->messages); i++) {
-		// Extract message.
-		if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i - 1)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Check if number is to be extracted.
-		if (vectorContains(numbers, compareInt, (void *)&i)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = tlogMessToMav(tMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        // Check if each message's ID is in the vector
+        for (i = 1; i <= vectorGetSize(tlog->messages); i++) {
+                // Extract message.
+                if ((tMess = (tlogMessage_t *)vectorGetElement(tlog->messages, i - 1)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
-		}
-	}
-	return (mavlink_t *)mav;
+                // Check if number is to be extracted.
+                if (vectorContains(numbers, compareInt, (void *)&i)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = tlogMessToMav(tMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /*
@@ -4345,50 +4421,50 @@ mavlink_t *extractByNumberTlogToMav(tlog_t *tlogP, vector_t *numbers) {
  * Outputs: MAVLink file; NULL if unsuccessful
  */
 mavlink_t *extractByNumberMavToMav(mavlink_t *mavP, vector_t *numbers) {
-	// Variable declarations.
-	pMavlink_t *m, *mav;
-	mavMessage_t *mMess, *mess;
-	int i;
-	
-	// Check arguments.
-	if (mavP == NULL || numbers == NULL) {
-		fprintf(stderr, "Invalid argument(s).\n");
-		return NULL;
-	}
+        // Variable declarations.
+        pMavlink_t *m, *mav;
+        mavMessage_t *mMess, *mess;
+        int i;
 
-	// Coerce.
-	m = (pMavlink_t *)mavP;
+        // Check arguments.
+        if (mavP == NULL || numbers == NULL) {
+                fprintf(stderr, "Invalid argument(s).\n");
+                return NULL;
+        }
 
-	// Allocate memory for MAVLink file.
-	if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
-		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
-	}
+        // Coerce.
+        m = (pMavlink_t *)mavP;
 
-	// Initialise message vector.
-	if ((mav->messages = vectorInit()) == NULL) {
-		fprintf(stderr, "Vector initialisation failed.\n");
-		return NULL;
-	}
+        // Allocate memory for MAVLink file.
+        if ((mav = (pMavlink_t *)malloc(sizeof(pMavlink_t))) == NULL) {
+                fprintf(stderr, "Memory allocation failed.\n");
+                return NULL;
+        }
 
-	// Check if each message's ID is in the vector
-	for (i = 1; i <= vectorGetSize(m->messages); i++) {
-		// Extract message.
-		if ((mMess = (mavMessage_t *)vectorGetElement(m->messages, i - 1)) == NULL)
-			fprintf(stderr, "Error extracting message from vector.\n");
+        // Initialise message vector.
+        if ((mav->messages = vectorInit()) == NULL) {
+                fprintf(stderr, "Vector initialisation failed.\n");
+                return NULL;
+        }
 
-		// Check if number is to be extracted.
-		if (vectorContains(numbers, compareInt, (void *)&i)) {
-			// Extract message and insert into MAVLink file.
-			if ((mess = mavMessToMav(mMess)) == NULL)
-				fprintf(stderr, "Error extracting message.\n");
+        // Check if each message's ID is in the vector
+        for (i = 1; i <= vectorGetSize(m->messages); i++) {
+                // Extract message.
+                if ((mMess = (mavMessage_t *)vectorGetElement(m->messages, i - 1)) == NULL)
+                        fprintf(stderr, "Error extracting message from vector.\n");
 
-			// Add message to MAVLink vector.
-			if (vectorInsertBack(mav->messages, (void *)mess) != 0)
-				fprintf(stderr, "Error inserting message into vector.\n");
-		}
-	}
-	return (mavlink_t *)mav;
+                // Check if number is to be extracted.
+                if (vectorContains(numbers, compareInt, (void *)&i)) {
+                        // Extract message and insert into MAVLink file.
+                        if ((mess = mavMessToMav(mMess)) == NULL)
+                                fprintf(stderr, "Error extracting message.\n");
+
+                        // Add message to MAVLink vector.
+                        if (vectorInsertBack(mav->messages, (void *)mess) != 0)
+                                fprintf(stderr, "Error inserting message into vector.\n");
+                }
+        }
+        return (mavlink_t *)mav;
 }
 
 /* Generate a full suite of tests for a given messageID.
@@ -4396,598 +4472,617 @@ mavlink_t *extractByNumberMavToMav(mavlink_t *mavP, vector_t *numbers) {
  * Outputs: none
  */
 void generateTests(int msgID, int passSeed, int failSeed) {
-	// Variable declarations.
-	int maxLenM1, maxLenM2, i, j;
-	FILE *fp;
-	char fname[50];
-	vector_t *enFields;
-	mavMessage_t mess;
-	uint8_t randomByte, old;
-	
-	// Seed a random number generator.
-	srand(time(NULL));
+        // Variable declarations.
+        int minLenM2, maxLenM1, maxLenM2, i, j;
+        FILE *fp;
+        char fname[50];
+        vector_t *enFields;
+        mavMessage_t mess;
+        uint8_t randomByte, old;
 
-	// Initialise the given message type.
-	if ((enFields = initialiseMessageType(msgID, &maxLenM1, &maxLenM2)) == NULL) {
-		fprintf(stderr, "Error initialising message type.\n");
-		return;
-	}
-	
-	// Only test MAVLink 1 messages for message IDs under 255.
-	if (msgID <= 255) {
-		// Create a message with random byte values in wildcard fields and all other fields fixed.
-		mess.mav1.mavCode = 0xfe;
-		mess.mav1.payloadLen = (uint8_t)maxLenM1;
-		mess.mav1.packetSeq = (uint8_t)(rand() % 256);
-		mess.mav1.systemID = (uint8_t)(rand() % 256);
-		mess.mav1.compID = (uint8_t)(rand() % 256);
-		mess.mav1.messageID = (uint8_t)msgID;
-		
-		// Allocate memory for the payload.
-		if ((mess.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM1)) == NULL)
-			fprintf(stderr, "Memory allocation failed.\n");
+        // Seed a random number generator.
+        srand(time(NULL));
 
-		// Fill payload bytes.
-		for (i = 0; i < maxLenM1; i++) {
-			// Generate a random byte for wildcard fields.
-			randomByte = (uint8_t)(rand() % 256);
+        // Initialise the given message type.
+        if ((enFields = initialiseMessageType(msgID, &minLenM2, &maxLenM1, &maxLenM2)) == NULL) {
+                fprintf(stderr, "Error initialising message type.\n");
+                return;
+        }
 
-			// Differentiate between ennumerated and non-ennumerated fields.
-			if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav1.payload[i] = randomByte;
-			else mess.mav1.payload[i] = fillEnumInRange(msgID, i);
-		}
-		
-		// Fill in the crc with random bytes.
-		mess.mav1.crc[0] = (uint8_t)(rand() % 256);
-		mess.mav1.crc[1] = (uint8_t)(rand() % 256);
+        // Only test MAVLink 1 messages for message IDs under 255.
+        if (msgID <= 255) {
+                // Create a message with random byte values in wildcard fields and all other fields fixed.
+                mess.mav1.mavCode = 0xfe;
+                mess.mav1.payloadLen = (uint8_t)maxLenM1;
+                mess.mav1.packetSeq = (uint8_t)(rand() % 256);
+                mess.mav1.systemID = (uint8_t)(rand() % 256);
+                mess.mav1.compID = (uint8_t)(rand() % 256);
+                mess.mav1.messageID = (uint8_t)msgID;
 
-		// Generate a single passing test.
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
+                // Allocate memory for the payload.
+                if ((mess.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM1)) == NULL)
+                        fprintf(stderr, "Memory allocation failed.\n");
 
-		writeMessageToFileMav(&mess, fp);
+                // Fill payload bytes.
+                for (i = 0; i < maxLenM1; i++) {
+                        // Generate a random byte for wildcard fields.
+                        randomByte = (uint8_t)(rand() % 256);
 
-		fclose(fp);
-		
-		// Generate failing tests for MAVLink code.
-		old = mess.mav1.mavCode;
-		for (i = 0; i <= 255; i++) {
-			mess.mav1.mavCode = (uint8_t)i;
-			if (i != old) {
-				// Generate a single passing test.
-				sprintf(fname, "fail.%d", failSeed++);
-				
-				if ((fp = fopen(fname, "wb")) == NULL) {
-					fprintf(stderr, "Failed to open file.\n");
-					return;
-				}
+                        // Differentiate between ennumerated and non-ennumerated fields.
+                        if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav1.payload[i] = randomByte;
+                        else mess.mav1.payload[i] = fillEnumInRange(msgID, i);
+                }
 
-				writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 8);
-				
-				fclose(fp);
-				
-			}
-		}
-		mess.mav1.mavCode = old;
+                // Fill in the crc with random bytes.
+                mess.mav1.crc[0] = (uint8_t)(rand() % 256);
+                mess.mav1.crc[1] = (uint8_t)(rand() % 256);
 
-		// Generate failing tests for payload length.
-		old = mess.mav1.payloadLen;
-		for (i = 0; i <= 255; i++) {
-			mess.mav1.payloadLen = (uint8_t)i;
-			if (i != old) {
-				// Generate a single failing test.
-				sprintf(fname, "fail.%d", failSeed++);
-			
-				if ((fp = fopen(fname, "wb")) == NULL) {
-					fprintf(stderr, "Failed to open file.\n");
-					return;
-				}
+                // Generate a single passing test.
+                sprintf(fname, "pass.%d", passSeed++);
 
-				writeAltFormatMessageToFileMav(&mess, fp, 1, old, old + 8);
-				
-				fclose(fp);
-				
-			}
-		}
-		mess.mav1.payloadLen = old;
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
 
-		// Generate passing tests for packet sequence.
-		old = mess.mav1.packetSeq;
-		for (i = 0; i <= 255; i++) {
-			mess.mav1.packetSeq = (uint8_t)i;
-			if (i != old) {
-				// Generate a single passing test.
-				sprintf(fname, "pass.%d", passSeed++);
-			
-				if ((fp = fopen(fname, "wb")) == NULL) {
-					fprintf(stderr, "Failed to open file.\n");
-					return;
-				}
-				
-				writeMessageToFileMav(&mess, fp);
-				
-				fclose(fp);
-				
-			}
-		}
-		mess.mav1.packetSeq = old;
+                writeMessageToFileMav(&mess, fp);
 
-		// Generate passing tests for system ID.
-		old = mess.mav1.systemID;
-		for (i = 0; i <= 255; i++) {
-			mess.mav1.systemID = (uint8_t)i;
-			if (i != old) {
-				// Generate a single passing test.
-				sprintf(fname, "pass.%d", passSeed++);
-			
-				if ((fp = fopen(fname, "wb")) == NULL) {
-					fprintf(stderr, "Failed to open file.\n");
-					return;
-				}
-				
-				writeMessageToFileMav(&mess, fp);
-				
-				fclose(fp);
-				
-			}
-		}
-		mess.mav1.systemID = old;
+                fclose(fp);
 
-		// Generate passing tests for component ID.
-		old = mess.mav1.compID;
-		for (i = 0; i <= 255; i++) {
-			mess.mav1.compID = (uint8_t)i;
-			if (i != old) {
-				// Generate a single passing test.
-				sprintf(fname, "pass.%d", passSeed++);
-			
-				if ((fp = fopen(fname, "wb")) == NULL) {
-					fprintf(stderr, "Failed to open file.\n");
-					return;
-				}
-				
-				writeMessageToFileMav(&mess, fp);
-				
-				fclose(fp);
-				
-			}
-		}
-		mess.mav1.compID = old;
+                // Generate failing tests for MAVLink code.
+                old = mess.mav1.mavCode;
+                for (i = 0; i <= 255; i++) {
+                        mess.mav1.mavCode = (uint8_t)i;
+                        if (i != old) {
+                                // Generate a single passing test.
+                                sprintf(fname, "fail.%d", failSeed++);
 
-		// Generate passing and failing tests of all payload fields.
-		for (i = 0; i < maxLenM1; i++) {
-			old = mess.mav1.payload[i];
-			// First deal with non-enumerated fields.
-			if (!(vectorContains(enFields, compareInt, (void *)&i))) {
-				for (j = 0; j < 255; j++) {
-					mess.mav1.payload[i] = j;
-					if (j != old) {
-						// Generate a single passing test.
-						sprintf(fname, "pass.%d", passSeed++);
-						
-						if ((fp = fopen(fname, "wb")) == NULL) {
-							fprintf(stderr, "Failed to open file.\n");
-							return;
-						}
-						
-						writeMessageToFileMav(&mess, fp);
-						
-						fclose(fp);
-						
-					}
-				}
-			}
-			else {
-				// Generate tests for enumerated fields.
-				generateEnumTests(msgID, i, mess, maxLenM1, &passSeed, &failSeed);
-			}	
-			mess.mav1.payload[i] = old;
-		}
-		
-		// Generate passing tests for all fields of CRC.
-		for (i = 0; i < 2; i++) {
-			old = mess.mav1.crc[i];
-			for (j = 0; j < 255; j++) {
-				mess.mav1.crc[i] = j;
-				if (j != old) {
-					sprintf(fname, "pass.%d", passSeed++);
-					
-					if ((fp = fopen(fname, "wb")) == NULL) {
-						fprintf(stderr, "Failed to open file.\n");
-						return;
-					}
-					
-					writeMessageToFileMav(&mess, fp);
-					
-					fclose(fp);
-					
-				}
-			}
-			mess.mav1.crc[i] = old;
-		}
-		
-		// Generate a failing test case by writing one too many bytes to a file.
-		sprintf(fname, "fail.%d", failSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 9);
-		
-		fclose(fp);
+                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                        fprintf(stderr, "Failed to open file.\n");
+                                        return;
+                                }
 
-		// Generate a failing test case by writing one too few bytes to a file.
-		sprintf(fname, "fail.%d", failSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 7);
-		
-		fclose(fp);
-		
-		free(mess.mav1.payload);
-	}
+                                writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 8);
 
-	// Create a MAVLINK 2 message with random byte values in wildcard fields and all other fields fixed.
-	mess.mav2.mavCode = 0xfd;
-	mess.mav2.payloadLen = (uint8_t)maxLenM2;
-	mess.mav2.incompFlag = 0;
-	mess.mav2.compFlag = 0;
-	mess.mav2.packetSeq = (uint8_t)(rand() % 256);
-	mess.mav2.systemID = (uint8_t)(rand() % 256);
-	mess.mav2.compID = (uint8_t)(rand() % 256);
-	fromInt24le(msgID, mess.mav2.messageID);
-	
-	// Allocate memory for the payload.
-	if ((mess.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM2)) == NULL)
-		fprintf(stderr, "Memory allocation failed.\n");
-	
-	// Fill payload bytes.
-	for (i = 0; i < maxLenM2; i++) {
-		// Generate a random byte for wildcard fields.
-		randomByte = (uint8_t)(rand() % 256);
+                                fclose(fp);
 
-		// Differentiate between ennumerated and non-ennumerated fields.
-		if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav2.payload[i] = randomByte;
-		else mess.mav2.payload[i] = fillEnumInRange(msgID, i);
-	}
-	
-	// Fill in the crc with random bytes.
-	mess.mav2.crc[0] = (uint8_t)(rand() % 256);
-	mess.mav2.crc[1] = (uint8_t)(rand() % 256);
-	mess.mav2.signedMess = false;
-	
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	// Generate failing tests for MAVLink code.
-	old = mess.mav2.mavCode;
-	for (i = 0; i <= 255; i++) {
-		mess.mav2.mavCode = (uint8_t)i;
-		if (i != old) {
-			// Generate a single passing test.
-			sprintf(fname, "fail.%d", failSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 12);
-			
-			fclose(fp);
-			
-		}
-	}
-	mess.mav2.mavCode = old;
-	
-	// Generate failing tests for each payload length.
-	old = mess.mav2.payloadLen;
-	for (i = 1; i <= maxLenM2; i++) {
-		mess.mav2.payloadLen = (uint8_t)i;
+                        }
+                }
+                mess.mav1.mavCode = old;
 
-		// Write a passing test for the payload length
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeMessageToFileMav(&mess, fp);
-		
-		fclose(fp);
+                // Generate failing tests for payload length.
+                old = mess.mav1.payloadLen;
+                for (i = 0; i <= 255; i++) {
+                        mess.mav1.payloadLen = (uint8_t)i;
+                        if (i != old) {
+                                // Generate a single failing test.
+                                sprintf(fname, "fail.%d", failSeed++);
 
-		// Generate failing tests for the rest of the payload lengths.
-		for (j = 1; j <= maxLenM2; j++) {
-			if (j != i) {
-				// Generate a single failing test.
-				sprintf(fname, "fail.%d", failSeed++);
-				
-				if ((fp = fopen(fname, "wb")) == NULL) {
-					fprintf(stderr, "Failed to open file.\n");
-					return;
-				}
-				
-				writeAltFormatMessageToFileMav(&mess, fp, 2, j, j + 12);
-				
-				fclose(fp);
-			}
-		}
-	}
-	mess.mav2.payloadLen = old;
+                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                        fprintf(stderr, "Failed to open file.\n");
+                                        return;
+                                }
 
-	// Generate failing tests for incompatibility flag.
-	old = mess.mav2.incompFlag;
-	for (i = 0; i <= 255; i++) {
-		mess.mav2.incompFlag = (uint8_t)i;
-		if (i != old) {
-			// Generate a single passing test.
-			sprintf(fname, "fail.%d", failSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeMessageToFileMav(&mess, fp);
-			
-			fclose(fp);
-			
-		}
-	}
-	mess.mav2.incompFlag = old;
+                                writeAltFormatMessageToFileMav(&mess, fp, 1, old, old + 8);
 
-	// Generate failing tests for compatibility flag.
-	old = mess.mav2.compFlag;
-	for (i = 0; i <= 255; i++) {
-		mess.mav2.compFlag = (uint8_t)i;
-		if (i != old) {
-			// Generate a single passing test.
-			sprintf(fname, "fail.%d", failSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeMessageToFileMav(&mess, fp);
-			
-			fclose(fp);
-			
-		}
-	}
-	mess.mav2.compFlag = old;
+                                fclose(fp);
 
-	// Generate passing tests for packet sequence.
-	old = mess.mav2.packetSeq;
-	for (i = 0; i <= 255; i++) {
-		mess.mav2.packetSeq = (uint8_t)i;
-		if (i != old) {
-			// Generate a single passing test.
-			sprintf(fname, "pass.%d", passSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeMessageToFileMav(&mess, fp);
-			
-			fclose(fp);
-			
-		}
-	}
-	mess.mav2.packetSeq = old;
-	
-	// Generate passing tests for system ID.
-	old = mess.mav2.systemID;
-	for (i = 0; i <= 255; i++) {
-		mess.mav2.systemID = (uint8_t)i;
-		if (i != old) {
-			// Generate a single passing test.
-			sprintf(fname, "pass.%d", passSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeMessageToFileMav(&mess, fp);
-			
-			fclose(fp);
-			
-		}
-	}
-	mess.mav2.systemID = old;
-	
-	// Generate passing tests for component ID.
-	old = mess.mav2.compID;
-	for (i = 0; i <= 255; i++) {
-		mess.mav2.compID = (uint8_t)i;
-		if (i != old) {
-			// Generate a single passing test.
-			sprintf(fname, "pass.%d", passSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeMessageToFileMav(&mess, fp);
-			
-			fclose(fp);
-			
-		}
-	}
-	mess.mav2.compID = old;
-	
-	// Generate passing and failing tests of all payload fields.
-	for (i = 0; i < maxLenM2; i++) {
-		old = mess.mav2.payload[i];
-		// First deal with non-enumerated fields.
-		if (!(vectorContains(enFields, compareInt, (void *)&i))) {
-			for (j = 0; j < 255; j++) {
-				mess.mav2.payload[i] = j;
-				if (j != old) {
-					// Generate a single passing test.
-					sprintf(fname, "pass.%d", passSeed++);
-					
-					if ((fp = fopen(fname, "wb")) == NULL) {
-						fprintf(stderr, "Failed to open file.\n");
-						return;
-					}
-					
-					writeMessageToFileMav(&mess, fp);
-					
-					fclose(fp);
-					
-				}
-			}
-		}
-		else {
-			// Generate tests for enumerated fields.
-			generateEnumTests(msgID, i, mess, maxLenM2, &passSeed, &failSeed);
-		}	
-		mess.mav2.payload[i] = old;
-	}
-	
-	// Generate passing tests for all fields of CRC.
-	for (i = 0; i < 2; i++) {
-		old = mess.mav2.crc[i];
-		for (j = 0; j < 255; j++) {
-			mess.mav2.crc[i] = j;
-			if (j != old) {
-				// Generate a single passing test.
-				sprintf(fname, "pass.%d", passSeed++);
-				
-				if ((fp = fopen(fname, "wb")) == NULL) {
-					fprintf(stderr, "Failed to open file.\n");
-					return;
-				}
-				
-				writeMessageToFileMav(&mess, fp);
-				
-				fclose(fp);
-				
-			}
-		}
-		mess.mav2.crc[i] = old;
-	}
-	
-	// Generate a failing test case by writing one too many bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 13);
-	
-	fclose(fp);
-	
-	// Generate a failing test case by writing one too few bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 11);
-	
-	fclose(fp);
+                        }
+                }
+                mess.mav1.payloadLen = old;
 
-	// Test signed message.
-	mess.mav2.signedMess = true;
-	mess.mav2.incompFlag = 0x01;
+                // Generate passing tests for packet sequence.
+                old = mess.mav1.packetSeq;
+                for (i = 0; i <= 255; i++) {
+                        mess.mav1.packetSeq = (uint8_t)i;
+                        if (i != old) {
+                                // Generate a single passing test.
+                                sprintf(fname, "pass.%d", passSeed++);
 
-	// Fill in signature field.
-	for (i = 0; i < 13; i++)
-		mess.mav2.signature[i] = (uint8_t)(rand() % 256);
+                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                        fprintf(stderr, "Failed to open file.\n");
+                                        return;
+                                }
 
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	// Generate failing tests for incompatibility flag.
-	old = mess.mav2.incompFlag;
-	for (i = 0; i <= 255; i++) {
-		mess.mav2.incompFlag = (uint8_t)i;
-		if (i != old) {
-			// Generate a single passing test.
-			sprintf(fname, "fail.%d", failSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeMessageToFileMav(&mess, fp);
-			
-			fclose(fp);
-			
-		}
-	}
-	mess.mav2.incompFlag = old;
+                                writeMessageToFileMav(&mess, fp);
 
-	// Generate a failing test case by writing one too many bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 26);
-	
-	fclose(fp);
-	
-	// Generate a failing test case by writing one too few bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 24);
-	
-	fclose(fp);
-	
-	free(mess.mav2.payload);
-	
-	// Clean up memory.
-	vectorApply(enFields, free);
-	vectorFree(enFields);
-	
+                                fclose(fp);
+
+                        }
+                }
+                mess.mav1.packetSeq = old;
+
+                // Generate passing tests for system ID.
+                old = mess.mav1.systemID;
+                for (i = 0; i <= 255; i++) {
+                        mess.mav1.systemID = (uint8_t)i;
+                        if (i != old) {
+                                // Generate a single passing test.
+                                sprintf(fname, "pass.%d", passSeed++);
+
+                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                        fprintf(stderr, "Failed to open file.\n");
+                                        return;
+                                }
+
+                                writeMessageToFileMav(&mess, fp);
+
+                                fclose(fp);
+
+                        }
+                }
+                mess.mav1.systemID = old;
+
+                // Generate passing tests for component ID.
+                old = mess.mav1.compID;
+                for (i = 0; i <= 255; i++) {
+                        mess.mav1.compID = (uint8_t)i;
+                        if (i != old) {
+                                // Generate a single passing test.
+                                sprintf(fname, "pass.%d", passSeed++);
+
+                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                        fprintf(stderr, "Failed to open file.\n");
+                                        return;
+                                }
+
+                                writeMessageToFileMav(&mess, fp);
+
+                                fclose(fp);
+
+                        }
+                }
+                mess.mav1.compID = old;
+
+                // Generate passing and failing tests of all payload fields.
+                for (i = 0; i < maxLenM1; i++) {
+                        old = mess.mav1.payload[i];
+                        // First deal with non-enumerated fields.
+                        if (!(vectorContains(enFields, compareInt, (void *)&i))) {
+                                for (j = 0; j < 255; j++) {
+                                        mess.mav1.payload[i] = j;
+                                        if (j != old) {
+                                                // Generate a single passing test.
+                                                sprintf(fname, "pass.%d", passSeed++);
+
+                                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                                        fprintf(stderr, "Failed to open file.\n");
+                                                        return;
+                                                }
+
+                                                writeMessageToFileMav(&mess, fp);
+
+                                                fclose(fp);
+
+                                        }
+                                }
+                        }
+                        else {
+                                // Generate tests for enumerated fields.
+                                generateEnumTests(msgID, i, mess, maxLenM1, &passSeed, &failSeed);
+                        }
+                        mess.mav1.payload[i] = old;
+                }
+
+                // Generate passing tests for all fields of CRC.
+                for (i = 0; i < 2; i++) {
+                        old = mess.mav1.crc[i];
+                        for (j = 0; j < 255; j++) {
+                                mess.mav1.crc[i] = j;
+                                if (j != old) {
+                                        sprintf(fname, "pass.%d", passSeed++);
+
+                                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                                fprintf(stderr, "Failed to open file.\n");
+                                                return;
+                                        }
+
+                                        writeMessageToFileMav(&mess, fp);
+
+                                        fclose(fp);
+
+                                }
+                        }
+                        mess.mav1.crc[i] = old;
+                }
+
+                // Generate a failing test case by writing one too many bytes to a file.
+                sprintf(fname, "fail.%d", failSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 9);
+
+                fclose(fp);
+
+                // Generate a failing test case by writing one too few bytes to a file.
+                sprintf(fname, "fail.%d", failSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 7);
+
+                fclose(fp);
+
+                free(mess.mav1.payload);
+        }
+
+        // Create a MAVLINK 2 message with random byte values in wildcard fields and all other fields fixed.
+        mess.mav2.mavCode = 0xfd;
+        mess.mav2.payloadLen = (uint8_t)maxLenM2;
+        mess.mav2.incompFlag = 0;
+        mess.mav2.compFlag = 0;
+        mess.mav2.packetSeq = (uint8_t)(rand() % 256);
+        mess.mav2.systemID = (uint8_t)(rand() % 256);
+        mess.mav2.compID = (uint8_t)(rand() % 256);
+        fromInt24le(msgID, mess.mav2.messageID);
+
+        // Allocate memory for the payload.
+        if ((mess.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM2)) == NULL)
+                fprintf(stderr, "Memory allocation failed.\n");
+
+        // Fill payload bytes.
+        for (i = 0; i < maxLenM2; i++) {
+                // Generate a random byte for wildcard fields.
+                randomByte = (uint8_t)(rand() % 256);
+
+                // Differentiate between ennumerated and non-ennumerated fields.
+                if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav2.payload[i] = randomByte;
+                else mess.mav2.payload[i] = fillEnumInRange(msgID, i);
+        }
+
+        // Fill in the crc with random bytes.
+        mess.mav2.crc[0] = (uint8_t)(rand() % 256);
+        mess.mav2.crc[1] = (uint8_t)(rand() % 256);
+        mess.mav2.signedMess = false;
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        // Generate failing tests for MAVLink code.
+        old = mess.mav2.mavCode;
+        for (i = 0; i <= 255; i++) {
+                mess.mav2.mavCode = (uint8_t)i;
+                if (i != old) {
+                        // Generate a single passing test.
+                        sprintf(fname, "fail.%d", failSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 12);
+
+                        fclose(fp);
+
+                }
+        }
+        mess.mav2.mavCode = old;
+
+    // Generate failign tests for all payload lengths less than tha minumum.
+    old = mess.mav2.payloadLen;
+    for (i = 1; i < minLenM2; i++) {
+        mess.mav2.payloadLen = (uint8_t)i;
+
+        // Generate a single failing test.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+            fprintf(stderr, "Failed to open file.\n");
+            return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+    }
+    mess.mav2.payloadLen = old;
+
+        // Generate failing tests for each payload length.
+        old = mess.mav2.payloadLen;
+        for (i = minLenM2; i <= maxLenM2; i++) {
+                mess.mav2.payloadLen = (uint8_t)i;
+
+                // Write a passing test for the payload length
+                sprintf(fname, "pass.%d", passSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeMessageToFileMav(&mess, fp);
+
+                fclose(fp);
+
+                // Generate failing tests for the rest of the payload lengths.
+                for (j = 1; j <= maxLenM2; j++) {
+                        if (j != i) {
+                                // Generate a single failing test.
+                                sprintf(fname, "fail.%d", failSeed++);
+
+                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                        fprintf(stderr, "Failed to open file.\n");
+                                        return;
+                                }
+
+                                writeAltFormatMessageToFileMav(&mess, fp, 2, j, j + 12);
+
+                                fclose(fp);
+                        }
+                }
+        }
+        mess.mav2.payloadLen = old;
+
+        // Generate failing tests for incompatibility flag.
+        old = mess.mav2.incompFlag;
+        for (i = 0; i <= 255; i++) {
+                mess.mav2.incompFlag = (uint8_t)i;
+                if (i != old) {
+                        // Generate a single passing test.
+                        sprintf(fname, "fail.%d", failSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeMessageToFileMav(&mess, fp);
+
+                        fclose(fp);
+
+                }
+        }
+        mess.mav2.incompFlag = old;
+
+        // Generate failing tests for compatibility flag.
+        old = mess.mav2.compFlag;
+        for (i = 0; i <= 255; i++) {
+                mess.mav2.compFlag = (uint8_t)i;
+                if (i != old) {
+                        // Generate a single passing test.
+                        sprintf(fname, "fail.%d", failSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeMessageToFileMav(&mess, fp);
+
+                        fclose(fp);
+
+                }
+        }
+        mess.mav2.compFlag = old;
+
+        // Generate passing tests for packet sequence.
+        old = mess.mav2.packetSeq;
+        for (i = 0; i <= 255; i++) {
+                mess.mav2.packetSeq = (uint8_t)i;
+                if (i != old) {
+                        // Generate a single passing test.
+                        sprintf(fname, "pass.%d", passSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeMessageToFileMav(&mess, fp);
+
+                        fclose(fp);
+
+                }
+        }
+        mess.mav2.packetSeq = old;
+
+        // Generate passing tests for system ID.
+        old = mess.mav2.systemID;
+        for (i = 0; i <= 255; i++) {
+                mess.mav2.systemID = (uint8_t)i;
+                if (i != old) {
+                        // Generate a single passing test.
+                        sprintf(fname, "pass.%d", passSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeMessageToFileMav(&mess, fp);
+
+                        fclose(fp);
+
+                }
+        }
+        mess.mav2.systemID = old;
+
+        // Generate passing tests for component ID.
+        old = mess.mav2.compID;
+        for (i = 0; i <= 255; i++) {
+                mess.mav2.compID = (uint8_t)i;
+                if (i != old) {
+                        // Generate a single passing test.
+                        sprintf(fname, "pass.%d", passSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeMessageToFileMav(&mess, fp);
+
+                        fclose(fp);
+
+                }
+        }
+        mess.mav2.compID = old;
+
+        // Generate passing and failing tests of all payload fields.
+        for (i = 0; i < maxLenM2; i++) {
+                old = mess.mav2.payload[i];
+                // First deal with non-enumerated fields.
+                if (!(vectorContains(enFields, compareInt, (void *)&i))) {
+                        for (j = 0; j < 255; j++) {
+                                mess.mav2.payload[i] = j;
+                                if (j != old) {
+                                        // Generate a single passing test.
+                                        sprintf(fname, "pass.%d", passSeed++);
+
+                                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                                fprintf(stderr, "Failed to open file.\n");
+                                                return;
+                                        }
+
+                                        writeMessageToFileMav(&mess, fp);
+
+                                        fclose(fp);
+
+                                }
+                        }
+                }
+                else {
+                        // Generate tests for enumerated fields.
+                        generateEnumTests(msgID, i, mess, maxLenM2, &passSeed, &failSeed);
+                }
+                mess.mav2.payload[i] = old;
+        }
+
+        // Generate passing tests for all fields of CRC.
+        for (i = 0; i < 2; i++) {
+                old = mess.mav2.crc[i];
+                for (j = 0; j < 255; j++) {
+                        mess.mav2.crc[i] = j;
+                        if (j != old) {
+                                // Generate a single passing test.
+                                sprintf(fname, "pass.%d", passSeed++);
+
+                                if ((fp = fopen(fname, "wb")) == NULL) {
+                                        fprintf(stderr, "Failed to open file.\n");
+                                        return;
+                                }
+
+                                writeMessageToFileMav(&mess, fp);
+
+                                fclose(fp);
+
+                        }
+                }
+                mess.mav2.crc[i] = old;
+        }
+
+        // Generate a failing test case by writing one too many bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 13);
+
+        fclose(fp);
+
+        // Generate a failing test case by writing one too few bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 11);
+
+        fclose(fp);
+
+        // Test signed message.
+        mess.mav2.signedMess = true;
+        mess.mav2.incompFlag = 0x01;
+
+        // Fill in signature field.
+        for (i = 0; i < 13; i++)
+                mess.mav2.signature[i] = (uint8_t)(rand() % 256);
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        // Generate failing tests for incompatibility flag.
+        old = mess.mav2.incompFlag;
+        for (i = 0; i <= 255; i++) {
+                mess.mav2.incompFlag = (uint8_t)i;
+                if (i != old) {
+                        // Generate a single passing test.
+                        sprintf(fname, "fail.%d", failSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeMessageToFileMav(&mess, fp);
+
+                        fclose(fp);
+
+                }
+        }
+        mess.mav2.incompFlag = old;
+
+        // Generate a failing test case by writing one too many bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 26);
+
+        fclose(fp);
+
+        // Generate a failing test case by writing one too few bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 24);
+
+        fclose(fp);
+
+        free(mess.mav2.payload);
+
+        // Clean up memory.
+        vectorApply(enFields, free);
+        vectorFree(enFields);
+
 }
 
 /*
@@ -4996,491 +5091,510 @@ void generateTests(int msgID, int passSeed, int failSeed) {
  * Outputs: none
  */
 void generateTestsShort(int msgID, int passSeed, int failSeed) {
-	// Variable declarations.
-	int maxLenM1, maxLenM2, i;
-	FILE *fp;
-	char fname[50];
-	vector_t *enFields;
-	mavMessage_t mess;
-	uint8_t randomByte, old;
-	
-	// Seed a random number generator.
-	srand(time(NULL));
+        // Variable declarations.
+        int minLenM2, maxLenM1, maxLenM2, i;
+        FILE *fp;
+        char fname[50];
+        vector_t *enFields;
+        mavMessage_t mess;
+        uint8_t randomByte, old;
 
-	// Initialise the given message type.
-	if ((enFields = initialiseMessageType(msgID, &maxLenM1, &maxLenM2)) == NULL) {
-		fprintf(stderr, "Error initialising message type.\n");
-		return;
-	}
-	
-	// Only test MAVLink 1 messages for message IDs under 255.
-	if (msgID <= 255) {
-		// Create a message with random byte values in wildcard fields and all other fields fixed.
-		mess.mav1.mavCode = 0xfe;
-		mess.mav1.payloadLen = (uint8_t)maxLenM1;
-		mess.mav1.packetSeq = (uint8_t)(rand() % 256);
-		mess.mav1.systemID = (uint8_t)(rand() % 256);
-		mess.mav1.compID = (uint8_t)(rand() % 256);
-		mess.mav1.messageID = (uint8_t)msgID;
-		
-		// Allocate memory for the payload.
-		if ((mess.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM1)) == NULL)
-			fprintf(stderr, "Memory allocation failed.\n");
+        // Seed a random number generator.
+        srand(time(NULL));
 
-		// Fill payload bytes.
-		for (i = 0; i < maxLenM1; i++) {
-			// Generate a random byte for wildcard fields.
-			randomByte = (uint8_t)(rand() % 256);
+        // Initialise the given message type.
+        if ((enFields = initialiseMessageType(msgID, &minLenM2, &maxLenM1, &maxLenM2)) == NULL) {
+                fprintf(stderr, "Error initialising message type.\n");
+                return;
+        }
 
-			// Differentiate between ennumerated and non-ennumerated fields.
-			if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav1.payload[i] = randomByte;
-			else mess.mav1.payload[i] = fillEnumInRange(msgID, i);
-		}
-		
-		// Fill in the crc with random bytes.
-		mess.mav1.crc[0] = (uint8_t)(rand() % 256);
-		mess.mav1.crc[1] = (uint8_t)(rand() % 256);
+        // Only test MAVLink 1 messages for message IDs under 255.
+        if (msgID <= 255) {
+                // Create a message with random byte values in wildcard fields and all other fields fixed.
+                mess.mav1.mavCode = 0xfe;
+                mess.mav1.payloadLen = (uint8_t)maxLenM1;
+                mess.mav1.packetSeq = (uint8_t)(rand() % 256);
+                mess.mav1.systemID = (uint8_t)(rand() % 256);
+                mess.mav1.compID = (uint8_t)(rand() % 256);
+                mess.mav1.messageID = (uint8_t)msgID;
 
-		// Generate a single passing test.
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
+                // Allocate memory for the payload.
+                if ((mess.mav1.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM1)) == NULL)
+                        fprintf(stderr, "Memory allocation failed.\n");
 
-		writeMessageToFileMav(&mess, fp);
+                // Fill payload bytes.
+                for (i = 0; i < maxLenM1; i++) {
+                        // Generate a random byte for wildcard fields.
+                        randomByte = (uint8_t)(rand() % 256);
 
-		fclose(fp);
-		
-		// Generate a failing test for MAVLink code.
-		old = mess.mav1.mavCode;
-		mess.mav1.mavCode = 0xfd;
+                        // Differentiate between ennumerated and non-ennumerated fields.
+                        if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav1.payload[i] = randomByte;
+                        else mess.mav1.payload[i] = fillEnumInRange(msgID, i);
+                }
 
-		// Generate a single failing test.
-		sprintf(fname, "fail.%d", failSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 8);
-		
-		fclose(fp);
-		
-		mess.mav1.mavCode = old;
+                // Fill in the crc with random bytes.
+                mess.mav1.crc[0] = (uint8_t)(rand() % 256);
+                mess.mav1.crc[1] = (uint8_t)(rand() % 256);
 
-		// Generate failing test for payload length.
-		old = mess.mav1.payloadLen;
-		mess.mav1.payloadLen = old + 0x01;
+                // Generate a single passing test.
+                sprintf(fname, "pass.%d", passSeed++);
 
-		// Generate a single failing test.
-		sprintf(fname, "fail.%d", failSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeAltFormatMessageToFileMav(&mess, fp, 1, old, old + 8);
-		
-		fclose(fp);
-		
-		mess.mav1.payloadLen = old;
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
 
-		// Generate passing test for packet sequence.
-		old = mess.mav1.packetSeq;
-		mess.mav1.packetSeq = old + 0x01;
+                writeMessageToFileMav(&mess, fp);
 
-		// Generate a single passing test.
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeMessageToFileMav(&mess, fp);
-		
-		fclose(fp);
-		
-		mess.mav1.packetSeq = old;
+                fclose(fp);
 
-		// Generate passing test for system ID.
-		old = mess.mav1.systemID;
-		mess.mav1.systemID = (uint8_t)old + 0x01;
+                // Generate a failing test for MAVLink code.
+                old = mess.mav1.mavCode;
+                mess.mav1.mavCode = 0xfd;
 
-		// Generate a single passing test.
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeMessageToFileMav(&mess, fp);
-		
-		fclose(fp);
-		
-		mess.mav1.systemID = old;
-		
-		// Generate passing test for component ID.
-		old = mess.mav1.compID;
-		mess.mav1.compID = (uint8_t)i;
+                // Generate a single failing test.
+                sprintf(fname, "fail.%d", failSeed++);
 
-		// Generate a single passing test.
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeMessageToFileMav(&mess, fp);
-		
-		fclose(fp);
-		
-		mess.mav1.compID = old;
-		
-		// Generate passing tests for all fields of CRC.
-		for (i = 0; i < 2; i++) {
-			old = mess.mav1.crc[i];
-			mess.mav1.crc[i] = old + 0x01;
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
 
-			sprintf(fname, "pass.%d", passSeed++);
-			
-			if ((fp = fopen(fname, "wb")) == NULL) {
-				fprintf(stderr, "Failed to open file.\n");
-				return;
-			}
-			
-			writeMessageToFileMav(&mess, fp);
-			
-			fclose(fp);
+                writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 8);
 
-			mess.mav1.crc[i] = old;
-		}
-		
-		// Generate a failing test case by writing one too many bytes to a file.
-		sprintf(fname, "fail.%d", failSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 9);
-		
-		fclose(fp);
+                fclose(fp);
 
-		// Generate a failing test case by writing one too few bytes to a file.
-		sprintf(fname, "fail.%d", failSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 7);
-		
-		fclose(fp);
-		
-		free(mess.mav1.payload);
-	}
-	
-	// Create a MAVLINK 2 message with random byte values in wildcard fields and all other fields fixed.
-	mess.mav2.mavCode = 0xfd;
-	mess.mav2.payloadLen = (uint8_t)maxLenM2;
-	mess.mav2.incompFlag = 0;
-	mess.mav2.compFlag = 0;
-	mess.mav2.packetSeq = (uint8_t)(rand() % 256);
-	mess.mav2.systemID = (uint8_t)(rand() % 256);
-	mess.mav2.compID = (uint8_t)(rand() % 256);
-	fromInt24le(msgID, mess.mav2.messageID);
-	
-	// Allocate memory for the payload.
-	if ((mess.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM2)) == NULL)
-		fprintf(stderr, "Memory allocation failed.\n");
-	
-	// Fill payload bytes.
-	for (i = 0; i < maxLenM2; i++) {
-		// Generate a random byte for wildcard fields.
-		randomByte = (uint8_t)(rand() % 256);
+                mess.mav1.mavCode = old;
 
-		// Differentiate between ennumerated and non-ennumerated fields.
-		if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav2.payload[i] = randomByte;
-		else mess.mav2.payload[i] = fillEnumInRange(msgID, i);
-	}
-	
-	// Fill in the crc with random bytes.
-	mess.mav2.crc[0] = (uint8_t)(rand() % 256);
-	mess.mav2.crc[1] = (uint8_t)(rand() % 256);
-	mess.mav2.signedMess = false;
-	
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	// Generate failing test for MAVLink code.
-	old = mess.mav2.mavCode;
-	mess.mav2.mavCode = 0xfe;
+                // Generate failing test for payload length.
+                old = mess.mav1.payloadLen;
+                mess.mav1.payloadLen = old + 0x01;
 
-	// Generate a single failing test.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 12);
-	
-	fclose(fp);
-	
-	mess.mav2.mavCode = old;
-	
-	// Generate failing tests for each payload length.
-	old = mess.mav2.payloadLen;
-	for (i = 1; i <= maxLenM2; i++) {
-		mess.mav2.payloadLen = (uint8_t)i;
+                // Generate a single failing test.
+                sprintf(fname, "fail.%d", failSeed++);
 
-		// Write a passing test for the payload length
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeMessageToFileMav(&mess, fp);
-		
-		fclose(fp);
-		
-		// Generate a failing test for the given of the payload lengths.
-		sprintf(fname, "fail.%d", failSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen + 1, mess.mav2.payloadLen + 13);
-		
-		fclose(fp);
-	}
-	mess.mav2.payloadLen = old;
-	
-	// Generate failing tests for incompatibility flag.
-	old = mess.mav2.incompFlag;
-	mess.mav2.incompFlag = 0x01;
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
 
-	// Generate a single failing test.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
+                writeAltFormatMessageToFileMav(&mess, fp, 1, old, old + 8);
 
-	mess.mav2.incompFlag = old;
-	
-	// Generate failing test for compatibility flag.
-	old = mess.mav2.compFlag;
-	mess.mav2.compFlag = old + 0x01;
-	
-	// Generate a single failing test.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	mess.mav2.compFlag = old;
-	
-	// Generate passing tests for packet sequence.
-	old = mess.mav2.packetSeq;
-	mess.mav2.packetSeq = old + 0x01;
-	
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	mess.mav2.packetSeq = old;
-	
-	// Generate passing tests for system ID.
-	old = mess.mav2.systemID;
-	mess.mav2.systemID = old + 0x01;
+                fclose(fp);
 
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	mess.mav2.systemID = old;
-	
-	// Generate passing tests for component ID.
-	old = mess.mav2.compID;
-	mess.mav2.compID = old + 0x01;
-	
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	mess.mav2.compID = old;
-	
-	// Generate passing tests for all fields of CRC.
-	for (i = 0; i < 2; i++) {
-		old = mess.mav2.crc[i];
-		mess.mav2.crc[i] = old + 0x01;
+                mess.mav1.payloadLen = old;
 
-		// Generate a single passing test.
-		sprintf(fname, "pass.%d", passSeed++);
-		
-		if ((fp = fopen(fname, "wb")) == NULL) {
-			fprintf(stderr, "Failed to open file.\n");
-			return;
-		}
-		
-		writeMessageToFileMav(&mess, fp);
-		
-		fclose(fp);
-		
-		mess.mav2.crc[i] = old;
-	}
-	
-	// Generate a failing test case by writing one too many bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 13);
-	
-	fclose(fp);
-	
-	// Generate a failing test case by writing one too few bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 11);
-	
-	fclose(fp);
+                // Generate passing test for packet sequence.
+                old = mess.mav1.packetSeq;
+                mess.mav1.packetSeq = old + 0x01;
 
-	// Test signed message.
-	mess.mav2.signedMess = true;
-	mess.mav2.incompFlag = 0x01;
+                // Generate a single passing test.
+                sprintf(fname, "pass.%d", passSeed++);
 
-	// Fill in signature field.
-	for (i = 0; i < 13; i++)
-		mess.mav2.signature[i] = (uint8_t)(rand() % 256);
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
 
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	// Generate failing tests for incompatibility flag.
-	old = mess.mav2.incompFlag;
-	mess.mav2.incompFlag = 0x00;
+                writeMessageToFileMav(&mess, fp);
 
-	// Generate a single passing test.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	mess.mav2.incompFlag = old;
+                fclose(fp);
 
-	// Generate a failing test case by writing one too many bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 26);
-	
-	fclose(fp);
-	
-	// Generate a failing test case by writing one too few bytes to a file.
-	sprintf(fname, "fail.%d", failSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 24);
-	
-	fclose(fp);
-	
-	free(mess.mav2.payload);
-	
-	// Clean up memory.
-	vectorApply(enFields, free);
-	vectorFree(enFields);
-	
+                mess.mav1.packetSeq = old;
+
+                // Generate passing test for system ID.
+                old = mess.mav1.systemID;
+                mess.mav1.systemID = (uint8_t)old + 0x01;
+
+                // Generate a single passing test.
+                sprintf(fname, "pass.%d", passSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeMessageToFileMav(&mess, fp);
+
+                fclose(fp);
+
+                mess.mav1.systemID = old;
+
+                // Generate passing test for component ID.
+                old = mess.mav1.compID;
+                mess.mav1.compID = (uint8_t)i;
+
+                // Generate a single passing test.
+                sprintf(fname, "pass.%d", passSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeMessageToFileMav(&mess, fp);
+
+                fclose(fp);
+
+                mess.mav1.compID = old;
+
+                // Generate passing tests for all fields of CRC.
+                for (i = 0; i < 2; i++) {
+                        old = mess.mav1.crc[i];
+                        mess.mav1.crc[i] = old + 0x01;
+
+                        sprintf(fname, "pass.%d", passSeed++);
+
+                        if ((fp = fopen(fname, "wb")) == NULL) {
+                                fprintf(stderr, "Failed to open file.\n");
+                                return;
+                        }
+
+                        writeMessageToFileMav(&mess, fp);
+
+                        fclose(fp);
+
+                        mess.mav1.crc[i] = old;
+                }
+
+                // Generate a failing test case by writing one too many bytes to a file.
+                sprintf(fname, "fail.%d", failSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 9);
+
+                fclose(fp);
+
+                // Generate a failing test case by writing one too few bytes to a file.
+                sprintf(fname, "fail.%d", failSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeAltFormatMessageToFileMav(&mess, fp, 1, mess.mav1.payloadLen, mess.mav1.payloadLen + 7);
+
+                fclose(fp);
+
+                free(mess.mav1.payload);
+        }
+
+        // Create a MAVLINK 2 message with random byte values in wildcard fields and all other fields fixed.
+        mess.mav2.mavCode = 0xfd;
+        mess.mav2.payloadLen = (uint8_t)maxLenM2;
+        mess.mav2.incompFlag = 0;
+        mess.mav2.compFlag = 0;
+        mess.mav2.packetSeq = (uint8_t)(rand() % 256);
+        mess.mav2.systemID = (uint8_t)(rand() % 256);
+        mess.mav2.compID = (uint8_t)(rand() % 256);
+        fromInt24le(msgID, mess.mav2.messageID);
+
+        // Allocate memory for the payload.
+        if ((mess.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM2)) == NULL)
+                fprintf(stderr, "Memory allocation failed.\n");
+
+        // Fill payload bytes.
+        for (i = 0; i < maxLenM2; i++) {
+                // Generate a random byte for wildcard fields.
+                randomByte = (uint8_t)(rand() % 256);
+
+                // Differentiate between ennumerated and non-ennumerated fields.
+                if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav2.payload[i] = randomByte;
+                else mess.mav2.payload[i] = fillEnumInRange(msgID, i);
+        }
+
+        // Fill in the crc with random bytes.
+        mess.mav2.crc[0] = (uint8_t)(rand() % 256);
+        mess.mav2.crc[1] = (uint8_t)(rand() % 256);
+        mess.mav2.signedMess = false;
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        // Generate failing test for MAVLink code.
+        old = mess.mav2.mavCode;
+        mess.mav2.mavCode = 0xfe;
+
+        // Generate a single failing test.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 12);
+
+        fclose(fp);
+
+        mess.mav2.mavCode = old;
+
+    // Generate failing test for message shorter than minimum length.
+    old = mess.mav2.payloadLen;
+    for (i = 1; i < minLenM2; i++) {
+        mess.mav2.payloadLen = (uint8_t)i;
+
+        // Generate a failing test for the given of the payload lengths.
+            sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+            fprintf(stderr, "Failed to open file.\n");
+            return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+    }
+    mess.mav2.payloadLen = old;
+
+        // Generate failing tests for each payload length.
+        old = mess.mav2.payloadLen;
+        for (i = minLenM2; i <= maxLenM2; i++) {
+                mess.mav2.payloadLen = (uint8_t)i;
+
+                // Write a passing test for the payload length
+                sprintf(fname, "pass.%d", passSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeMessageToFileMav(&mess, fp);
+
+                fclose(fp);
+
+                // Generate a failing test for the given of the payload lengths.
+                sprintf(fname, "fail.%d", failSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen + 1, mess.mav2.payloadLen + 13);
+
+                fclose(fp);
+        }
+        mess.mav2.payloadLen = old;
+
+        // Generate failing tests for incompatibility flag.
+        old = mess.mav2.incompFlag;
+        mess.mav2.incompFlag = 0x01;
+
+        // Generate a single failing test.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        mess.mav2.incompFlag = old;
+
+        // Generate failing test for compatibility flag.
+        old = mess.mav2.compFlag;
+        mess.mav2.compFlag = old + 0x01;
+
+        // Generate a single failing test.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        mess.mav2.compFlag = old;
+
+        // Generate passing tests for packet sequence.
+        old = mess.mav2.packetSeq;
+        mess.mav2.packetSeq = old + 0x01;
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        mess.mav2.packetSeq = old;
+
+        // Generate passing tests for system ID.
+        old = mess.mav2.systemID;
+        mess.mav2.systemID = old + 0x01;
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        mess.mav2.systemID = old;
+
+        // Generate passing tests for component ID.
+        old = mess.mav2.compID;
+        mess.mav2.compID = old + 0x01;
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        mess.mav2.compID = old;
+
+        // Generate passing tests for all fields of CRC.
+        for (i = 0; i < 2; i++) {
+                old = mess.mav2.crc[i];
+                mess.mav2.crc[i] = old + 0x01;
+
+                // Generate a single passing test.
+                sprintf(fname, "pass.%d", passSeed++);
+
+                if ((fp = fopen(fname, "wb")) == NULL) {
+                        fprintf(stderr, "Failed to open file.\n");
+                        return;
+                }
+
+                writeMessageToFileMav(&mess, fp);
+
+                fclose(fp);
+
+                mess.mav2.crc[i] = old;
+        }
+
+        // Generate a failing test case by writing one too many bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 13);
+
+        fclose(fp);
+
+        // Generate a failing test case by writing one too few bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 11);
+
+        fclose(fp);
+
+        // Test signed message.
+        mess.mav2.signedMess = true;
+        mess.mav2.incompFlag = 0x01;
+
+        // Fill in signature field.
+        for (i = 0; i < 13; i++)
+                mess.mav2.signature[i] = (uint8_t)(rand() % 256);
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        // Generate failing tests for incompatibility flag.
+        old = mess.mav2.incompFlag;
+        mess.mav2.incompFlag = 0x00;
+
+        // Generate a single passing test.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        mess.mav2.incompFlag = old;
+
+        // Generate a failing test case by writing one too many bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 26);
+
+        fclose(fp);
+
+        // Generate a failing test case by writing one too few bytes to a file.
+        sprintf(fname, "fail.%d", failSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeAltFormatMessageToFileMav(&mess, fp, 2, mess.mav2.payloadLen, mess.mav2.payloadLen + 24);
+
+        fclose(fp);
+
+        free(mess.mav2.payload);
+
+        // Clean up memory.
+        vectorApply(enFields, free);
+        vectorFree(enFields);
+
 }
 
 /*
@@ -5489,68 +5603,68 @@ void generateTestsShort(int msgID, int passSeed, int failSeed) {
  * Outputs: none
  */
 void generateSingleTest(int msgID, int passSeed) {
-	// Variable declarations.
-	int maxLenM1, maxLenM2, i;
-	FILE *fp;
-	char fname[50];
-	vector_t *enFields;
-	mavMessage_t mess;
-	uint8_t randomByte;
-	
-	// Seed a random number generator.
-	srand(time(NULL));
+        // Variable declarations.
+        int minLenM2, maxLenM1, maxLenM2, i;
+        FILE *fp;
+        char fname[50];
+        vector_t *enFields;
+        mavMessage_t mess;
+        uint8_t randomByte;
 
-	// Initialise the given message type.
-	if ((enFields = initialiseMessageType(msgID, &maxLenM1, &maxLenM2)) == NULL) {
-		fprintf(stderr, "Error initialising message type.\n");
-		return;
-	}
-		
-	// Create a MAVLINK 2 message with random byte values in wildcard fields and all other fields fixed.
-	mess.mav2.mavCode = 0xfd;
-	mess.mav2.payloadLen = (uint8_t)maxLenM2;
-	mess.mav2.incompFlag = 0;
-	mess.mav2.compFlag = 0;
-	mess.mav2.packetSeq = (uint8_t)(rand() % 256);
-	mess.mav2.systemID = (uint8_t)(rand() % 256);
-	mess.mav2.compID = (uint8_t)(rand() % 256);
-	fromInt24le(msgID, mess.mav2.messageID);
-	
-	// Allocate memory for the payload.
-	if ((mess.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM2)) == NULL)
-		fprintf(stderr, "Memory allocation failed.\n");
-	
-	// Fill payload bytes.
-	for (i = 0; i < maxLenM2; i++) {
-		// Generate a random byte for wildcard fields.
-		randomByte = (uint8_t)(rand() % 256);
+        // Seed a random number generator.
+        srand(time(NULL));
 
-		// Differentiate between ennumerated and non-ennumerated fields.
-		if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav2.payload[i] = randomByte;
-		else mess.mav2.payload[i] = fillEnumInRange(msgID, i);
-	}
-		
-	// Fill in the crc with random bytes.
-	mess.mav2.crc[0] = (uint8_t)(rand() % 256);
-	mess.mav2.crc[1] = (uint8_t)(rand() % 256);
-	mess.mav2.signedMess = false;
-	
-	// Generate a single passing test.
-	sprintf(fname, "pass.%d", passSeed++);
-	
-	if ((fp = fopen(fname, "wb")) == NULL) {
-		fprintf(stderr, "Failed to open file.\n");
-		return;
-	}
-	
-	writeMessageToFileMav(&mess, fp);
-	
-	fclose(fp);
-	
-	free(mess.mav2.payload);
-	
-	// Clean up memory.
-	vectorApply(enFields, free);
-	vectorFree(enFields);
-	
+        // Initialise the given message type.
+        if ((enFields = initialiseMessageType(msgID, &minLenM2, &maxLenM1, &maxLenM2)) == NULL) {
+                fprintf(stderr, "Error initialising message type.\n");
+                return;
+        }
+
+        // Create a MAVLINK 2 message with random byte values in wildcard fields and all other fields fixed.
+        mess.mav2.mavCode = 0xfd;
+        mess.mav2.payloadLen = (uint8_t)maxLenM2;
+        mess.mav2.incompFlag = 0;
+        mess.mav2.compFlag = 0;
+        mess.mav2.packetSeq = (uint8_t)(rand() % 256);
+        mess.mav2.systemID = (uint8_t)(rand() % 256);
+        mess.mav2.compID = (uint8_t)(rand() % 256);
+        fromInt24le(msgID, mess.mav2.messageID);
+
+        // Allocate memory for the payload.
+        if ((mess.mav2.payload = (uint8_t *)malloc(sizeof(uint8_t)*maxLenM2)) == NULL)
+                fprintf(stderr, "Memory allocation failed.\n");
+
+        // Fill payload bytes.
+        for (i = 0; i < maxLenM2; i++) {
+                // Generate a random byte for wildcard fields.
+                randomByte = (uint8_t)(rand() % 256);
+
+                // Differentiate between ennumerated and non-ennumerated fields.
+                if (!(vectorContains(enFields, compareInt, (void *)&i))) mess.mav2.payload[i] = randomByte;
+                else mess.mav2.payload[i] = fillEnumInRange(msgID, i);
+        }
+
+        // Fill in the crc with random bytes.
+        mess.mav2.crc[0] = (uint8_t)(rand() % 256);
+        mess.mav2.crc[1] = (uint8_t)(rand() % 256);
+        mess.mav2.signedMess = false;
+
+        // Generate a single passing test.
+        sprintf(fname, "pass.%d", passSeed++);
+
+        if ((fp = fopen(fname, "wb")) == NULL) {
+                fprintf(stderr, "Failed to open file.\n");
+                return;
+        }
+
+        writeMessageToFileMav(&mess, fp);
+
+        fclose(fp);
+
+        free(mess.mav2.payload);
+
+        // Clean up memory.
+        vectorApply(enFields, free);
+        vectorFree(enFields);
+
 }

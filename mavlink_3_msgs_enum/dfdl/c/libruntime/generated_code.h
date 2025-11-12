@@ -60,7 +60,7 @@ typedef struct M1_ss_PL_L31_M1_ss_PL_t_
     uint8_t     _a_ss_PL_cnt3[2];
     HexBinary   ss_PL_cnt4;
     uint8_t     _a_ss_PL_cnt4[2];
-    uint8_t     ss_PL_batr;
+    int8_t      ss_PL_batr;
 } M1_ss_PL_L31_M1_ss_PL_t_;
 
 typedef struct M1_ss_PL_M1_t_
@@ -80,8 +80,8 @@ typedef struct M1_hud_PL_L20_M1_hud_PL_t_
     uint8_t     _a_hud_PL_alt[4];
     HexBinary   hud_PL_clmb;
     uint8_t     _a_hud_PL_clmb[4];
-    uint16_t    hud_PL_hdng;
-    uint8_t     hud_PL_thtl;
+    int16_t     hud_PL_hdng;
+    uint16_t    hud_PL_thtl;
 } M1_hud_PL_L20_M1_hud_PL_t_;
 
 typedef struct M1_hud_PL_M1_t_
@@ -323,7 +323,7 @@ typedef struct M2_ss_PL_L19_M2_ss_PL_t_
     uint8_t     _a_ss_PL_vbat[2];
     HexBinary   ss_PL_cbat;
     uint8_t     _a_ss_PL_cbat[2];
-    uint8_t     ss_PL_drc;
+    uint8_t     ss_PL_drc_1b;
 } M2_ss_PL_L19_M2_ss_PL_t_;
 
 typedef struct M2_ss_PL_L20_M2_ss_PL_t_
@@ -598,7 +598,7 @@ typedef struct M2_ss_PL_L31_M2_ss_PL_t_
     uint8_t     _a_ss_PL_cnt3[2];
     HexBinary   ss_PL_cnt4;
     uint8_t     _a_ss_PL_cnt4[2];
-    uint8_t     ss_PL_batr;
+    int8_t      ss_PL_batr;
 } M2_ss_PL_L31_M2_ss_PL_t_;
 
 typedef struct M2_ss_PL_M2_t_
@@ -808,8 +808,7 @@ typedef struct M2_hud_PL_L17_M2_hud_PL_t_
     uint8_t     _a_hud_PL_alt[4];
     HexBinary   hud_PL_clmb;
     uint8_t     _a_hud_PL_clmb[4];
-    HexBinary   hud_PL_hdng_1b;
-    uint8_t     _a_hud_PL_hdng_1b[1];
+    int8_t      hud_PL_hdng_1b;
 } M2_hud_PL_L17_M2_hud_PL_t_;
 
 typedef struct M2_hud_PL_L18_M2_hud_PL_t_
@@ -823,7 +822,7 @@ typedef struct M2_hud_PL_L18_M2_hud_PL_t_
     uint8_t     _a_hud_PL_alt[4];
     HexBinary   hud_PL_clmb;
     uint8_t     _a_hud_PL_clmb[4];
-    uint16_t    hud_PL_hdng;
+    int16_t     hud_PL_hdng;
 } M2_hud_PL_L18_M2_hud_PL_t_;
 
 typedef struct M2_hud_PL_L19_M2_hud_PL_t_
@@ -837,9 +836,8 @@ typedef struct M2_hud_PL_L19_M2_hud_PL_t_
     uint8_t     _a_hud_PL_alt[4];
     HexBinary   hud_PL_clmb;
     uint8_t     _a_hud_PL_clmb[4];
-    uint16_t    hud_PL_hdng;
-    HexBinary   hud_PL_thtl_1b;
-    uint8_t     _a_hud_PL_thtl_1b[1];
+    int16_t     hud_PL_hdng;
+    uint8_t     hud_PL_thtl_1b;
 } M2_hud_PL_L19_M2_hud_PL_t_;
 
 typedef struct M2_hud_PL_L20_M2_hud_PL_t_
@@ -853,8 +851,8 @@ typedef struct M2_hud_PL_L20_M2_hud_PL_t_
     uint8_t     _a_hud_PL_alt[4];
     HexBinary   hud_PL_clmb;
     uint8_t     _a_hud_PL_clmb[4];
-    uint16_t    hud_PL_hdng;
-    uint8_t     hud_PL_thtl;
+    int16_t     hud_PL_hdng;
+    uint16_t    hud_PL_thtl;
 } M2_hud_PL_L20_M2_hud_PL_t_;
 
 typedef struct M2_hud_PL_M2_t_

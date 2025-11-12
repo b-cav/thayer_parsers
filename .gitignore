@@ -25,3 +25,6 @@ abnf/bison/abnf
 
 # Neovim backups
 .nvim_backup/
+
+# Test dirs
+*/tests/*

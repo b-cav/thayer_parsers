@@ -140,13 +140,13 @@ v2_ss_PL_L09 : ss_PL_ocsp ss_PL_ocse allhex1b ;
 v2_ss_PL_L10 : ss_PL_ocsp ss_PL_ocse allhex2b ;
 v2_ss_PL_L11 : ss_PL_ocsp ss_PL_ocse allhex3b ;
 v2_ss_PL_L12 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ;
-v2_ss_PL_L13 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh [ '\x00' - '\x03' ] ;
+v2_ss_PL_L13 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh allhex1b ;
 v2_ss_PL_L14 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ;
 v2_ss_PL_L15 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load allhex1b ;
 v2_ss_PL_L16 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ;
 v2_ss_PL_L17 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat allhex1b ;
 v2_ss_PL_L18 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ;
-v2_ss_PL_L19 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat [ '\x00' - '\x27' ] ;
+v2_ss_PL_L19 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat allhex1b ;
 v2_ss_PL_L20 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ;
 v2_ss_PL_L21 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc allhex1b ;
 v2_ss_PL_L22 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat ss_PL_drc ss_PL_errc ;
@@ -164,16 +164,16 @@ v2_ss_PL_L31 : ss_PL_ocsp ss_PL_ocse ss_PL_ocsh ss_PL_load ss_PL_vbat ss_PL_cbat
 ss_PL_ocsp : allhex4b ;
 ss_PL_ocse : allhex4b ;
 ss_PL_ocsh : allhex4b ;
-ss_PL_load : [ 'uint16(0)' - 'uint16(1000)' ] ;
+ss_PL_load : [ 'little_endian(0,uint16)' - 'little_endian(1000,uint16)' ] ;
 ss_PL_vbat : allhex2b ;
 ss_PL_cbat : allhex2b ; /* Battery current, in 10x milliamperes (1 means 10 milliampere), -1 means autopilot does not measure the current */
-ss_PL_drc : [ 'uint16(0)' - 'uint16(10000)' ] ; /* Communication drops in percent, (0pct is 0, 100pct is 10000), (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) */
+ss_PL_drc : [ 'little_endian(0,uint16)' - 'little_endian(10000,uint16)' ] ; /* Communication drops in percent, (0pct is 0, 100pct is 10000), (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) */
 ss_PL_errc : allhex2b ;
 ss_PL_cnt1 : allhex2b ;
 ss_PL_cnt2 : allhex2b ;
 ss_PL_cnt3 : allhex2b ;
 ss_PL_cnt4 : allhex2b ;
-ss_PL_batr : [ 'int8(0)' - 'int8(100)' ] | 'int8(-1)' ; /* Remaining battery energy (0pct is 0, 100pct is 100), -1 means autopilot estimate not sent */
+ss_PL_batr : [ 'int8(-1)' - 'int8(100)' ] ; /* Remaining battery energy (0pct is 0, 100pct is 100), -1 means autopilot estimate not sent */
 
 /* SYS_STATUS ID Fields */
 v1_ss_ID : '\x01' ;
@@ -256,9 +256,9 @@ v2_hud_PL_L13 : hud_PL_aspd hud_PL_gspd hud_PL_alt allhex1b ;
 v2_hud_PL_L14 : hud_PL_aspd hud_PL_gspd hud_PL_alt allhex2b ;
 v2_hud_PL_L15 : hud_PL_aspd hud_PL_gspd hud_PL_alt allhex3b ;
 v2_hud_PL_L16 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb ;
-v2_hud_PL_L17 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb [ '\x00' - '\x01' ] ;
+v2_hud_PL_L17 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb allhex1b ;
 v2_hud_PL_L18 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng ;
-v2_hud_PL_L19 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng '\x00' ;
+v2_hud_PL_L19 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng allhex1b ;
 v2_hud_PL_L20 : hud_PL_aspd hud_PL_gspd hud_PL_alt hud_PL_clmb hud_PL_hdng hud_PL_thtl ;
 
 /* VFR_HUD Payload Fields */
@@ -266,8 +266,8 @@ hud_PL_aspd : allhex4b ;
 hud_PL_gspd : allhex4b ;
 hud_PL_alt : allhex4b ;
 hud_PL_clmb : allhex4b ;
-hud_PL_hdng : [ 'int16(0)' - 'int16(360)' ] ;
-hud_PL_thtl : [ 'uint16(0)' - 'uint16(100)' ] ;
+hud_PL_hdng : [ 'little_endian(0,int16)' - 'little_endian(360,int16)' ] ;
+hud_PL_thtl : [ 'little_endian(0,uint16)' - 'little_endian(100,uint16)' ] ;
 
 /* VFR_HUD ID Fields */
 v1_hud_ID : '\x4A' ;

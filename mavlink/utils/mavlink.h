@@ -1,13 +1,13 @@
 #pragma once
-/* 
+/*
  * mavlink.h --- header file for fuunctions to operate on mavlink data
- * 
+ *
  * Author: Joshua M. Meise
  * Created: 06-27-2024
  * Version: 1.0
- * 
- * Description: 
- * 
+ *
+ * Description:
+ *
  */
 
 // Library inclusions.
