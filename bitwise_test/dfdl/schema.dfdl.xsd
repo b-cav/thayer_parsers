@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+schema.dfdl.xsd - XSD Schema to test bitwise parser generation
+
+--> 
+
+<!-- Import xml library and extensions (namespace sources) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:dfdlx="http://www.ogf.org/dfdl/dfdl-1.0/extensions">
+
+  <xs:include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+
+  <xs:annotation>
+    <xs:appinfo source="http://www.ogf.org/dfdl/">
+      <dfdl:format ref="GeneralFormat" bitOrder="mostSignificantBitFirst"
+        byteOrder="bigEndian" representation="binary" lengthUnits="bits"
+        lengthKind="explicit" alignmentUnits="bits" alignment="1" binaryNumberRep="binary" />
+    </xs:appinfo>
+  </xs:annotation>
+
+
+  <xs:element name="IdleByte" dfdl:lengthKind="implicit">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="First" type="OneBit"/>
+        <xs:element name="Second" type="ZeroBit"/>
+        <xs:element name="Third" type="OneBit"/>
+        <xs:element name="Fourth" type="ZeroBit"/>
+        <xs:element name="Fifth" type="OneBit"/>
+        <xs:element name="Sixth" type="ZeroBit"/>
+        <xs:element name="Seventh" type="OneBit"/>
+        <xs:element name="Eighth" type="ZeroBit"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="ZeroBit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:maxInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OneBit" dfdl:length="1">
+    <xs:restriction base="xs:unsignedByte">
+      <xs:minInclusive value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

@@ -11,7 +11,6 @@ GCC=gcc
 
 all:		
 				$(GCC) $(CFLAGS) parser.c -o hmr $(LIBS)
-				make --no-print-directory xml
 
 xml:	
 				./hmr -g

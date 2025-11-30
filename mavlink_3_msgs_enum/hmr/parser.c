@@ -32,28 +32,28 @@ HParser *init_parser() {
     H_RULE(len_L07, h_ch(0x07));
     H_RULE(len_L08, h_ch(0x08));
     H_RULE(len_L09, h_ch(0x09));
-    H_RULE(len_L10, h_ch(0x10));
-    H_RULE(len_L11, h_ch(0x11));
-    H_RULE(len_L12, h_ch(0x12));
-    H_RULE(len_L13, h_ch(0x13));
-    H_RULE(len_L14, h_ch(0x14));
-    H_RULE(len_L15, h_ch(0x15));
-    H_RULE(len_L16, h_ch(0x16));
-    H_RULE(len_L17, h_ch(0x17));
-    H_RULE(len_L18, h_ch(0x18));
-    H_RULE(len_L19, h_ch(0x19));
-    H_RULE(len_L20, h_ch(0x20));
-    H_RULE(len_L21, h_ch(0x21));
-    H_RULE(len_L22, h_ch(0x22));
-    H_RULE(len_L23, h_ch(0x23));
-    H_RULE(len_L24, h_ch(0x24));
-    H_RULE(len_L25, h_ch(0x25));
-    H_RULE(len_L26, h_ch(0x26));
-    H_RULE(len_L27, h_ch(0x27));
-    H_RULE(len_L28, h_ch(0x28));
-    H_RULE(len_L29, h_ch(0x29));
-    H_RULE(len_L30, h_ch(0x30));
-    H_RULE(len_L31, h_ch(0x31));
+    H_RULE(len_L10, h_ch(0x0A));
+    H_RULE(len_L11, h_ch(0x0B));
+    H_RULE(len_L12, h_ch(0x0C));
+    H_RULE(len_L13, h_ch(0x0D));
+    H_RULE(len_L14, h_ch(0x0E));
+    H_RULE(len_L15, h_ch(0x0F));
+    H_RULE(len_L16, h_ch(0x10));
+    H_RULE(len_L17, h_ch(0x11));
+    H_RULE(len_L18, h_ch(0x12));
+    H_RULE(len_L19, h_ch(0x13));
+    H_RULE(len_L20, h_ch(0x14));
+    H_RULE(len_L21, h_ch(0x15));
+    H_RULE(len_L22, h_ch(0x16));
+    H_RULE(len_L23, h_ch(0x17));
+    H_RULE(len_L24, h_ch(0x18));
+    H_RULE(len_L25, h_ch(0x19));
+    H_RULE(len_L26, h_ch(0x1A));
+    H_RULE(len_L27, h_ch(0x1B));
+    H_RULE(len_L28, h_ch(0x1C));
+    H_RULE(len_L29, h_ch(0x1D));
+    H_RULE(len_L30, h_ch(0x1E));
+    H_RULE(len_L31, h_ch(0x1F));
 
     /* Header fields */
     H_RULE(stx_v1, h_ch(0xFE));
@@ -119,18 +119,16 @@ HParser *init_parser() {
     H_RULE(ss_PL_ocsp, allhex4b);
     H_RULE(ss_PL_ocse, allhex4b);
     H_RULE(ss_PL_ocsh, allhex4b);
-    H_RULE(ss_PL_load, h_choice(h_sequence(h_ch_range(0x00, 0x02), h_ch_range(0x00, 0xFF), NULL),
-                                h_sequence(h_ch(0x03), h_ch_range(0x00, 0xE8), NULL), NULL)); /* 0x0000 to 0x03E8 uint16 0 to 1000*/
+    H_RULE(ss_PL_load, h_with_endianness(BYTE_LITTLE_ENDIAN, h_int_range(h_int16(), 0, 1000)));
     H_RULE(ss_PL_vbat, allhex2b); /* 0x0000 to 0xFFFE*/
     H_RULE(ss_PL_cbat, allhex2b);
-    H_RULE(ss_PL_drc,  h_choice(h_sequence(h_ch_range(0x00, 0x02), h_ch_range(0x00, 0xFF), NULL),
-                                h_sequence(h_ch(0x03), h_ch_range(0x00, 0xE8), NULL), NULL)); /* 0x0000 to 0x03E8 uint16 0 to 10000 */
+    H_RULE(ss_PL_drc, h_with_endianness(BYTE_LITTLE_ENDIAN, h_int_range(h_int16(), 0, 10000)));
     H_RULE(ss_PL_errc, allhex2b);
     H_RULE(ss_PL_cnt1, allhex2b);
     H_RULE(ss_PL_cnt2, allhex2b);
     H_RULE(ss_PL_cnt3, allhex2b);
     H_RULE(ss_PL_cnt4, allhex2b);
-    H_RULE(ss_PL_batr, h_choice(h_ch_range(0x00, 0x64), h_ch(0xFF), NULL)); /* 0x00 to 0x64 or 0xFF int8 0-100 or -1 */
+    H_RULE(ss_PL_batr, h_with_endianness(BYTE_LITTLE_ENDIAN, h_int_range(h_int8(), -1, 100)));
 
     /* SYS_STATUS v1/v2 Payloads */
     /* v1 SYS_STATUS PAYLOAD - payload always 31 bytes */
@@ -152,13 +150,13 @@ HParser *init_parser() {
     H_RULE(v2_ss_PL_L10, h_sequence(ss_PL_ocsp, ss_PL_ocse, allhex2b, NULL));
     H_RULE(v2_ss_PL_L11, h_sequence(ss_PL_ocsp, ss_PL_ocse, allhex3b, NULL));
     H_RULE(v2_ss_PL_L12, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, NULL));
-    H_RULE(v2_ss_PL_L13, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, h_ch_range(0x00, 0x03), NULL));
+    H_RULE(v2_ss_PL_L13, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, allhex1b, NULL));
     H_RULE(v2_ss_PL_L14, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, NULL));
     H_RULE(v2_ss_PL_L15, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, allhex1b, NULL));
     H_RULE(v2_ss_PL_L16, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, NULL));
     H_RULE(v2_ss_PL_L17, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, allhex1b, NULL));
     H_RULE(v2_ss_PL_L18, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, ss_PL_cbat, NULL));
-    H_RULE(v2_ss_PL_L19, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, ss_PL_cbat, h_ch_range(0x00, 0x27), NULL));
+    H_RULE(v2_ss_PL_L19, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, ss_PL_cbat, allhex1b, NULL));
     H_RULE(v2_ss_PL_L20, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, ss_PL_cbat, ss_PL_drc, NULL));
     H_RULE(v2_ss_PL_L21, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, ss_PL_cbat, ss_PL_drc, allhex1b, NULL));
     H_RULE(v2_ss_PL_L22, h_sequence(ss_PL_ocsp, ss_PL_ocse, ss_PL_ocsh, ss_PL_load, ss_PL_vbat, ss_PL_cbat, ss_PL_drc, ss_PL_errc, NULL));
@@ -264,14 +262,13 @@ HParser *init_parser() {
     H_RULE(hud_PL_gspd, allhex4b);
     H_RULE(hud_PL_alt,  allhex4b);
     H_RULE(hud_PL_clmb, allhex4b);
-    H_RULE(hud_PL_hdng, h_choice(h_sequence(h_ch(0x00), h_ch_range(0x00, 0xFF), NULL),
-                                 h_sequence(h_ch(0x01), h_ch_range(0x00, 0x68), NULL), NULL)); /* 0x0000 to 0x0168 int16 0 to 360 */
-    H_RULE(hud_PL_thtl, h_sequence(h_ch(0x00), h_ch_range(0x00, 0x64), NULL));
+    H_RULE(hud_PL_hdng, h_with_endianness(BYTE_LITTLE_ENDIAN, h_int_range(h_int16(), 0, 360)));
+    H_RULE(hud_PL_thtl, h_with_endianness(BYTE_LITTLE_ENDIAN, h_int_range(h_uint16(), 0, 100)));
 
     /* VFR_HUD v1/v2 Payloads */
     /* v1 VFR_HUD PAYLOAD - payload always 20 bytes */
     H_RULE(v1_hud_PL, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt,
-                                 hud_PL_clmb, hud_PL_hdng, NULL));
+                                 hud_PL_clmb, hud_PL_hdng, hud_PL_thtl, NULL));
 
     /* v2 VFR_HUD PAYLOAD - paylohud_PL_thtl,ad 1-20 bytes  */
     H_RULE(v2_hud_PL_L01, allhex1b);
@@ -290,9 +287,9 @@ HParser *init_parser() {
     H_RULE(v2_hud_PL_L14, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, allhex2b, NULL));
     H_RULE(v2_hud_PL_L15, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, allhex3b, NULL));
     H_RULE(v2_hud_PL_L16, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, hud_PL_clmb, NULL));
-    H_RULE(v2_hud_PL_L17, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, hud_PL_clmb, h_ch_range(0x00, 0x01), NULL));
+    H_RULE(v2_hud_PL_L17, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, hud_PL_clmb, allhex1b, NULL));
     H_RULE(v2_hud_PL_L18, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, hud_PL_clmb, hud_PL_hdng, NULL));
-    H_RULE(v2_hud_PL_L19, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, hud_PL_clmb, hud_PL_hdng, h_ch(0x00), NULL));
+    H_RULE(v2_hud_PL_L19, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, hud_PL_clmb, hud_PL_hdng, allhex1b, NULL));
     H_RULE(v2_hud_PL_L20, h_sequence(hud_PL_aspd, hud_PL_gspd, hud_PL_alt, hud_PL_clmb, hud_PL_hdng, hud_PL_thtl, NULL));
 
     /* -------------------------------------------------------------- */

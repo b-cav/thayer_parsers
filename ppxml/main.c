@@ -6,7 +6,7 @@
 
  /* Set the backend */
 #ifndef BKEND
-#define BKEND PB_LALR /* or PB_LALR, PB_MIN */
+#define BKEND PB_PACKRAT /* or PB_LALR, PB_MIN */
 #endif
 /* set location of tests */
 #define TESTPATH "../tests/"
