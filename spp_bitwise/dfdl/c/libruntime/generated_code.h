@@ -34,21 +34,33 @@ typedef struct sec_hdr_spp_pkt_t_
     uint8_t     _a_octet[65536][1];
 } sec_hdr_spp_pkt_t_;
 
-typedef struct other_df_spp_pkt_t_
+typedef struct idle_df_udf_t_
+{
+    InfosetBase _base;
+    HexBinary   idle_data[65536];
+    uint8_t     _a_idle_data[65536][2];
+} idle_df_udf_t_;
+
+typedef struct other_df_udf_t_
 {
     InfosetBase _base;
     HexBinary   octet[65536];
     uint8_t     _a_octet[65536][1];
-} other_df_spp_pkt_t_;
+} other_df_udf_t_;
+
+typedef struct udf_spp_pkt_t_
+{
+    InfosetBase _base;
+    idle_df_udf_t_ idle_df[1];
+    other_df_udf_t_ other_df[1];
+} udf_spp_pkt_t_;
 
 typedef struct spp_pkt_
 {
     InfosetBase _base;
     prim_hdr_spp_pkt_t_ prim_hdr;
     sec_hdr_spp_pkt_t_ sec_hdr[1];
-    HexBinary   idle_df[1];
-    uint8_t     _a_idle_df[1][2];
-    other_df_spp_pkt_t_ other_df[1];
+    udf_spp_pkt_t_ udf[1];
 } spp_pkt_;
 
 #endif // GENERATED_CODE_H

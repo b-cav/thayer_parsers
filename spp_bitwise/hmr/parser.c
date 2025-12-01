@@ -14,32 +14,38 @@
 bool match_x00(HParseResult *p, void *user_data);
 bool match_x01(HParseResult *p, void *user_data);
 bool match_idle_apid(HParseResult *p, void *user_data);
+HParsedToken *plus_one(const HParseResult *p, void *user_data);
 
 HParser *init_parser() {
     HParser *spp_parser;
+
+    /* Utility: match a single bit */
+    H_RULE(zero_bit, h_attr_bool(h_bits(1, false), match_x00, NULL));
+    H_RULE(one_bit, h_attr_bool(h_bits(1, false), match_x01, NULL));
 
     /* ------------------------------------------------------------- */
     /* SPP packet data fields */
     /* ------------------------------------------------------------- */
     /* Parses length field as TT_UINT and tries to parse that many
-     * octets worth of data (unspecified value/structure) */
-    H_RULE(unspec_data, h_length_value(h_uint16(), h_uint8()));
+     * octets + 1 worth of data (unspecified value/structure) */
+    H_RULE(length, h_action(h_uint16(), plus_one, NULL));
+    H_RULE(unspec_data, h_length_value(length, h_uint8()));
 
     /* Example idle packet; specified as mission-specific */
     /* Chose 1010 1010 1010 1010 for this parser */
     H_RULE(idle_apid, h_attr_bool(h_bits(11, false), match_idle_apid, NULL));
-    H_RULE(len_L02, h_ch(0x02));
+    H_RULE(len_C01, h_ch(0x01)); // Count = 1 = 2 bytes - 1
     H_RULE(idle_data, h_sequence(h_ch(0xAA), h_ch(0xAA), NULL));
 
     /* ------------------------------------------------------------- */
     /* Top-level SPP bit-wise header fields */
     /* ------------------------------------------------------------- */
-    H_RULE(version, h_bits(3, false));
+    H_RULE(version, h_repeat_n(zero_bit, 3));
     H_RULE(type, h_bits(1, false));
 
     /* Parse 1-bit sec hdr flag, returns a TT_UINT which must match enum */
-    H_RULE(no_shf, h_attr_bool(h_bits(1, false), match_x00, NULL));
-    H_RULE(has_shf, h_attr_bool(h_bits(1, false), match_x01, NULL));
+    H_RULE(no_shf, zero_bit);
+    H_RULE(has_shf, one_bit);
 
     H_RULE(other_apid, h_bits(11, false));
     H_RULE(seqf, h_bits(2, false));
@@ -49,7 +55,7 @@ HParser *init_parser() {
     /* Top-level SPP packet strucrure */
     /* ------------------------------------------------------------- */
     /* Example idle packet */
-    H_RULE(idle, h_sequence(version, type, no_shf, idle_apid, seqf, seqc, len_L02, idle_data, NULL));
+    H_RULE(idle, h_sequence(version, type, no_shf, idle_apid, seqf, seqc, len_C01, idle_data, NULL));
     /* Generic data packet */
     H_RULE(other, h_sequence(version, type, no_shf, other_apid, seqf, seqc, unspec_data, NULL));
 
@@ -82,4 +88,10 @@ bool match_idle_apid(HParseResult *p, void *user_data) {
     return(2047 == p->ast->uint);
 }
 
-
+/* Normal parse_length_value() doesn't work because of off-by-one,
+ * so add 1 to the parse result */
+HParsedToken *plus_one(const HParseResult *p, void *user_data) {
+    uint8_t value = p->ast->uint + 1;
+    HParsedToken *t = H_MAKE_UINT(value);
+    return t;
+}
