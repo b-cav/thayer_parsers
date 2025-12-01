@@ -976,10 +976,10 @@ array_udf_spp_pkt_t_spp_pkt__unparseSelf(const spp_pkt_ *instance, UState *ustat
 static size_t
 array_udf_spp_pkt_t_spp_pkt__getArraySize(const spp_pkt_ *instance)
 {
-if (instance->prim_hdr.shf == 1) {
-    return(0);
-} else {
+if (instance->prim_hdr.shf == 0) {
     return(1);
+} else {
+    return(0);
 }
 }
 

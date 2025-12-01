@@ -91,7 +91,7 @@ bool match_idle_apid(HParseResult *p, void *user_data) {
 /* Normal parse_length_value() doesn't work because of off-by-one,
  * so add 1 to the parse result */
 HParsedToken *plus_one(const HParseResult *p, void *user_data) {
-    uint8_t value = p->ast->uint + 1;
+    uint16_t value = p->ast->uint + 1;
     HParsedToken *t = H_MAKE_UINT(value);
     return t;
 }

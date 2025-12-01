@@ -36,7 +36,7 @@ schema.dfdl.xsd - XSD Schema for Space Packet Protocol
       <xs:element name="udf" type="udf_t"
         minOccurs="0" maxOccurs="1"
         dfdl:occursCountKind="expression"
-        dfdl:occursCount="{ if (../prim_hdr/shf eq 1) then 0 else 1 }"/>
+        dfdl:occursCount="{ if (../prim_hdr/shf eq 0) then 1 else 0 }"/>
     </xs:sequence>
   </xs:complexType>
 
