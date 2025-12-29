@@ -18,6 +18,6 @@ make &> /dev/null
 #./mav_v2_tgen 2 74 > /dev/null
 
 # Clear out old, move everything to test directory
-rm ../tests/*
+rm ../tests/pass.* ../tests/fail.* &> /dev/null
 mv ./pass.* ./fail.* ../tests/ &> /dev/null
 

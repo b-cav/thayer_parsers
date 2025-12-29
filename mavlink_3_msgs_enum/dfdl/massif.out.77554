@@ -1,0 +1,936 @@
+desc: (none)
+cmd: ./dfdltest.sh
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=5570500
+mem_heap_B=172871
+mem_heap_extra_B=46201
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=12386306
+mem_heap_B=335633
+mem_heap_extra_B=136223
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=15143511
+mem_heap_B=576965
+mem_heap_extra_B=131787
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=600736935
+mem_heap_B=489573
+mem_heap_extra_B=131779
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=603336623
+mem_heap_B=1144545
+mem_heap_extra_B=437655
+mem_stacks_B=0
+heap_tree=peak
+n4: 1144545 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n5: 717146 0x1A72E1: xmalloc (in /usr/bin/bash)
+  n2: 305849 0x1498D1: make_bare_word (in /usr/bin/bash)
+   n1: 305724 0x18183D: ??? (in /usr/bin/bash)
+    n1: 305724 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 305724 0x155418: execute_command (in /usr/bin/bash)
+      n1: 305724 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 305724 0x1392BA: main (in /usr/bin/bash)
+   n0: 125 in 6 places, all below massif's threshold (1.00%)
+  n2: 175024 0x149919: make_bare_word (in /usr/bin/bash)
+   n1: 174624 0x18183D: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 400 in 5 places, all below massif's threshold (1.00%)
+  n2: 175008 0x149BB9: make_word_list (in /usr/bin/bash)
+   n1: 174624 0x18184C: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 384 in 5 places, all below massif's threshold (1.00%)
+  n1: 32768 0x1863A3: hash_create (in /usr/bin/bash)
+   n0: 32768 in 5 places, all below massif's threshold (1.00%)
+  n0: 28497 in 89 places, all below massif's threshold (1.00%)
+ n1: 327572 0x1C29B3: ??? (in /usr/bin/bash)
+  n1: 327572 0x1C450E: glob_filename (in /usr/bin/bash)
+   n1: 327572 0x18B8E0: shell_glob_filename (in /usr/bin/bash)
+    n1: 327572 0x18180A: ??? (in /usr/bin/bash)
+     n1: 327572 0x153B53: execute_command_internal (in /usr/bin/bash)
+      n1: 327572 0x155418: execute_command (in /usr/bin/bash)
+       n1: 327572 0x13AA3C: reader_loop (in /usr/bin/bash)
+        n0: 327572 0x1392BA: main (in /usr/bin/bash)
+ n1: 87400 0x1C2930: ??? (in /usr/bin/bash)
+  n1: 87400 0x1C450E: glob_filename (in /usr/bin/bash)
+   n1: 87400 0x18B8E0: shell_glob_filename (in /usr/bin/bash)
+    n1: 87400 0x18180A: ??? (in /usr/bin/bash)
+     n1: 87400 0x153B53: execute_command_internal (in /usr/bin/bash)
+      n1: 87400 0x155418: execute_command (in /usr/bin/bash)
+       n1: 87400 0x13AA3C: reader_loop (in /usr/bin/bash)
+        n0: 87400 0x1392BA: main (in /usr/bin/bash)
+ n0: 12427 in 21 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=6
+#-----------
+time=608455822
+mem_heap_B=730681
+mem_heap_extra_B=314295
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=615224288
+mem_heap_B=730681
+mem_heap_extra_B=314295
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=621637379
+mem_heap_B=730676
+mem_heap_extra_B=314236
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=625913005
+mem_heap_B=730596
+mem_heap_extra_B=314284
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=631260774
+mem_heap_B=730376
+mem_heap_extra_B=314168
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=638212603
+mem_heap_B=730683
+mem_heap_extra_B=314293
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=647302687
+mem_heap_B=730988
+mem_heap_extra_B=314332
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=653720599
+mem_heap_B=730989
+mem_heap_extra_B=314331
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=659904887
+mem_heap_B=730587
+mem_heap_extra_B=314277
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=665857216
+mem_heap_B=730587
+mem_heap_extra_B=314245
+mem_stacks_B=0
+heap_tree=detailed
+n2: 730587 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n5: 717992 0x1A72E1: xmalloc (in /usr/bin/bash)
+  n2: 305849 0x1498D1: make_bare_word (in /usr/bin/bash)
+   n1: 305724 0x18183D: ??? (in /usr/bin/bash)
+    n1: 305724 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 305724 0x155418: execute_command (in /usr/bin/bash)
+      n1: 305724 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 305724 0x1392BA: main (in /usr/bin/bash)
+   n0: 125 in 6 places, all below massif's threshold (1.00%)
+  n2: 175088 0x149BB9: make_word_list (in /usr/bin/bash)
+   n1: 174624 0x18184C: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 464 in 5 places, all below massif's threshold (1.00%)
+  n2: 175056 0x149919: make_bare_word (in /usr/bin/bash)
+   n1: 174624 0x18183D: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 432 in 5 places, all below massif's threshold (1.00%)
+  n1: 32768 0x1863A3: hash_create (in /usr/bin/bash)
+   n0: 32768 in 5 places, all below massif's threshold (1.00%)
+  n0: 29231 in 103 places, all below massif's threshold (1.00%)
+ n0: 12595 in 23 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=16
+#-----------
+time=674786964
+mem_heap_B=730584
+mem_heap_extra_B=314248
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=682724242
+mem_heap_B=730375
+mem_heap_extra_B=314185
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=689669073
+mem_heap_B=730715
+mem_heap_extra_B=314253
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=697603381
+mem_heap_B=730678
+mem_heap_extra_B=314266
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=703555906
+mem_heap_B=730683
+mem_heap_extra_B=314293
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=710808335
+mem_heap_B=730622
+mem_heap_extra_B=314290
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=716510610
+mem_heap_B=730620
+mem_heap_extra_B=314236
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=722212917
+mem_heap_B=730621
+mem_heap_extra_B=314291
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=730767016
+mem_heap_B=730714
+mem_heap_extra_B=314238
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=736469149
+mem_heap_B=730821
+mem_heap_extra_B=314243
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=745021459
+mem_heap_B=730622
+mem_heap_extra_B=314290
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=750723444
+mem_heap_B=730620
+mem_heap_extra_B=314268
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=756426019
+mem_heap_B=730618
+mem_heap_extra_B=314286
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=760702517
+mem_heap_B=730989
+mem_heap_extra_B=314315
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=767828933
+mem_heap_B=730989
+mem_heap_extra_B=314339
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=772104825
+mem_heap_B=730989
+mem_heap_extra_B=314355
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=777808965
+mem_heap_B=730953
+mem_heap_extra_B=314295
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=782392505
+mem_heap_B=730842
+mem_heap_extra_B=314270
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=786977844
+mem_heap_B=730972
+mem_heap_extra_B=314292
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=791562097
+mem_heap_B=730829
+mem_heap_extra_B=314219
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=796147015
+mem_heap_B=730731
+mem_heap_extra_B=314253
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=800731484
+mem_heap_B=730953
+mem_heap_extra_B=314327
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=809898874
+mem_heap_B=730594
+mem_heap_extra_B=314270
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=814483659
+mem_heap_B=730696
+mem_heap_extra_B=314240
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=821359824
+mem_heap_B=730587
+mem_heap_extra_B=314245
+mem_stacks_B=0
+heap_tree=detailed
+n2: 730587 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n5: 717992 0x1A72E1: xmalloc (in /usr/bin/bash)
+  n2: 305849 0x1498D1: make_bare_word (in /usr/bin/bash)
+   n1: 305724 0x18183D: ??? (in /usr/bin/bash)
+    n1: 305724 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 305724 0x155418: execute_command (in /usr/bin/bash)
+      n1: 305724 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 305724 0x1392BA: main (in /usr/bin/bash)
+   n0: 125 in 6 places, all below massif's threshold (1.00%)
+  n2: 175088 0x149BB9: make_word_list (in /usr/bin/bash)
+   n1: 174624 0x18184C: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 464 in 5 places, all below massif's threshold (1.00%)
+  n2: 175056 0x149919: make_bare_word (in /usr/bin/bash)
+   n1: 174624 0x18183D: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 432 in 5 places, all below massif's threshold (1.00%)
+  n1: 32768 0x1863A3: hash_create (in /usr/bin/bash)
+   n0: 32768 in 5 places, all below massif's threshold (1.00%)
+  n0: 29231 in 103 places, all below massif's threshold (1.00%)
+ n0: 12595 in 23 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=41
+#-----------
+time=830527672
+mem_heap_B=730989
+mem_heap_extra_B=314299
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=835112539
+mem_heap_B=730621
+mem_heap_extra_B=314291
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=841988081
+mem_heap_B=730678
+mem_heap_extra_B=314250
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=851155474
+mem_heap_B=730957
+mem_heap_extra_B=314291
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=860322507
+mem_heap_B=730622
+mem_heap_extra_B=314290
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=869490947
+mem_heap_B=730778
+mem_heap_extra_B=314342
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=878659444
+mem_heap_B=730992
+mem_heap_extra_B=314384
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=887826532
+mem_heap_B=730469
+mem_heap_extra_B=314219
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=892411201
+mem_heap_B=730683
+mem_heap_extra_B=314325
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=895010946
+mem_heap_B=730992
+mem_heap_extra_B=314336
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=897611161
+mem_heap_B=730683
+mem_heap_extra_B=314261
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=900210877
+mem_heap_B=730989
+mem_heap_extra_B=314315
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=902811282
+mem_heap_B=730683
+mem_heap_extra_B=314309
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=905411036
+mem_heap_B=730989
+mem_heap_extra_B=314315
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=908011562
+mem_heap_B=730683
+mem_heap_extra_B=314309
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=910611336
+mem_heap_B=730989
+mem_heap_extra_B=314299
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=913211785
+mem_heap_B=730683
+mem_heap_extra_B=314309
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=915811499
+mem_heap_B=730989
+mem_heap_extra_B=314315
+mem_stacks_B=0
+heap_tree=detailed
+n2: 730989 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n5: 718394 0x1A72E1: xmalloc (in /usr/bin/bash)
+  n2: 305915 0x1498D1: make_bare_word (in /usr/bin/bash)
+   n1: 305724 0x18183D: ??? (in /usr/bin/bash)
+    n1: 305724 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 305724 0x155418: execute_command (in /usr/bin/bash)
+      n1: 305724 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 305724 0x1392BA: main (in /usr/bin/bash)
+   n0: 191 in 6 places, all below massif's threshold (1.00%)
+  n2: 175088 0x149BB9: make_word_list (in /usr/bin/bash)
+   n1: 174624 0x18184C: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 464 in 5 places, all below massif's threshold (1.00%)
+  n2: 175056 0x149919: make_bare_word (in /usr/bin/bash)
+   n1: 174624 0x18183D: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 432 in 5 places, all below massif's threshold (1.00%)
+  n1: 32768 0x1863A3: hash_create (in /usr/bin/bash)
+   n0: 32768 in 5 places, all below massif's threshold (1.00%)
+  n0: 29567 in 103 places, all below massif's threshold (1.00%)
+ n0: 12595 in 23 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=59
+#-----------
+time=918411897
+mem_heap_B=730681
+mem_heap_extra_B=314327
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=921011643
+mem_heap_B=730989
+mem_heap_extra_B=314315
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=61
+#-----------
+time=923612291
+mem_heap_B=730683
+mem_heap_extra_B=314293
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=926212050
+mem_heap_B=730992
+mem_heap_extra_B=314352
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=63
+#-----------
+time=928812344
+mem_heap_B=730683
+mem_heap_extra_B=314309
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=64
+#-----------
+time=931412045
+mem_heap_B=730992
+mem_heap_extra_B=314352
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=65
+#-----------
+time=934012638
+mem_heap_B=730683
+mem_heap_extra_B=314309
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=66
+#-----------
+time=936612408
+mem_heap_B=730992
+mem_heap_extra_B=314320
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=67
+#-----------
+time=939212724
+mem_heap_B=730683
+mem_heap_extra_B=314293
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=68
+#-----------
+time=941812511
+mem_heap_B=730989
+mem_heap_extra_B=314299
+mem_stacks_B=0
+heap_tree=detailed
+n2: 730989 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n5: 718394 0x1A72E1: xmalloc (in /usr/bin/bash)
+  n2: 305915 0x1498D1: make_bare_word (in /usr/bin/bash)
+   n1: 305724 0x18183D: ??? (in /usr/bin/bash)
+    n1: 305724 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 305724 0x155418: execute_command (in /usr/bin/bash)
+      n1: 305724 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 305724 0x1392BA: main (in /usr/bin/bash)
+   n0: 191 in 6 places, all below massif's threshold (1.00%)
+  n2: 175088 0x149BB9: make_word_list (in /usr/bin/bash)
+   n1: 174624 0x18184C: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 464 in 5 places, all below massif's threshold (1.00%)
+  n2: 175056 0x149919: make_bare_word (in /usr/bin/bash)
+   n1: 174624 0x18183D: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 432 in 5 places, all below massif's threshold (1.00%)
+  n1: 32768 0x1863A3: hash_create (in /usr/bin/bash)
+   n0: 32768 in 5 places, all below massif's threshold (1.00%)
+  n0: 29567 in 103 places, all below massif's threshold (1.00%)
+ n0: 12595 in 23 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=69
+#-----------
+time=944412272
+mem_heap_B=730680
+mem_heap_extra_B=314272
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=70
+#-----------
+time=947011972
+mem_heap_B=730992
+mem_heap_extra_B=314352
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=71
+#-----------
+time=949612681
+mem_heap_B=730683
+mem_heap_extra_B=314293
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=72
+#-----------
+time=952212403
+mem_heap_B=730992
+mem_heap_extra_B=314336
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=73
+#-----------
+time=954813147
+mem_heap_B=730683
+mem_heap_extra_B=314277
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=74
+#-----------
+time=957412916
+mem_heap_B=731009
+mem_heap_extra_B=314327
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=75
+#-----------
+time=960012672
+mem_heap_B=731009
+mem_heap_extra_B=314327
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=76
+#-----------
+time=962613147
+mem_heap_B=730953
+mem_heap_extra_B=314295
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=77
+#-----------
+time=965213505
+mem_heap_B=730950
+mem_heap_extra_B=314330
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=78
+#-----------
+time=967813852
+mem_heap_B=730953
+mem_heap_extra_B=314279
+mem_stacks_B=0
+heap_tree=detailed
+n2: 730953 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n5: 718358 0x1A72E1: xmalloc (in /usr/bin/bash)
+  n2: 305915 0x1498D1: make_bare_word (in /usr/bin/bash)
+   n1: 305724 0x18183D: ??? (in /usr/bin/bash)
+    n1: 305724 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 305724 0x155418: execute_command (in /usr/bin/bash)
+      n1: 305724 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 305724 0x1392BA: main (in /usr/bin/bash)
+   n0: 191 in 6 places, all below massif's threshold (1.00%)
+  n2: 175088 0x149BB9: make_word_list (in /usr/bin/bash)
+   n1: 174624 0x18184C: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 464 in 5 places, all below massif's threshold (1.00%)
+  n2: 175056 0x149919: make_bare_word (in /usr/bin/bash)
+   n1: 174624 0x18183D: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 432 in 5 places, all below massif's threshold (1.00%)
+  n1: 32768 0x1863A3: hash_create (in /usr/bin/bash)
+   n0: 32768 in 5 places, all below massif's threshold (1.00%)
+  n0: 29531 in 103 places, all below massif's threshold (1.00%)
+ n0: 12595 in 23 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=79
+#-----------
+time=970414389
+mem_heap_B=730953
+mem_heap_extra_B=314295
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=80
+#-----------
+time=973014842
+mem_heap_B=730953
+mem_heap_extra_B=314295
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=81
+#-----------
+time=975615115
+mem_heap_B=730953
+mem_heap_extra_B=314311
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=82
+#-----------
+time=978215823
+mem_heap_B=730953
+mem_heap_extra_B=314295
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=83
+#-----------
+time=980816081
+mem_heap_B=730997
+mem_heap_extra_B=314323
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=84
+#-----------
+time=983415956
+mem_heap_B=730696
+mem_heap_extra_B=314296
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=85
+#-----------
+time=986016739
+mem_heap_B=730997
+mem_heap_extra_B=314307
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=86
+#-----------
+time=988616553
+mem_heap_B=730725
+mem_heap_extra_B=314291
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=87
+#-----------
+time=991217651
+mem_heap_B=730996
+mem_heap_extra_B=314292
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=88
+#-----------
+time=993817405
+mem_heap_B=730823
+mem_heap_extra_B=314345
+mem_stacks_B=0
+heap_tree=detailed
+n2: 730823 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n5: 718228 0x1A72E1: xmalloc (in /usr/bin/bash)
+  n2: 305849 0x1498D1: make_bare_word (in /usr/bin/bash)
+   n1: 305724 0x18183D: ??? (in /usr/bin/bash)
+    n1: 305724 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 305724 0x155418: execute_command (in /usr/bin/bash)
+      n1: 305724 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 305724 0x1392BA: main (in /usr/bin/bash)
+   n0: 125 in 6 places, all below massif's threshold (1.00%)
+  n2: 175088 0x149BB9: make_word_list (in /usr/bin/bash)
+   n1: 174624 0x18184C: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 464 in 5 places, all below massif's threshold (1.00%)
+  n2: 175056 0x149919: make_bare_word (in /usr/bin/bash)
+   n1: 174624 0x18183D: ??? (in /usr/bin/bash)
+    n1: 174624 0x153B53: execute_command_internal (in /usr/bin/bash)
+     n1: 174624 0x155418: execute_command (in /usr/bin/bash)
+      n1: 174624 0x13AA3C: reader_loop (in /usr/bin/bash)
+       n0: 174624 0x1392BA: main (in /usr/bin/bash)
+   n0: 432 in 5 places, all below massif's threshold (1.00%)
+  n1: 32768 0x1863A3: hash_create (in /usr/bin/bash)
+   n0: 32768 in 5 places, all below massif's threshold (1.00%)
+  n0: 29467 in 103 places, all below massif's threshold (1.00%)
+ n0: 12595 in 23 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=89
+#-----------
+time=996417094
+mem_heap_B=201564
+mem_heap_extra_B=65884
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=90
+#-----------
+time=1005817535
+mem_heap_B=78979
+mem_heap_extra_B=10045
+mem_stacks_B=0
+heap_tree=empty
